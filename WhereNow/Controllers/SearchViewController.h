@@ -11,11 +11,9 @@
 #import "SwipeTableView.h"
 
 @interface SearchViewController : UIViewController <
-    UISearchDisplayDelegate,
     UISearchBarDelegate,
     UITableViewDataSource,
     UITableViewDelegate,
-    UIBarPositioningDelegate,
     SwipeTableViewDelegate
 >
 

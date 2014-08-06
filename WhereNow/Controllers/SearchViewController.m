@@ -18,13 +18,12 @@
 #define GENERICS_INDEX      0
 #define EQUIPMENT_INDEX     1
 
-
-
 @interface SearchViewController () {
     UITableViewCell *editingCell;
     NSIndexPath *editingIndexPath;
     NSManagedObjectContext *_managedObjectContext;
     BOOL _firstLoad;
+    BOOL _isSearching;
 }
 
 @property (nonatomic, strong) IBOutlet SwipeTableView *tableView;
@@ -38,6 +37,8 @@
 #endif
 
 @property (nonatomic, strong) NSMutableArray *searchResults;
+
+@property (nonatomic, strong) UISearchBar *customSearchBar;
 
 
 @end
@@ -160,9 +161,6 @@
     
     [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"searchicon_selected"]];
     
-    self.searchDisplayController.displaysSearchBarInNavigationBar = YES;
-    [self.searchDisplayController.searchResultsTableView registerClass:[GenericsTableViewCell class] forCellReuseIdentifier:@"genericscell"];
-    [self.searchDisplayController.searchResultsTableView registerClass:[EquipmentTableViewCell class] forCellReuseIdentifier:@"equipmentcell"];
     
     self.genericsArray = [[NSMutableArray alloc] init];
     self.equipmentArray = [[NSMutableArray alloc] init];
@@ -179,9 +177,20 @@
     [self.tableView initControls];
     
     _firstLoad = YES;
+    _isSearching = NO;
     
     editingCell = nil;
     editingIndexPath = nil;
+    
+    // create search bar on navigation bar
+    UISearchBar *searchBar = [UISearchBar new];//[[UISearchBar alloc] initWithFrame:CGRectMake(0, 0, 200, 40)];
+    [searchBar setSearchBarStyle:UISearchBarStyleMinimal];
+    [searchBar setPlaceholder:@"Search"];
+    searchBar.delegate = self;
+    self.customSearchBar = searchBar;
+    [self.navigationItem setTitleView:searchBar];
+    
+   
 }
 
 - (void)didReceiveMemoryWarning
@@ -221,7 +230,15 @@
     }
     
     _firstLoad = NO;
+ 
+}
+
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
     
+    if (![self.customSearchBar.text isEqualToString:@""])
+        [self.customSearchBar becomeFirstResponder];
 }
 
 #pragma mark - table view data source
@@ -243,77 +260,57 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     return _prototypeEquipmentTableViewCell;
 }
 
+- (NSArray *)dataForTable:(UITableView *)tableView
+{
+    if (_isSearching)
+        return self.searchResults;
+    else
+    {
+        if (self.segment.selectedSegmentIndex == 0)
+            return self.genericsArray;
+        else
+        {
+            if (self.selectedGenerics != nil)
+                return [self.selectedGenerics.equipments allObjects];
+            else
+                return nil;
+        }
+    }
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     if (tableView == self.tableView)
-        return 1;
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
         return 1;
     return 0;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (tableView == self.tableView)
-    {
-        if (self.segment.selectedSegmentIndex == 0)
-            return self.genericsArray.count;
-        else
-        {
-#if !USE_COREDATA
-            return self.equipmentArray.count;
-#else
-            return self.selectedGenerics.equipments.count;
-#endif
-        }
-    }
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
-        return self.searchResults.count;
-    
+    NSArray *arrayData = [self dataForTable:tableView];
+    if (arrayData != nil)
+        return arrayData.count;
     return 0;
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSArray *arrayData = [self dataForTable:tableView];
+    
     if (tableView == self.tableView)
     {
         // Generics cell
         if (self.segment.selectedSegmentIndex == 0)
         {
             GenericsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"genericscell"];
-            [cell bind:[self.genericsArray objectAtIndex:indexPath.row] type:GenericsCellTypeSearch];
-            [cell setEditing:NO];
-            [self.tableView setEditing:NO animated:NO];
+            [cell bind:[arrayData objectAtIndex:indexPath.row] type:GenericsCellTypeSearch];
             return cell;
         }
         else
         {
             EquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-#if !USE_COREDATA
-            [cell bind:[self.equipmentArray objectAtIndex:indexPath.row]];
-#else
-            [cell bind:[[self.selectedGenerics.equipments allObjects] objectAtIndex:indexPath.row] type:EquipmentCellTypeSearch];
-#endif
-            return cell;
-        }
-    }
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
-    {
-        // Generics cell
-        if (self.segment.selectedSegmentIndex == 0)
-        {
-            GenericsTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"genericscell" forIndexPath:indexPath];
-            [cell bind:[self.searchResults objectAtIndex:indexPath.row] type:GenericsCellTypeSearch];
-            return cell;
-        }
-        else
-        {
-            EquipmentTableViewCell *cell = [self.tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-#if !USE_COREDATA
-            [cell bind:[self.searchResults objectAtIndex:indexPath.row]];
-#else
-            [cell bind:[self.searchResults objectAtIndex:indexPath.row] type:EquipmentCellTypeSearch];
-#endif
+            [cell bind:[arrayData objectAtIndex:indexPath.row] type:EquipmentCellTypeSearch];
             return cell;
         }
     }
@@ -351,16 +348,22 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSArray *arrayData = [self dataForTable:tableView];
     if (tableView == self.tableView)
     {
         if (self.segment.selectedSegmentIndex == 0)
         {
             [UIView animateWithDuration:0.3 animations:^{
+                
                 [self.segment setSelectedSegmentIndex:1];
 #if USE_COREDATA
-                self.selectedGenerics = [self.genericsArray objectAtIndex:indexPath.row];
+                self.selectedGenerics = [arrayData objectAtIndex:indexPath.row];
 #endif
-                //[self.segment sendActionsForControlEvents:UIControlEventValueChanged];
+                // cancel searching
+                _isSearching = NO;
+                self.customSearchBar.text = @"";
+                [self.customSearchBar resignFirstResponder];
+                
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
             }];
         }
@@ -370,8 +373,7 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
             
             if (self.selectedGenerics)
             {
-                
-                Equipment *equipment = [[self.selectedGenerics.equipments allObjects] objectAtIndex:indexPath.row];
+                Equipment *equipment = [arrayData objectAtIndex:indexPath.row];
                 
                 // push new tab bar
                 EquipmentTabBarController *equipTabBar = [self.storyboard instantiateViewControllerWithIdentifier:@"EquipmentTabBarController"];
@@ -380,80 +382,12 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
                 // set animation style
                 equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
                 [self presentViewController:equipTabBar animated:YES completion:nil];
-
             }
 #endif
         }
     }
-    else if (tableView == self.searchDisplayController.searchResultsTableView)
-    {
-        if (self.segment.selectedSegmentIndex == 0)
-        {
-            [UIView animateWithDuration:0.3 animations:^{
-                [self.searchDisplayController setActive:NO animated:YES];
-                [self.segment setSelectedSegmentIndex:1];
-#if USE_COREDATA
-                self.selectedGenerics = [self.genericsArray objectAtIndex:indexPath.row];
-#endif
-                //[self.segment sendActionsForControlEvents:UIControlEventValueChanged];
-                [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
-            }];
-        }
-        else
-        {
-            // open detail tab view
-        
-            Equipment *equipment = [self.searchResults objectAtIndex:indexPath.row];
-            
-            // push new tab bar
-            EquipmentTabBarController *equipTabBar = [self.storyboard instantiateViewControllerWithIdentifier:@"EquipmentTabBarController"];
-            equipTabBar.equipment = equipment;
-            
-            // set animation style
-            equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
-            [self presentViewController:equipTabBar animated:YES completion:nil];
-        }
-    }
 }
 
-#pragma mark - UISearchDisplayController Delegate Methods
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchString:(NSString *)searchString
-{
-    // generics
-    if (self.segment.selectedSegmentIndex == 0)
-        [self updateFilteredContentOfGenericsForName:searchString];
-    else
-        [self updateFilteredContentOfEquipmentForName:searchString];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
-
-- (BOOL)searchDisplayController:(UISearchDisplayController *)controller shouldReloadTableForSearchScope:(NSInteger)searchOption
-{
-    NSString *searchString = [self.searchDisplayController.searchBar text];
-    
-    // generics
-    if (self.segment.selectedSegmentIndex == 0)
-        [self updateFilteredContentOfGenericsForName:searchString];
-    else
-        [self updateFilteredContentOfEquipmentForName:searchString];
-    
-    // Return YES to cause the search result table view to be reloaded.
-    return YES;
-}
-
-- (void)searchDisplayControllerDidBeginSearch:(UISearchDisplayController *)controller
-{
-    controller.searchBar.showsCancelButton = YES;
-}
-
-- (void)searchDisplayControllerDidEndSearch:(UISearchDisplayController *)controller
-{
-    controller.searchBar.showsCancelButton = NO;
-}
 
 #pragma mark - Content filtering
 - (void)updateFilteredContentOfGenericsForName:(NSString *)name
@@ -554,23 +488,6 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         editingCell = nil;
         editingIndexPath = nil;
     }
-    
-//    ContactCell *cCell = (ContactCell *)cell;
-//    
-//    [cCell setEditor:editing animate:animate];
-//    
-//    _editingCount += editing ? 1 : -1;
-//    if(_editingCount < 0) _editingCount = 0;
-//    
-//    if(editing){
-//        _editingCell = cCell;
-//        _editingIndexPath = indexPath;
-//        _swipeLeftRecognizer.enabled = NO;
-//    } else if(_editingCount == 0){
-//        _editingCell = nil;
-//        _editingIndexPath = nil;
-//        _swipeLeftRecognizer.enabled = YES;
-//    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath
@@ -580,22 +497,66 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     return NO;
 }
 
-#pragma mark - bar positioning delegate
-- (UIBarPosition)positionForBar:(id<UIBarPositioning>)bar
-{
-    return UIBarPositionTop;
-}
 
 #pragma mark - segment action
 - (IBAction)onSegmentIndexChanged:(id)sender
 {
     // reload data
-    if (editingCell)
-        [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+    //if (editingCell)
+    //    [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+    
+    if (_isSearching)
+    {
+        if (self.segment.selectedSegmentIndex == 0)
+            [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
+        else
+            [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
+    }
+    
+    
     [self.tableView reloadData];
 }
 
+#pragma mark - searchbar delegate
 
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar
+{
+    [searchBar setShowsCancelButton:YES animated:YES];
+    NSLog(@"%@", @"searchBar Text Did Begin Editing--\n");
+}
 
+- (void)searchBarTextDidEndEditing:(UISearchBar *)searchBar
+{
+    if ([searchBar.text isEqualToString:@""])
+        [searchBar setShowsCancelButton:NO animated:YES];
+}
+
+- (void)searchBar:(UISearchBar *)searchBar textDidChange:(NSString *)searchText
+{
+    // generics
+    if (self.segment.selectedSegmentIndex == 0)
+        [self updateFilteredContentOfGenericsForName:searchText];
+    else
+        [self updateFilteredContentOfEquipmentForName:searchText];
+    
+    _isSearching = YES;
+    
+    [self.tableView reloadData];
+}
+
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar
+{
+    //
+}
+
+- (void)searchBarCancelButtonClicked:(UISearchBar *)searchBar
+{
+    _isSearching = NO;
+    
+    searchBar.text = @"";
+    [searchBar resignFirstResponder];
+    
+    [self.tableView reloadData];
+}
 
 @end

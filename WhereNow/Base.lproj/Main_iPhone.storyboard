@@ -764,33 +764,11 @@
                     </view>
                     <navigationItem key="navigationItem" id="UTh-D0-LCN"/>
                     <connections>
-                        <outlet property="searchDisplayController" destination="qvl-mn-Flb" id="ay0-vx-N81"/>
                         <outlet property="segment" destination="wGH-1N-Aav" id="Zhe-cw-kC1"/>
                         <outlet property="tableView" destination="0vo-EP-PZf" id="COG-qI-UJY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="VLu-BW-eYU" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <searchBar contentMode="redraw" searchBarStyle="minimal" id="xrb-mL-X8H">
-                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
-                    <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
-                    <textInputTraits key="textInputTraits"/>
-                    <scopeButtonTitles>
-                        <string>Title</string>
-                        <string>Title</string>
-                    </scopeButtonTitles>
-                    <connections>
-                        <outlet property="delegate" destination="g9H-um-RHY" id="iZa-fF-gTd"/>
-                    </connections>
-                </searchBar>
-                <searchDisplayController id="qvl-mn-Flb">
-                    <connections>
-                        <outlet property="delegate" destination="g9H-um-RHY" id="78Q-sC-ow2"/>
-                        <outlet property="searchBar" destination="xrb-mL-X8H" id="bXu-dO-74U"/>
-                        <outlet property="searchContentsController" destination="g9H-um-RHY" id="gyC-sa-xef"/>
-                        <outlet property="searchResultsDataSource" destination="g9H-um-RHY" id="eYN-f4-KQD"/>
-                        <outlet property="searchResultsDelegate" destination="g9H-um-RHY" id="iZV-q5-6R7"/>
-                    </connections>
-                </searchDisplayController>
             </objects>
             <point key="canvasLocation" x="679" y="846"/>
         </scene>

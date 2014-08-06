@@ -92,7 +92,6 @@ enum  {
         make.centerX.equalTo(@0);
     }];
     
-    
     UIView *bottomGroup = [[UIView alloc] initWithFrame:CGRectZero];
     bottomGroup.backgroundColor = [UIColor clearColor];
     //bottomGroup.alpha = 0.5;
@@ -152,6 +151,7 @@ enum  {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tap];
     
+#ifndef DEBUG
     // login when last user logged in already
     if ([UserContext sharedUserContext].isLastLoggedin)
     {
@@ -184,6 +184,7 @@ enum  {
         if (![[UserContext sharedUserContext].userName isEqualToString:@""])
             self.usernameTextField.text = [UserContext sharedUserContext].userName;
     }
+#endif
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -457,6 +458,7 @@ enum  {
     if (currentResponder) {
         [currentResponder resignFirstResponder];
     }
+#ifndef DEBUG
     
     int nInput = [self getInputType];
     
@@ -480,6 +482,17 @@ enum  {
             HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
         }];
     }
+#else
+    
+    // save status
+    [UserContext sharedUserContext].userName = @"testuser50";
+    [UserContext sharedUserContext].password = @"testuser1!";
+    [UserContext sharedUserContext].isLastLoggedin = NO;
+    [UserContext sharedUserContext].sessionId = @"SESID-AABB";
+    
+    [self performSegueWithIdentifier:@"goMain" sender:self];
+    
+#endif
 }
 
 - (void)prepareForEnteringLoginState {
