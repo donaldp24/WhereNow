@@ -61,4 +61,10 @@
     return [UIColor colorWithRed:229/255.0 green:230/255.0 blue:230/255.0 alpha:1.0];
 }
 
++ (UIBarButtonItem *)defaultBackButton:(id)target action:(SEL)action
+{
+    UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backicon"] style:UIBarButtonItemStylePlain target:target action:action];
+    return backButton;
+}
+
 @end

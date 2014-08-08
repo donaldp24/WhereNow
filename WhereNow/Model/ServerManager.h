@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import "ServiceErrorCodes.h"
+#import "ResponseParseStrategyProtocol.h"
 
 #define SERVICE_URL @"http://dev.scmedical.com.au/mobile/index.php/api/v1/scmd/"
 
@@ -18,14 +19,16 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 
 @interface ServerManager : NSObject
 
+@property (nonatomic, strong) id<ResponseParseStrategyProtocol> parser;
+
 + (ServerManager *)sharedManager;
 
 - (void)getMethod:(NSString *)methodName params:(NSDictionary *)params handler:(ServerManagerRequestHandlerBlock)handler;
 - (void)postMethod:(NSString *)methodName params:(NSDictionary *)params handler:(ServerManagerRequestHandlerBlock)handler;
 
 
-+ (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure;
+- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure;
 
-+ (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 @end

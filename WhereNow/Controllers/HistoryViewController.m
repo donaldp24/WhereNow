@@ -9,6 +9,7 @@
 #import "HistoryViewController.h"
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
+#import "ModelManager.h"
 
 @interface HistoryViewController () <UIActionSheetDelegate>
 {
@@ -16,8 +17,14 @@
     Equipment *_equipment;
 }
 
+@property (nonatomic, strong) NSMutableArray *arrayMovements;
+@property (nonatomic, strong) NSMutableDictionary *groupedMovements;
+@property (nonatomic, strong) NSMutableArray *groupedDates;
+
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg1;
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg2;
+@property (strong, nonatomic) IBOutlet UITableView *tableView;
+
 
 
 @end
@@ -56,7 +63,33 @@
     EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
     _equipment = tabbarController.equipment;
     if (_equipment != nil)
-        self.navigationItem.title = _equipment.name;
+    {
+        self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", _equipment.manufacturer_name, _equipment.model_name_no];
+        
+        self.arrayMovements = [[ModelManager sharedManager] equipmovementsForEquipment:_equipment];
+        
+        self.groupedMovements = [[NSMutableDictionary alloc] init];
+        self.groupedDates = [[NSMutableArray alloc] init];
+        
+        // group by date
+        for (EquipMovement *movement in self.arrayMovements) {
+            NSMutableArray *array = [self.groupedMovements objectForKey:movement.date];
+            if (array == nil)
+            {
+                array = [[NSMutableArray alloc] init];
+                [self.groupedDates addObject:movement.date];
+            }
+            [array addObject:movement];
+            [self.groupedMovements setObject:array forKey:movement.date];
+        }
+    }
+    else
+    {
+        self.arrayMovements = [[NSMutableArray alloc] init];
+        self.groupedMovements = [[NSMutableDictionary alloc] init];
+        self.groupedDates = [[NSMutableArray alloc] init];
+    }
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -77,30 +110,118 @@
 
 #pragma mark - Table view data source
 
+static UITableViewCell *_prototypeMovementsCell = nil;
+static UITableViewCell *_prototypeHistoryCell = nil;
+
+- (UITableViewCell *)prototypeMovementsCell
+{
+    if (_prototypeMovementsCell == nil)
+        _prototypeMovementsCell = [self.tableView dequeueReusableCellWithIdentifier:@"movementscell"];
+    return _prototypeMovementsCell;
+}
+
+- (UITableViewCell *)prototypeHistoryCell
+{
+    if (_prototypeHistoryCell == nil)
+        _prototypeHistoryCell = [self.tableView dequeueReusableCellWithIdentifier:@"historycell"];
+    return _prototypeHistoryCell;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
-#warning Potentially incomplete method implementation.
     // Return the number of sections.
-    return 0;
+    return 1 + self.groupedDates.count;
 }
+
+
+- (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    if (section == 0)
+        return 27;
+    else
+        return 27;
+}
+
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, tableView.frame.size.width, 22)];
+    /* Create custom view to display section header... */
+    UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 3, tableView.frame.size.width, 22)];
+    [label setFont:[UIFont boldSystemFontOfSize:17]];
+    NSString *string = @"Movements";
+    if (section > 0)
+    {
+        string = [self.groupedDates objectAtIndex:section - 1];
+        
+        NSDate *today = [NSDate date];
+        NSDate *yesterday = [today dateByAddingTimeInterval:- 60 * 60 * 24];
+        
+        if ([string isEqualToString:[Common date2str:today withFormat:DATE_FORMAT]])
+            string = @"Today";
+        else if ([string isEqualToString:[Common date2str:yesterday withFormat:DATE_FORMAT]])
+            string = @"Yesterday";
+    }
+    /* Section header is in 0th index... */
+    [label setText:string];
+    [view addSubview:label];
+    [view setBackgroundColor:[UIColor colorWithRed:245/255.0 green:245/255.0 blue:245/255.0 alpha:1.0]];
+    return view;
+}
+
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-#warning Incomplete method implementation.
     // Return the number of rows in the section.
-    return 0;
+    if (section == 0)
+        return 1;
+    else
+    {
+        NSString *date = [self.groupedDates objectAtIndex:section - 1];
+        NSArray *array = [self.groupedMovements objectForKey:date];
+        return array.count;
+    }
 }
 
-/*
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if (indexPath.section == 0 && indexPath.row == 0)
+        return [self prototypeMovementsCell].bounds.size.height;
+    else
+        return [self prototypeHistoryCell].bounds.size.height;
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:<#@"reuseIdentifier"#> forIndexPath:indexPath];
+    UITableViewCell *cell = nil;
+    
+    if (indexPath.section == 0)
+        cell = [tableView dequeueReusableCellWithIdentifier:@"movementscell"];
+    else
+    {
+        NSString *date = [self.groupedDates objectAtIndex:indexPath.section - 1];
+        NSArray *array = [self.groupedMovements objectForKey:date];
+        
+        int index = indexPath.row;
+        EquipMovement *movement = [array objectAtIndex:index];
+        cell = [tableView dequeueReusableCellWithIdentifier:@"historycell"];
+        UILabel *lblLevel = (UILabel *)[cell viewWithTag:100];
+        UILabel *lblLocation = (UILabel *)[cell viewWithTag:101];
+        UILabel *stay_time1 = (UILabel *)[cell viewWithTag:102];
+        UILabel *stay_time2 = (UILabel *)[cell viewWithTag:103];
+        
+        lblLocation.text = movement.location_name;
+        stay_time1.text = [NSString stringWithFormat:@"arrived at %@", movement.time];
+        stay_time2.text = [NSString stringWithFormat:@"at location for %@", movement.stay_time];
+    }
     
     // Configure the cell...
     
     return cell;
 }
-*/
+
+
+
 
 /*
 // Override to support conditional editing of the table view.

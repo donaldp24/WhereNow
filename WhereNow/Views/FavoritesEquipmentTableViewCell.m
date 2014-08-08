@@ -28,4 +28,15 @@
 }
 */
 
+- (void)bind:(Equipment *)equipment generic:(Generic *)generic type:(EquipmentCellType)cellType
+{
+    [super bind:equipment generic:generic type:cellType];
+    
+    CGRect rtFrame = self.btnDelete.frame;
+    rtFrame.origin.x = self.contentView.frame.size.width;
+    self.btnDelete.frame = rtFrame;
+    
+    [self layoutIfNeeded];
+}
+
 @end

@@ -7,13 +7,13 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "Location.h"
+#import "GenericLocation.h"
 
 @interface LocationTableViewCell : UITableViewCell
 
-@property (nonatomic, strong) Location *location;
+@property (nonatomic, strong) GenericLocation *genericLocation;
 
-- (void)bind:(Location *)location;
+- (void)bind:(GenericLocation *)genericLocation;
 -(void)setEditor:(BOOL)editor;
 
 @end

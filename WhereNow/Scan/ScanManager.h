@@ -9,13 +9,14 @@
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
 
-#define GLOBAL_UUID         @"1111111-2222-3333-4444-555555555555"
+#define GLOBAL_UUID         @"B9407F30-F5F8-466E-AFF9-25556B57FE6D"
 #define HOSPITAL_MAJOR      51
 
 
 @protocol ScanManagerDelegate <NSObject>
 
 @required
+- (void)vicinityBeacons:(NSMutableArray *)arrayBeacons;
 
 @end
 
@@ -25,6 +26,8 @@
  * 
  */
 @property (nonatomic, strong) id<ScanManagerDelegate> delegate;
+
+- (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
 
 /**
  * start ranging & monitoring beacons

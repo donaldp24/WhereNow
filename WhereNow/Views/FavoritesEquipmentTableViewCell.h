@@ -10,4 +10,6 @@
 
 @interface FavoritesEquipmentTableViewCell : EquipmentTableViewCell
 
+- (void)bind:(Equipment *)equipment generic:(Generic *)generic type:(EquipmentCellType)cellType;
+
 @end

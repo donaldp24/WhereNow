@@ -45,11 +45,11 @@
 
 }
 
-- (void)bind:(Location *)location
+- (void)bind:(GenericLocation *)genericLocation
 {
-    self.location = location;
+    self.genericLocation = genericLocation;
     
-    self.lblName.text = location.name;
+    self.lblName.text = genericLocation.location_name;
     
     [self layoutIfNeeded];
 }

@@ -14,6 +14,14 @@
 {
     UIBarButtonItem *_backButton;
     Equipment *_equipment;
+    __weak IBOutlet UILabel *lblManufacturer;
+    __weak IBOutlet UILabel *lblModel;
+    __weak IBOutlet UILabel *lblSerialNo;
+    __weak IBOutlet UILabel *lblBarcodeNo;
+    __weak IBOutlet UILabel *lblCurrentLevel;
+    __weak IBOutlet UILabel *lblCurrentLocation;
+    __weak IBOutlet UILabel *lblHomeLevel;
+    __weak IBOutlet UILabel *lblHomeLocation;
 }
 
 @end
@@ -44,7 +52,7 @@
     [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"overviewicon_selected"]];
     
     // back button
-    _backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backicon"] style:UIBarButtonItemStylePlain target:self action:@selector(onBack:)];
+    _backButton = [UIManager defaultBackButton:self action:@selector(onBack:)];
     self.navigationItem.leftBarButtonItem = _backButton;
     
     UIBarButtonItem *_menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menuicon"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu:)];
@@ -53,7 +61,18 @@
     EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
     _equipment = tabbarController.equipment;
     if (_equipment != nil)
-        self.navigationItem.title = _equipment.name;
+    {
+        self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", _equipment.manufacturer_name, _equipment.model_name_no];
+        
+        lblManufacturer.text = _equipment.manufacturer_name;
+        lblModel.text = _equipment.model_name_no;
+        lblSerialNo.text =_equipment.serial_no;
+        lblBarcodeNo.text = _equipment.barcode_no;
+        lblCurrentLevel.text = @"";
+        lblCurrentLocation.text = _equipment.current_location;
+        lblHomeLevel.text = @"";
+        lblHomeLocation.text = _equipment.home_location;
+    }
 
 }
 

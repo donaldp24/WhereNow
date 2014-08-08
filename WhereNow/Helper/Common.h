@@ -15,5 +15,5 @@
 
 + (BOOL)hasConnectivity;
 + (NSString *)date2str:(NSDate *)convertDate withFormat:(NSString *)formatString;
-
++ (NSDate *)str2date:(NSString *)dateString withFormat:(NSString *)formatString;
 @end

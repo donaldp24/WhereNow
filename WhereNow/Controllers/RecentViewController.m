@@ -13,12 +13,14 @@
 #import "AppContext.h"
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
+#import "ModelManager.h"
 
 @interface RecentViewController () <SwipeTableViewDelegate> {
     NSManagedObjectContext *_managedObjectContext;
     UITableViewCell *editingCell;
     NSIndexPath *editingIndexPath;
     BOOL _firstLoad;
+    NSMutableArray *_equipmentArray;
 }
 
 @property (nonatomic, weak) IBOutlet UISegmentedControl *segment;
@@ -26,7 +28,7 @@
 
 @property (nonatomic, strong) NSMutableArray *recentGenericsArray;
 @property (nonatomic, strong) NSMutableArray *recentEquipmentArray;
-@property (nonatomic, strong) Generics *selectedGenerics;
+@property (nonatomic, strong) Generic *selectedGenerics;
 
 @end
 
@@ -34,52 +36,8 @@
 
 - (void)loadData
 {
-    _managedObjectContext = [AppContext sharedAppContext].managedObjectContext;
-    
-    self.recentGenericsArray = [[NSMutableArray alloc] init];
-    
-    NSEntityDescription *entity = [NSEntityDescription
-                                   entityForName:@"Generics"
-                                   inManagedObjectContext:_managedObjectContext];
-    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
-    
-    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"uid" ascending:YES];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
-    
-    [fetchRequest setEntity:entity];
-    [fetchRequest setSortDescriptors:sortDescriptors];
-    
-    NSError *error = nil;
-    
-    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
-    if (fetchedObjects.count > 0)
-    {
-        for (int i = 0; i < [fetchedObjects count]; i++) {
-            Generics *generics = (Generics *)[fetchedObjects objectAtIndex:i];
-            NSFetchRequest *fetchEquipmentRequest = [[NSFetchRequest alloc] init];
-            
-            entity = [NSEntityDescription
-                      entityForName:@"Equipment"
-                      inManagedObjectContext:_managedObjectContext];
-            [fetchEquipmentRequest setEntity:entity];
-            
-            NSPredicate* pred = [NSPredicate predicateWithFormat:
-                                 @"generics == %@", generics];
-            
-            [fetchEquipmentRequest setPredicate:pred];
-            
-            NSArray *fetchedEquipments = [_managedObjectContext executeFetchRequest:fetchEquipmentRequest error:&error];
-            for (int j = 0; j < [fetchedEquipments count]; j++) {
-                Equipment *equipment = (Equipment *)[fetchedEquipments objectAtIndex:j];
-                equipment.generics = generics;
-            }
-            
-            [self.recentGenericsArray addObject:generics];
-        }
-    }
-    
-    self.recentEquipmentArray = [[NSMutableArray alloc] init];
-    
+    self.recentGenericsArray = [[ModelManager sharedManager] retrieveGenerics];
+    self.recentEquipmentArray = [[ModelManager sharedManager] retrieveEquipments];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -109,6 +67,8 @@
     editingIndexPath = nil;
     
     [self loadData];
+    
+    _equipmentArray = self.recentEquipmentArray;
 }
 
 - (void)didReceiveMemoryWarning
@@ -157,6 +117,9 @@
     self.selectedGenerics = nil;
     if (editingCell)
         [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+    
+    _equipmentArray = self.recentEquipmentArray;
+    
     [self.tableView reloadData];
 }
 
@@ -179,6 +142,14 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     return _prototypeEquipmentTableViewCell;
 }
 
+- (NSMutableArray *)dataForTableView:(UITableView *)tableView
+{
+    if (self.segment.selectedSegmentIndex == 0)
+        return self.recentGenericsArray;
+    else
+        return _equipmentArray;
+}
+
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     return 1;
@@ -186,34 +157,23 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    if (self.segment.selectedSegmentIndex == 0)
-        return self.recentGenericsArray.count;
-    else
-    {
-        if (self.selectedGenerics != nil)
-            return self.selectedGenerics.equipments.count;
-        else
-            return self.recentEquipmentArray.count;
-    }
+    NSArray *arrayData = [self dataForTableView:tableView];
+    return arrayData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSArray *arrayData = [self dataForTableView:tableView];
     if (self.segment.selectedSegmentIndex == 0)
     {
         GenericsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"genericscell"];
-        [cell bind:[self.recentGenericsArray objectAtIndex:indexPath.row] type:GenericsCellTypeFavorites];
-        [cell setEditing:NO];
-        [self.tableView setEditing:NO animated:NO];
+        [cell bind:[arrayData objectAtIndex:indexPath.row] type:GenericsCellTypeFavorites];
         return cell;
     }
     else
     {
         EquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-        if (self.selectedGenerics != nil)
-            [cell bind:[[self.selectedGenerics.equipments allObjects] objectAtIndex:indexPath.row] type:EquipmentCellTypeFavorites];
-        else
-            [cell bind:[self.recentEquipmentArray objectAtIndex:indexPath.row] type:EquipmentCellTypeFavorites];
+        [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:EquipmentCellTypeFavorites];
         return cell;
     }
 }
@@ -238,26 +198,26 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 #pragma mark - tableview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSArray *arrayData = [self dataForTableView:tableView];
+    
     if (self.segment.selectedSegmentIndex == 0)
     {
         [UIView animateWithDuration:0.3 animations:^{
+            
             [self.segment setSelectedSegmentIndex:1];
+            
             self.selectedGenerics = [self.recentGenericsArray objectAtIndex:indexPath.row];
-            //[self.segment sendActionsForControlEvents:UIControlEventValueChanged];
+            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+            
+            
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
         }];
     }
     else
     {
         Equipment *equipment = nil;
-        if (self.selectedGenerics)
-        {
-            equipment = [[self.selectedGenerics.equipments allObjects] objectAtIndex:indexPath.row];
-        }
-        else
-        {
-            equipment = [self.recentEquipmentArray objectAtIndex:indexPath.row];
-        }
+        equipment = [arrayData objectAtIndex:indexPath.row];
+    
         // push new tab bar
         EquipmentTabBarController *equipTabBar = [self.storyboard instantiateViewControllerWithIdentifier:@"EquipmentTabBarController"];
         equipTabBar.equipment = equipment;
@@ -266,7 +226,6 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
         [self presentViewController:equipTabBar animated:YES completion:nil];
     }
-    
 }
 
 #pragma mark - swipe table view delegate
@@ -277,7 +236,6 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 
 - (void)setEditing:(BOOL)editing atIndexPath:indexPath cell:(UITableViewCell *)cell animate:(BOOL)animate
 {
-    
     if (self.segment.selectedSegmentIndex == 0)
     {
         GenericsTableViewCell *tableCell = (GenericsTableViewCell *)cell;
@@ -299,23 +257,6 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         editingCell = nil;
         editingIndexPath = nil;
     }
-    
-    //    ContactCell *cCell = (ContactCell *)cell;
-    //
-    //    [cCell setEditor:editing animate:animate];
-    //
-    //    _editingCount += editing ? 1 : -1;
-    //    if(_editingCount < 0) _editingCount = 0;
-    //
-    //    if(editing){
-    //        _editingCell = cCell;
-    //        _editingIndexPath = indexPath;
-    //        _swipeLeftRecognizer.enabled = NO;
-    //    } else if(_editingCount == 0){
-    //        _editingCell = nil;
-    //        _editingIndexPath = nil;
-    //        _swipeLeftRecognizer.enabled = YES;
-    //    }
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

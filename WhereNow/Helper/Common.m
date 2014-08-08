@@ -73,4 +73,12 @@
     return [dateFormatter stringFromDate:convertDate];
 }
 
++ (NSDate *)str2date:(NSString *)dateString withFormat:(NSString *)formatString
+{
+    NSDateFormatter *dateFormatter = [[NSDateFormatter alloc] init];
+    [dateFormatter setDateFormat:formatString];
+    return [dateFormatter dateFromString:dateString];
+}
+
+
 @end

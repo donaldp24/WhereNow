@@ -9,6 +9,9 @@
 #import "EquipmentTableViewCell.h"
 #import "UIManager.h"
 #import "Config.h"
+#import "ModelManager.h"
+
+#define kButtonWidth        75.0
 
 @interface EquipmentTableViewCell()
 
@@ -18,6 +21,9 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *ivStatus;
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg;
+
+
+
 
 @property (nonatomic, weak) IBOutlet UIView *shadowView;
 
@@ -56,19 +62,24 @@
         self.shadowView.backgroundColor = [UIManager cellHighlightColor];
 }
 
-- (void)bind:(Equipment *)equipment type:(EquipmentCellType)cellType
+- (void)bind:(Equipment *)equipment generic:(Generic *)generic type:(EquipmentCellType)cellType
 {
     self.equipment = equipment;
+    self.generic = generic;
     self.cellType = cellType;
     
-    self.lblName.text = equipment.name;
-    self.lblLocation.text = equipment.currentLocation;
-    self.lblSn.text = [NSString stringWithFormat:@"SN : %@", equipment.serialNumber];
+    self.lblName.text = [NSString stringWithFormat:@"%@-%@", equipment.manufacturer_name, equipment.model_name_no] ;
+    self.lblLocation.text = equipment.current_location;
+    self.lblSn.text = [NSString stringWithFormat:@"SN : %@", equipment.serial_no];
+    
+    if ([equipment.isfavorites boolValue])
+        [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
+    else
+        [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon"] forState:UIControlStateNormal];
     
     CGRect frame = self.shadowView.frame;
     frame = CGRectMake(frame.origin.x, frame.origin.y, self.contentView.frame.size.width, frame.size.height);
     self.shadowView.frame = frame;
-    
     
     _editor = NO;
     
@@ -79,6 +90,9 @@
 {
     [self setEditor:editor animate:YES];
 }
+
+
+
 - (void)setEditor:(BOOL)editor animate:(BOOL)animate
 {
     if (editor == _editor)
@@ -90,7 +104,10 @@
     void (^updateConstraintsForEditing)(void) = ^void {
         __block CGFloat width = self.frame.size.width;
         if (self.editor) {
-            width = 170;
+            if (self.generic)
+                width = self.contentView.frame.size.width - kButtonWidth;
+            else
+                width = self.contentView.frame.size.width - kButtonWidth * 2;
         }
         //[self.shadeView mas_updateConstraints:^(MASConstraintMaker *make) {
         //    make.left.equalTo( self.left).offset(offset);
@@ -127,17 +144,30 @@
 
 - (IBAction)onFavorite:(id)sender
 {
-    //
+    self.equipment.isfavorites = @(YES);
+    [[ModelManager sharedManager] saveContext];
+    
+    [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentFavorite:)])
+        [self.delegate onEquipmentFavorite:self.equipment];
 }
 
 - (IBAction)onLocate:(id)sender
 {
-    //
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentLocate:)])
+        [self.delegate onEquipmentLocate:self.equipment];
 }
 
 - (IBAction)onDelete:(id)sender
 {
-    //
+    //[[ModelManager sharedManager].managedObjectContext deleteObject:self.equipment];
+    self.equipment.isfavorites = @(NO);
+    [[ModelManager sharedManager] saveContext];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentDelete:)])
+        [self.delegate onEquipmentDelete:self.equipment];
+        
 }
 
 @end

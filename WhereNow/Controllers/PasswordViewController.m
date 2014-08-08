@@ -11,6 +11,7 @@
 
 @interface PasswordViewController () {
     UIResponder *currentResponder;
+    UIBarButtonItem *_backButton;
 }
 
 @property (nonatomic, weak) IBOutlet UITextField *txtPassword;
@@ -38,6 +39,10 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    // back button
+    _backButton = [UIManager defaultBackButton:self action:@selector(onBack:)];
+    self.navigationItem.leftBarButtonItem = _backButton;
     
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tap];
@@ -176,5 +181,10 @@
     }
 }
 
+#pragma mark - Back
+- (void)onBack:(id)sender
+{
+    [self.navigationController popViewControllerAnimated:YES];
+}
 
 @end

@@ -55,7 +55,7 @@
     EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
     _equipment = tabbarController.equipment;
     if (_equipment != nil)
-        self.navigationItem.title = _equipment.name;
+        self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", _equipment.manufacturer_name, _equipment.model_name_no];
 }
 
 - (void)didReceiveMemoryWarning

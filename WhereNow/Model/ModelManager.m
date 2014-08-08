@@ -1,0 +1,534 @@
+//
+//  ModelManager.m
+//  WhereNow
+//
+//  Created by Xiaoxue Han on 06/08/14.
+//  Copyright (c) 2014 nicholas. All rights reserved.
+//
+
+#import "ModelManager.h"
+#import "AppContext.h"
+#import "Config.h"
+
+
+static ModelManager *_sharedModelManager = nil;
+
+@implementation ModelManager
+
++ (ModelManager *)sharedManager
+{
+    if (_sharedModelManager == nil)
+    {
+        _sharedModelManager = [[ModelManager alloc] init];
+        [_sharedModelManager initModelManager];
+    }
+    return _sharedModelManager;
+}
+
+
+- (void)initModelManager
+{
+    _managedObjectContext = [self appContext];
+}
+
+
+#pragma mark - Core Data stack
+- (NSManagedObjectContext *)appContext {
+    if (self.managedObjectContext != nil) {
+        return self.managedObjectContext;
+    }
+    
+    NSPersistentStoreCoordinator *coordinator = [self appStoreCoordinator];
+    if (coordinator != nil) {
+        _managedObjectContext = [[NSManagedObjectContext alloc] init]; [_managedObjectContext setUndoManager:nil];
+        [_managedObjectContext setPersistentStoreCoordinator:coordinator];
+    }
+    return _managedObjectContext;
+}
+
+- (NSManagedObjectModel *)appModel
+{
+    if (self.managedObjectModel != nil){
+        return self.managedObjectModel;
+    }
+    
+    NSURL *modelURL = [[NSBundle mainBundle] URLForResource:@"Model" withExtension:@"momd"];
+    
+    _managedObjectModel = [[NSManagedObjectModel alloc] initWithContentsOfURL:modelURL];
+    return self.managedObjectModel;
+}
+
+- (NSPersistentStoreCoordinator *)appStoreCoordinator
+{
+    if (self.persistentStoreCoordinator != nil) {
+        return self.persistentStoreCoordinator;
+    }
+    
+    NSURL *storeURL = [[AppContext applicationDocumentsDirectory] URLByAppendingPathComponent:SQLITE_DB_NAME];
+    
+    NSError *error = nil;
+    
+    _persistentStoreCoordinator = [[NSPersistentStoreCoordinator alloc] initWithManagedObjectModel:[self appModel]];
+    
+    if (![self.persistentStoreCoordinator addPersistentStoreWithType:NSSQLiteStoreType
+                                                       configuration:nil
+                                                                 URL:storeURL
+                                                             options:nil
+                                                               error:&error])
+    {
+        abort();
+    }
+    
+    return self.persistentStoreCoordinator;
+}
+
+
+- (void)saveContext {
+    NSError *error = nil;
+    NSManagedObjectContext *managedObjectContext =self.managedObjectContext;
+    
+    if (managedObjectContext != nil)
+    {
+        if ([self.managedObjectContext hasChanges] && ![self.managedObjectContext save:&error])
+        {
+            abort();
+        }
+    }
+}
+
+#pragma mark - Load data
+
+- (NSSortDescriptor *)sortForGenerics
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"generic_id" ascending:YES];
+    return descriptor1;
+}
+
+- (NSSortDescriptor *)sortForEquipments
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"equipment_id" ascending:YES];
+    return descriptor1;
+}
+
+- (NSSortDescriptor *)sortForLocations
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"ble_location_id" ascending:YES];
+    return descriptor1;
+}
+
+- (NSSortDescriptor *)sortForEquipMovements
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"check_in_date" ascending:YES];
+    return descriptor1;
+}
+
+- (NSMutableArray *)retrieveFavoritesGenerics
+{
+    // generic array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Generic"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForGenerics];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // favorites flag
+    NSPredicate* predFavorite = [NSPredicate predicateWithFormat:
+                                 @"isfavorites == %@", @(YES)];
+    
+    [fetchRequest setPredicate:predFavorite];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Generic *generic = (Generic *)[fetchedObjects objectAtIndex:i];
+            [result addObject:generic];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveFavoritesEquipments
+{
+    // equipment array -------------------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+              entityForName:@"Equipment"
+              inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // favorites flag
+    NSPredicate *predFavorite = [NSPredicate predicateWithFormat:@"isfavorites == %@", @(YES)];
+    
+    [fetchRequest setPredicate:predFavorite];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+
+    NSError *error = nil;
+
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedObjects objectAtIndex:i];
+            [result addObject:equipment];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveGenerics
+{
+    // generic array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Generic"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForGenerics];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Generic *generic = (Generic *)[fetchedObjects objectAtIndex:i];
+            [result addObject:generic];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveEquipments
+{
+    // equipment array -------------------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedObjects objectAtIndex:i];
+            [result addObject:equipment];
+        }
+    }
+    
+    return result;
+}
+
+
+- (NSMutableArray *)locationsForGeneric:(Generic *)generic
+{
+    
+    NSMutableArray *arrayResult = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"GenericLocation"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForLocations];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // generic_id == generic.generic_id
+    NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
+                                @"generic_id == %@", generic.generic_id];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predGeneric];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    NSArray *fetchedLocations = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedLocations.count > 0)
+    {
+        for (int i = 0; i < [fetchedLocations count]; i++) {
+            GenericLocation *location = (GenericLocation *)[fetchedLocations objectAtIndex:i];
+            [arrayResult addObject:location];
+        }
+    }
+    
+    return arrayResult;
+}
+
+- (NSMutableArray *)equipmentsForGeneric:(Generic *)generic
+{
+    NSMutableArray *arrayResult = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // generic_id == generic.generic_id
+    NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
+                                @"generic_id == %@", generic.generic_id];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predGeneric];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    NSArray *fetchedEquipments = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedEquipments.count > 0)
+    {
+        for (int i = 0; i < [fetchedEquipments count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedEquipments objectAtIndex:i];
+            [arrayResult addObject:equipment];
+        }
+    }
+    
+    return arrayResult;
+}
+
+- (NSMutableArray *)retrieveGenericsWithKeyword:(NSString *)keyword
+{
+    // generic array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Generic"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForGenerics];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // generic_name contains
+    NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
+                                @"generic_name LIKE[c] %@", keyword];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predGeneric];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Generic *generic = (Generic *)[fetchedObjects objectAtIndex:i];
+            [result addObject:generic];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)searchGenericsWithArray:(NSArray *)genericArray withKeyworkd:(NSString *)keyword
+{
+#if 0
+    NSPredicate *predicate = [[NSPredicate alloc] init];
+    // generic_name contains
+    NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
+                                @"generic_name LIKE[c] %@", keyword];
+    return [[NSMutableArray alloc] initWithArray:[genericArray filteredArrayUsingPredicate:predicate]];
+#else
+    
+    NSMutableArray *searchResults = [[NSMutableArray alloc] init];
+    
+    // search with name
+    for (Generic *generic in genericArray)
+	{
+        NSUInteger searchOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+        NSRange nameRange = NSMakeRange(0, generic.generic_name.length);
+        NSRange foundRange = [generic.generic_name rangeOfString:keyword options:searchOptions range:nameRange];
+        if (foundRange.length > 0)
+        {
+            [searchResults addObject:generic];
+        }
+	}
+    
+    return searchResults;
+#endif
+}
+
+- (NSMutableArray *)retrieveEquipmentsWithKeyword:(NSString *)keyword
+{
+    // equipment array -------------------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // manufacturer_name, model_name_no contains
+    NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
+                                @"(manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@)", keyword, keyword];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predEquipment];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedObjects objectAtIndex:i];
+            [result addObject:equipment];
+        }
+    }
+    
+    return result;
+}
+
+
+- (NSMutableArray *)searchEquipmentsWithArray:(NSArray *)equipmentArray withKeyword:(NSString *)keyword
+{
+#if 0
+    
+    // manufacturer_name, model_name_no contains
+    NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
+                                  @"(manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@)", keyword, keyword];
+    
+    return [[NSMutableArray alloc] initWithArray:[equipmentArray filteredArrayUsingPredicate:predEquipment]];
+    
+#else
+
+    NSMutableArray *searchResults = [[NSMutableArray alloc] init];
+    for (Equipment *equipment in equipmentArray)
+    {
+        NSUInteger searchOptions = NSCaseInsensitiveSearch | NSDiacriticInsensitiveSearch;
+        NSRange nameRange = NSMakeRange(0, equipment.manufacturer_name.length);
+        NSRange foundRange = [equipment.manufacturer_name rangeOfString:keyword options:searchOptions range:nameRange];
+        if (foundRange.length > 0)
+        {
+            [searchResults addObject:equipment];
+        }
+        else
+        {
+            NSRange modelRange = NSMakeRange(0, equipment.model_name_no.length);
+            foundRange = [equipment.model_name_no rangeOfString:keyword options:searchOptions range:modelRange];
+            if (foundRange.length > 0)
+            {
+                [searchResults addObject:equipment];
+            }
+        }
+    }
+    
+    return searchResults;
+#endif
+}
+
+- (NSMutableArray *)searchEquipmentsWithGenerics:(Generic *)generic withKeyword:(NSString *)keyword
+{
+    NSMutableArray *arrayResult = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // manufacturer_name, model_name_no contains
+    NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
+                                  @"generic_id == %@ AND ((manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@))", generic.generic_id, keyword, keyword];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predEquipment];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    NSArray *fetchedEquipments = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedEquipments.count > 0)
+    {
+        for (int i = 0; i < [fetchedEquipments count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedEquipments objectAtIndex:i];
+            [arrayResult addObject:equipment];
+        }
+    }
+    
+    return arrayResult;
+}
+
+- (NSMutableArray *)equipmovementsForEquipment:(Equipment *)equipment
+{
+    NSMutableArray *arrayResult = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"EquipMovement"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipMovements];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // equipment_id
+    NSPredicate* predEquipMovement = [NSPredicate predicateWithFormat:
+                                  @"equipment_id == %@", equipment.equipment_id];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predEquipMovement];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    NSArray *fetchedEquipments = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedEquipments.count > 0)
+    {
+        for (int i = 0; i < [fetchedEquipments count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedEquipments objectAtIndex:i];
+            [arrayResult addObject:equipment];
+        }
+    }
+    
+    return arrayResult;
+}
+
+@end

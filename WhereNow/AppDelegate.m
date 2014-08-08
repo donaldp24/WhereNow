@@ -9,13 +9,21 @@
 #import "AppDelegate.h"
 #import "UserContext.h"
 #import "AppContext.h"
+#import "ModelManager.h"
+#import "ServerManager.h"
+#import "ResponseParseStrategy.h"
+#import "BackgroundTaskManager.h"
 
 @implementation AppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     // Override point for customization after application launch.
-    [[AppContext sharedAppContext] initContext];
+    
+    
+    [[ModelManager sharedManager] initModelManager];
+    [ServerManager sharedManager].parser = [ResponseParseStrategy sharedParseStrategy];
+    [[BackgroundTaskManager sharedManager] startScanning];
     
     return YES;
 }
@@ -32,7 +40,7 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     // save contex
-    [[AppContext sharedAppContext] saveContext];
+    [[ModelManager sharedManager] saveContext];
 }
 
 - (void)applicationWillEnterForeground:(UIApplication *)application
@@ -50,7 +58,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     // save context
-    [[AppContext sharedAppContext] saveContext];
+    [[ModelManager sharedManager] saveContext];
 }
 
 

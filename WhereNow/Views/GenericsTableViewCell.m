@@ -9,6 +9,7 @@
 #import "GenericsTableViewCell.h"
 #import "UIManager.h"
 #import "Config.h"
+#import "ModelManager.h"
 
 @interface GenericsTableViewCell()
 
@@ -16,6 +17,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *lblNumberOfNearby;
 @property (nonatomic, weak) IBOutlet UILabel *lblNotes;
 @property (nonatomic, weak) IBOutlet UIImageView *ivStatus;
+@property (nonatomic, weak) IBOutlet UIButton *btnFavorites;
 
 @property (nonatomic, weak) IBOutlet UIView *shadowView;
 @property (nonatomic, weak) IBOutlet UIView *actionView;
@@ -54,19 +56,20 @@
         self.shadowView.backgroundColor = [UIManager cellHighlightColor];
 }
 
-- (void)bind:(Generics *)generics type:(GenericsCellType)cellType
+- (void)bind:(Generic *)generic type:(GenericsCellType)cellType
 {
-    self.generics = generics;
+    self.generic = generic;
     
     self.cellType = cellType;
     
-    self.lblName.text = generics.name;
-#if !USE_COREDATA
-    self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", generics.numberOfNearby];
-#else
-    self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", [generics.numberOfNearby integerValue]];
-#endif
-    self.lblNotes.text = generics.notes;
+    self.lblName.text = generic.generic_name;
+    self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", [generic.genericwise_equipment_count integerValue]];
+    self.lblNotes.text = generic.note;
+    
+    if ([generic.isfavorites boolValue])
+        [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
+    else
+        [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon"] forState:UIControlStateNormal];
     
     CGRect frame = self.shadowView.frame;
     frame = CGRectMake(frame.origin.x, frame.origin.y, self.contentView.frame.size.width, frame.size.height);
@@ -128,17 +131,30 @@
 
 - (IBAction)onFavorite:(id)sender
 {
-    //
+    // set favorites flag
+    self.generic.isfavorites = @(YES);
+    [[ModelManager sharedManager] saveContext];
+    
+    [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onGenericFavorite:)])
+        [self.delegate onGenericFavorite:self.generic];
 }
 
 - (IBAction)onLocate:(id)sender
 {
-    //
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onGenericLocate:)])
+        [self.delegate onGenericLocate:self.generic];
 }
 
 - (IBAction)onDelete:(id)sender
 {
-    //
+    //[[ModelManager sharedManager].managedObjectContext deleteObject:self.generic];
+    self.generic.isfavorites = @(NO);
+    [[ModelManager sharedManager] saveContext];
+    
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onGenericDelete:)])
+        [self.delegate onGenericDelete:self.generic];
 }
 
 @end

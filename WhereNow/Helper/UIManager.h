@@ -19,4 +19,6 @@
 + (UIColor *)navbarBarTintColor;
 + (UIColor *)navbarBorderColor;
 
++ (UIBarButtonItem *)defaultBackButton:(id)target action:(SEL)action;
+
 @end

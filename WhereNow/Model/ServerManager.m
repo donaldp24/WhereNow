@@ -105,7 +105,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 
 
 #pragma mark - User Login
-+ (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure
+- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
@@ -156,12 +156,12 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 }
 
 #pragma mark - get generics
-+ (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure
+- (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
    
-    NSString *methodName = [NSString stringWithFormat:@"%@/%@", sessionId, @"getglist"];
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@", sessionId, @"getglist.json"];
 
     [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
         
@@ -179,15 +179,17 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
             }
             else
             {
-                //success(@"SESID-AABB");
+                //
             }
             return;
         }
         else
         {
             // parse response, insert & update managed objects, save context
+            [self.parser parseGenericResponse:response];
             
             // delegate to oberver success
+            success();
         }
         
     }];

@@ -1,37 +1,50 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Equipment" representedClassName="Equipment" syncable="YES">
-        <attribute name="barcode" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="currentLocation" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="homeLocation" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="img" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="isFavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="manufacture" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="model" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="serialNumber" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="generics" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Generics" inverseName="equipments" inverseEntity="Generics" syncable="YES"/>
-        <relationship name="location" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Location" inverseName="equipments" inverseEntity="Location" syncable="YES"/>
+        <attribute name="barcode_no" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="current_location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="current_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="home_location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="home_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="manufacturer_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="model_name_no" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="serial_no" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Generics" representedClassName="Generics" syncable="YES">
-        <attribute name="isFavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="numberOfNearby" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="equipments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Equipment" inverseName="generics" inverseEntity="Equipment" syncable="YES"/>
+    <entity name="EquipMovement" representedClassName="EquipMovement" syncable="YES">
+        <attribute name="ble_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="check_in_date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stay_time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
-    <entity name="Location" representedClassName="Location" syncable="YES">
-        <attribute name="companyUid" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="name" optional="YES" attributeType="String" syncable="YES"/>
-        <attribute name="parentUid" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="uid" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <relationship name="equipments" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Equipment" inverseName="location" inverseEntity="Equipment" syncable="YES"/>
+    <entity name="Generic" representedClassName="Generic" syncable="YES">
+        <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="genericwise_equipment_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
+    <entity name="GenericLocation" representedClassName="GenericLocation" syncable="YES">
+        <attribute name="ble_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_wise_equipment_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="minimum_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="optimal_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="warning_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Equipment" positionX="-63" positionY="9" width="128" height="225"/>
-        <element name="Generics" positionX="-63" positionY="-18" width="128" height="133"/>
-        <element name="Location" positionX="-54" positionY="90" width="128" height="118"/>
+        <element name="Generic" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="GenericLocation" positionX="-54" positionY="18" width="128" height="178"/>
+        <element name="Equipment" positionX="-36" positionY="81" width="128" height="223"/>
+        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="148"/>
     </elements>
 </model>

@@ -13,6 +13,7 @@
 @property (retain, nonatomic) CLBeaconRegion *beaconRegion;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) BOOL isStarted;
+@property (nonatomic, retain) NSMutableArray *previousVicinityBeacons;
 
 @end
 
@@ -47,6 +48,8 @@
     if (self.isStarted)
         return;
     
+    self.previousVicinityBeacons = [[NSMutableArray alloc] init];
+    
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     [self initRegion];
@@ -64,7 +67,7 @@
 
 - (BOOL)isStarted
 {
-    return self.isStarted;
+    return _isStarted;
 }
 
 #pragma mark - internal functions
@@ -104,22 +107,67 @@
 -(void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
     
-    // when change
-    for (CLBeacon *beacon in beacons) {
-        int beaconMajor = [beacon.major integerValue];
-        int beaconMinor = [beacon.minor integerValue];
-        int rssi = beacon.rssi;
+    @autoreleasepool {
         
-        NSLog(@"beacon(%d, %d) : %d", beaconMajor, beaconMinor, rssi);
+        NSMutableArray *arrayVicinityBeacons = [[NSMutableArray alloc] init];
         
-        CLProximity beaconProximity = beacon.proximity;
-        
-        if (beaconProximity == CLProximityUnknown)
+        // when change
+        for (CLBeacon *beacon in beacons) {
+            int beaconMajor = [beacon.major integerValue];
+            int beaconMinor = [beacon.minor integerValue];
+            int rssi = beacon.rssi;
+            
+            NSLog(@"beacon(%d, %d) : %d", beaconMajor, beaconMinor, rssi);
+            
+            if (![self isVicinity:beacon])
+            {
+                // not
+            }
+            else
+            {
+                // add it to vicinity array
+                [arrayVicinityBeacons addObject:beacon];
+            }
+        }
+
+        // compare previous vicinity beacons
+        BOOL isEqual =  YES;
+        if (self.previousVicinityBeacons.count != arrayVicinityBeacons.count)
         {
-            // not
+            // not equal
+            isEqual = NO;
+        }
+        else
+        {
+            for (CLBeacon *beacon in self.previousVicinityBeacons) {
+                BOOL isExist = NO;
+                for (CLBeacon *currBeacon in arrayVicinityBeacons) {
+                    if ([currBeacon.major intValue] == [beacon.major intValue]
+                        && [currBeacon.minor intValue] == [beacon.minor intValue])
+                    {
+                        isExist = YES;
+                        break;
+                    }
+                }
+                
+                if (isExist == NO)
+                {
+                    isEqual = NO;
+                    break;
+                }
+            }
         }
         
-        // delegates
+        if (!isEqual)
+        {
+            self.previousVicinityBeacons = [arrayVicinityBeacons copy];
+            
+            // delegates
+            if (self.delegate && [self.delegate respondsToSelector:@selector(vicinityBeacons:)])
+            {
+                [self.delegate vicinityBeacons:self.previousVicinityBeacons];
+            }
+        }
     }
     
     
@@ -306,6 +354,20 @@
 #endif
 #endif
     
+}
+
+#pragma mark - estimate vicinity
+- (BOOL)isVicinity:(CLBeacon *)beacon
+{
+    if (beacon.proximity == CLProximityUnknown)
+        return NO;
+    if (beacon.proximity == CLProximityFar)
+        return NO;
+    if (beacon.proximity == CLProximityNear)
+        return YES;
+    if (beacon.proximity == CLProximityImmediate)
+        return YES;
+    return NO;
 }
 
 
