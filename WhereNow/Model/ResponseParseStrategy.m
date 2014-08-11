@@ -145,6 +145,32 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
          warning_level	number
          
          minimum_level	number
+         
+         [location_hierarchy] => Array
+             (
+                 [0] => Array
+                 (
+                     [ble_location_id] => 16
+                     [company_id] => 1132
+                     [location_parent_id] => 2
+                     [location_name] => Ward B
+                 )
+                 [1] => Array
+                 (
+                     [ble_location_id] => 2
+                     [company_id] => 1132
+                     [location_parent_id] => 1
+                     [location_name] => Level 1
+                 )
+                 [2] => Array
+                 (
+                     [ble_location_id] => 1
+                     [company_id] => 1132
+                     [location_parent_id] => 0
+                     [location_name] => Main Building
+                 )
+            )
+
          */
         
         NSMutableArray *arrayNewLocations = [[NSMutableArray alloc] init];
@@ -158,6 +184,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             int optimal_level = [[dicLocation objectForKey:@"optimal_level"] intValue];
             int warning_level = [[dicLocation objectForKey:@"warning_level"] intValue];
             int minimum_level = [[dicLocation objectForKey:@"minimum_level"] intValue];
+            
+            NSMutableArray *arrayHierarchy = [dicLocation objectForKey:@"location_hierarchy"];
             
             NSString *note = @"";
             
@@ -192,6 +220,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existLocation.note = note;
                 
                 [arrayNewLocations addObject:existLocation];
+                
+                // parse arrayHierarchy
             }
             else
             {
@@ -209,6 +239,19 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 location.note = note;
                 
                 [arrayNewLocations addObject:location];
+                
+                // parse arrayHierarchy
+            }
+            
+            // arrayHierarchy
+            if (arrayHierarchy)
+            {
+                for (NSDictionary *dicHierarchy in arrayHierarchy) {
+                    int h_ble_location_id = [[dicHierarchy objectForKey:@"ble_location_id"] intValue];
+                    int h_company_id = [[dicHierarchy objectForKey:@"company_id"] intValue];
+                    int h_location_parent_id = [[dicHierarchy objectForKey:@"location_parent_id"] intValue];
+                    NSString *h_location_name = [dicHierarchy objectForKey:@"location_name"];
+                }
             }
         }
         
@@ -232,7 +275,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     @autoreleasepool {
         NSArray *arrayExistEquipments = nil;
         if (generic) {
-            arrayExistEquipments = [[ModelManager sharedManager] equipmentsForGeneric:generic];
+            arrayExistEquipments = [[ModelManager sharedManager] equipmentsForGeneric:generic withBeacon:YES];
         }
         
         /*
@@ -259,8 +302,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
          
          home_location	string
          
+         model_id
+         
 
          movement_array	array
+         
+         equipment_file_location
+         
+         model_file_location
 
          */
         
@@ -287,6 +336,18 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             
             BOOL isfavorites = NO;
             
+            NSString *model_id = [dicEquipment objectForKey:@"model_id"];
+            
+            NSString *equipment_file_location = [dicEquipment objectForKey:@"equipment_file_location"];
+            if (equipment_file_location == nil || [equipment_file_location isEqual:[NSNull null]])
+                equipment_file_location = @"";
+            NSString *model_file_location = [dicEquipment objectForKey:@"model_file_location"];
+            if (model_file_location == nil || [model_file_location isEqual:[NSNull null]])
+                model_file_location = @"";
+            
+            NSString *equipment_file_location_local = @"";
+            NSString *model_file_location_local = @"";
+            
             
             
             Equipment *existEquipment = nil;
@@ -297,7 +358,6 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             }
             else
             {
-                
                 for (Equipment *equipment in arrayExistEquipments) {
                     if ([equipment.equipment_id intValue] == equipment_id)
                     {
@@ -320,6 +380,24 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existEquipment.model_name_no = model_name_no;
                 existEquipment.home_location_id = [NSNumber numberWithInt:home_location_id];
                 existEquipment.home_location = home_location;
+                existEquipment.has_beacon = @(YES);
+                
+                existEquipment.model_id = model_id;
+                
+                if (![existEquipment.equipment_file_location isEqualToString:equipment_file_location])
+                {
+                    // resave file to local
+                    existEquipment.equipment_file_location = equipment_file_location;
+                }
+                
+                if (![existEquipment.model_file_location isEqualToString:model_file_location])
+                {
+                    // resave file to local
+                    existEquipment.model_file_location = model_file_location;
+                }
+                
+                
+                
                
                 
                 [arrayNewEquipments addObject:existEquipment];
@@ -343,8 +421,18 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 equipment.model_name_no = model_name_no;
                 equipment.home_location_id = [NSNumber numberWithInt:home_location_id];
                 equipment.home_location = home_location;
+                equipment.has_beacon = @(YES);
                 
                 equipment.isfavorites = @(isfavorites);
+                
+                equipment.model_id = model_id;
+                
+                equipment.equipment_file_location = equipment_file_location;
+                equipment.model_file_location = model_file_location;
+                
+                // have to save file to local
+                existEquipment.equipment_file_location_local = equipment_file_location_local;
+                existEquipment.model_file_location_local = model_file_location_local;
                 
                 [arrayNewEquipments addObject:equipment];
                 
@@ -440,6 +528,101 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     
     [[ModelManager sharedManager] saveContext];
     
+    return bRet;
+}
+
+- (BOOL)parseEquipmentResponse:(NSDictionary *)dicResult
+{
+    BOOL bRet = YES;
+    @autoreleasepool {
+        // parse dic result
+        NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithBeacon:NO];
+        NSMutableArray *arrayNewEquipments = [[NSMutableArray alloc] init];
+        
+        NSArray *arrayResult = (NSArray *)dicResult;
+        for (NSDictionary *dicEquipment in arrayResult) {
+            /*
+             [generic_id] => 323
+             [generic_name] => PC UNIT
+             [equipment_id] => 2696
+             [serial_no] => 12858495
+             [barcode_no] => 232I56
+             [manufacturer_name] => HEALTHSTREAM
+             [model_name_no] => 8015 SERIES
+             [model_id] => 1378
+             */
+            int generic_id = [[dicEquipment objectForKey:@"generic_id"] intValue];
+            NSString *generic_name = [dicEquipment objectForKey:@"generic_name"];
+            int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
+            NSString *serial_no = [dicEquipment objectForKey:@"serial_no"];
+            NSString *barcode_no = [dicEquipment objectForKey:@"barcode_no"];
+            NSString *manufacturer_name = [dicEquipment objectForKey:@"manufacturer_name"];
+            NSString *model_name_no = [dicEquipment objectForKey:@"model_name_no"];
+            NSString *model_id = [dicEquipment objectForKey:@"model_id"];
+            
+            // is exist
+            Equipment *existEquipment = nil;
+            for (Equipment *equipment in arrayExistEquipments) {
+                if ([equipment.equipment_id intValue] == equipment_id)
+                {
+                    existEquipment = equipment;
+                    break;
+                }
+            }
+            
+            if (existEquipment)
+            {
+                existEquipment.generic_id = @(generic_id);
+                existEquipment.generic_name = generic_name;
+                existEquipment.equipment_id = @(equipment_id);
+                existEquipment.serial_no = serial_no;
+                existEquipment.barcode_no = barcode_no;
+                existEquipment.manufacturer_name = manufacturer_name;
+                existEquipment.model_name_no = model_name_no;
+                existEquipment.model_id = model_id;
+                
+                [arrayNewEquipments addObject:existEquipment];
+            }
+            else
+            {
+                Equipment *equipment = [NSEntityDescription
+                                        insertNewObjectForEntityForName:@"Equipment"
+                                        inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+                equipment.generic_id = @(generic_id);
+                equipment.generic_name = generic_name;
+                equipment.equipment_id = @(equipment_id);
+                equipment.serial_no = serial_no;
+                equipment.barcode_no = barcode_no;
+                equipment.manufacturer_name = manufacturer_name;
+                equipment.model_name_no = model_name_no;
+                equipment.model_id = model_id;
+                
+                equipment.current_location_id = @(0);
+                equipment.current_location = @"";
+                equipment.home_location_id = @(0);
+                equipment.home_location = @"";
+                
+                equipment.has_beacon = @(NO);
+                
+                equipment.equipment_file_location = @"";
+                equipment.model_file_location = @"";
+                equipment.equipment_file_location_local = @"";
+                equipment.model_file_location_local = @"";
+                
+                [arrayNewEquipments addObject:equipment];
+            }
+        }
+        
+        
+        // if there is equipment in old array but in new array, delete object in old array
+        for (Equipment *existEquipment in arrayExistEquipments) {
+            if (![arrayNewEquipments containsObject:existEquipment])
+            {
+                // delete object
+                [[ModelManager sharedManager].managedObjectContext deleteObject:existEquipment];
+            }
+        }
+    }
     return bRet;
 }
 

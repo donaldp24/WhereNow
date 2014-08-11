@@ -122,6 +122,12 @@ static ModelManager *_sharedModelManager = nil;
     return descriptor1;
 }
 
+- (NSSortDescriptor *)sortForAlerts
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"alert_id" ascending:YES];
+    return descriptor1;
+}
+
 - (NSMutableArray *)retrieveFavoritesGenerics
 {
     // generic array -----------
@@ -224,7 +230,7 @@ static ModelManager *_sharedModelManager = nil;
     return result;
 }
 
-- (NSMutableArray *)retrieveEquipments
+- (NSMutableArray *)retrieveEquipmentsWithBeacon:(BOOL)withBeacon
 {
     // equipment array -------------------
     NSMutableArray *result = [[NSMutableArray alloc] init];
@@ -233,11 +239,17 @@ static ModelManager *_sharedModelManager = nil;
                                    inManagedObjectContext:_managedObjectContext];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
+    
     // sort
     NSSortDescriptor *descriptor1 = [self sortForEquipments];
     NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
     
     [fetchRequest setEntity:entity];
+    if (withBeacon)
+    {
+        NSPredicate *predicate = [NSPredicate predicateWithFormat:@"has_beacon == %@", @(YES)];
+        [fetchRequest setPredicate:predicate];
+    }
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     
@@ -291,7 +303,7 @@ static ModelManager *_sharedModelManager = nil;
     return arrayResult;
 }
 
-- (NSMutableArray *)equipmentsForGeneric:(Generic *)generic
+- (NSMutableArray *)equipmentsForGeneric:(Generic *)generic withBeacon:(BOOL)withBeacon
 {
     NSMutableArray *arrayResult = [[NSMutableArray alloc] init];
     
@@ -305,8 +317,13 @@ static ModelManager *_sharedModelManager = nil;
     NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
     
     // generic_id == generic.generic_id
-    NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
-                                @"generic_id == %@", generic.generic_id];
+    NSPredicate* predGeneric = nil;
+    if (withBeacon)
+        predGeneric = [NSPredicate predicateWithFormat:
+                                @"generic_id == %@ AND has_beacon == %@", generic.generic_id, @(YES)];
+    else
+        predGeneric = [NSPredicate predicateWithFormat:
+                       @"generic_id == %@", generic.generic_id];
     
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predGeneric];
@@ -529,6 +546,37 @@ static ModelManager *_sharedModelManager = nil;
     }
     
     return arrayResult;
+}
+
+- (NSMutableArray *)retrieveAlerts
+{
+    // alert array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Alert"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForAlerts];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Alert *alert = (Alert *)[fetchedObjects objectAtIndex:i];
+            [result addObject:alert];
+        }
+    }
+    
+    return result;
 }
 
 @end

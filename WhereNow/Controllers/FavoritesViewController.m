@@ -118,7 +118,7 @@
         else
         {
             if (self.selectedGeneric)
-                _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGeneric];
+                _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGeneric withBeacon:YES];
             else
                 _equipmentArray = self.favoritesEquipmentArray;
         }
@@ -302,7 +302,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
         {
             self.selectedGeneric = ((GenericsTableViewCell *)[self.tableView cellForRowAtIndexPath:indexPath]).generic;
             // set equipmentArray
-            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGeneric];
+            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGeneric withBeacon:YES];
             
             [UIView animateWithDuration:0.3 animations:^{
                 

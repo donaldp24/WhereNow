@@ -22,9 +22,6 @@
 @property (nonatomic, weak) IBOutlet UIImageView *ivStatus;
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg;
 
-
-
-
 @property (nonatomic, weak) IBOutlet UIView *shadowView;
 
 @end
@@ -104,7 +101,7 @@
     void (^updateConstraintsForEditing)(void) = ^void {
         __block CGFloat width = self.frame.size.width;
         if (self.editor) {
-            if (self.generic)
+            if (self.generic && self.cellType == EquipmentCellTypeFavorites)
                 width = self.contentView.frame.size.width - kButtonWidth;
             else
                 width = self.contentView.frame.size.width - kButtonWidth * 2;

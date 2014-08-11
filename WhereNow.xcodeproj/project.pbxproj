@@ -19,6 +19,11 @@
 		D00E3EC7198CFAF600AFE9EC /* HistoryViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC6198CFAF600AFE9EC /* HistoryViewController.m */; };
 		D00E3ECA198CFB0A00AFE9EC /* AlertsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC9198CFB0A00AFE9EC /* AlertsViewController.m */; };
 		D01EEC6B199377A4006D3DAC /* SearchLocationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D01EEC6A199377A4006D3DAC /* SearchLocationTableViewCell.m */; };
+		D02816D51998B7D3006C7FDC /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = D02816D41998B7D3006C7FDC /* Alert.m */; };
+		D02816D81998B7D3006C7FDC /* Generic.m in Sources */ = {isa = PBXBuildFile; fileRef = D02816D71998B7D3006C7FDC /* Generic.m */; };
+		D02816DB1998B7D3006C7FDC /* EquipMovement.m in Sources */ = {isa = PBXBuildFile; fileRef = D02816DA1998B7D3006C7FDC /* EquipMovement.m */; };
+		D02816E11998B7D3006C7FDC /* GenericLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = D02816E01998B7D3006C7FDC /* GenericLocation.m */; };
+		D02816E41998C6E3006C7FDC /* Equipment.m in Sources */ = {isa = PBXBuildFile; fileRef = D02816E31998C6E3006C7FDC /* Equipment.m */; };
 		D029A0A91993195400F4FA28 /* ResponseParseStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */; };
 		D033E12E198912FC0034EBC8 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E119198912FC0034EBC8 /* MASCompositeConstraint.m */; };
 		D033E12F198912FC0034EBC8 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E11B198912FC0034EBC8 /* MASConstraint.m */; };
@@ -61,10 +66,6 @@
 		D04A38A0198F84740063554C /* SBJsonUTF8Stream.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A3892198F84740063554C /* SBJsonUTF8Stream.m */; };
 		D04A38A1198F84740063554C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A3894198F84740063554C /* SBJsonWriter.m */; };
 		D04A38A5198F849A0063554C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A38A4198F849A0063554C /* Reachability.m */; };
-		D04BBCA119922C290002DFC5 /* EquipMovement.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCA019922C290002DFC5 /* EquipMovement.m */; };
-		D04BBCA719922F010002DFC5 /* Equipment.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCA619922F010002DFC5 /* Equipment.m */; };
-		D04BBCAD19922FED0002DFC5 /* Generic.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCAC19922FED0002DFC5 /* Generic.m */; };
-		D04BBCB019922FED0002DFC5 /* GenericLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCAF19922FED0002DFC5 /* GenericLocation.m */; };
 		D04BBCB3199243520002DFC5 /* ModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCB2199243520002DFC5 /* ModelManager.m */; };
 		D083B1331989EFC8006E006B /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */; };
 		D083B1341989EFC8006E006B /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B12E1989EFC8006E006B /* SVProgressHUD.m */; };
@@ -139,6 +140,16 @@
 		D00E3EC9198CFB0A00AFE9EC /* AlertsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertsViewController.m; sourceTree = "<group>"; };
 		D01EEC69199377A4006D3DAC /* SearchLocationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SearchLocationTableViewCell.h; sourceTree = "<group>"; };
 		D01EEC6A199377A4006D3DAC /* SearchLocationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SearchLocationTableViewCell.m; sourceTree = "<group>"; };
+		D02816D31998B7D3006C7FDC /* Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alert.h; sourceTree = "<group>"; };
+		D02816D41998B7D3006C7FDC /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
+		D02816D61998B7D3006C7FDC /* Generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Generic.h; sourceTree = "<group>"; };
+		D02816D71998B7D3006C7FDC /* Generic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Generic.m; sourceTree = "<group>"; };
+		D02816D91998B7D3006C7FDC /* EquipMovement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipMovement.h; sourceTree = "<group>"; };
+		D02816DA1998B7D3006C7FDC /* EquipMovement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquipMovement.m; sourceTree = "<group>"; };
+		D02816DF1998B7D3006C7FDC /* GenericLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericLocation.h; sourceTree = "<group>"; };
+		D02816E01998B7D3006C7FDC /* GenericLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericLocation.m; sourceTree = "<group>"; };
+		D02816E21998C6E3006C7FDC /* Equipment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equipment.h; sourceTree = "<group>"; };
+		D02816E31998C6E3006C7FDC /* Equipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Equipment.m; sourceTree = "<group>"; };
 		D029A0A71993195400F4FA28 /* ResponseParseStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseParseStrategy.h; sourceTree = "<group>"; };
 		D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseParseStrategy.m; sourceTree = "<group>"; };
 		D029A0AA199319F900F4FA28 /* ResponseParseStrategyProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseParseStrategyProtocol.h; sourceTree = "<group>"; };
@@ -219,14 +230,6 @@
 		D04A3894198F84740063554C /* SBJsonWriter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SBJsonWriter.m; sourceTree = "<group>"; };
 		D04A38A3198F849A0063554C /* Reachability.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Reachability.h; sourceTree = "<group>"; };
 		D04A38A4198F849A0063554C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
-		D04BBC9F19922C290002DFC5 /* EquipMovement.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipMovement.h; sourceTree = "<group>"; };
-		D04BBCA019922C290002DFC5 /* EquipMovement.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquipMovement.m; sourceTree = "<group>"; };
-		D04BBCA519922F010002DFC5 /* Equipment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equipment.h; sourceTree = "<group>"; };
-		D04BBCA619922F010002DFC5 /* Equipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Equipment.m; sourceTree = "<group>"; };
-		D04BBCAB19922FED0002DFC5 /* Generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Generic.h; sourceTree = "<group>"; };
-		D04BBCAC19922FED0002DFC5 /* Generic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Generic.m; sourceTree = "<group>"; };
-		D04BBCAE19922FED0002DFC5 /* GenericLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericLocation.h; sourceTree = "<group>"; };
-		D04BBCAF19922FED0002DFC5 /* GenericLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericLocation.m; sourceTree = "<group>"; };
 		D04BBCB1199243520002DFC5 /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelManager.h; sourceTree = "<group>"; };
 		D04BBCB2199243520002DFC5 /* ModelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelManager.m; sourceTree = "<group>"; };
 		D083B12B1989EFC8006E006B /* SVProgressHUD+utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+utils.h"; sourceTree = "<group>"; };
@@ -331,6 +334,23 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		D02816D21998B765006C7FDC /* ManagedObjects */ = {
+			isa = PBXGroup;
+			children = (
+				D02816DF1998B7D3006C7FDC /* GenericLocation.h */,
+				D02816E01998B7D3006C7FDC /* GenericLocation.m */,
+				D02816D91998B7D3006C7FDC /* EquipMovement.h */,
+				D02816DA1998B7D3006C7FDC /* EquipMovement.m */,
+				D02816D61998B7D3006C7FDC /* Generic.h */,
+				D02816D71998B7D3006C7FDC /* Generic.m */,
+				D02816D31998B7D3006C7FDC /* Alert.h */,
+				D02816D41998B7D3006C7FDC /* Alert.m */,
+				D02816E21998C6E3006C7FDC /* Equipment.h */,
+				D02816E31998C6E3006C7FDC /* Equipment.m */,
+			);
+			name = ManagedObjects;
+			sourceTree = "<group>";
+		};
 		D033E116198912FC0034EBC8 /* Library */ = {
 			isa = PBXGroup;
 			children = (
@@ -621,18 +641,11 @@
 		D0C9CF2B1989C8AB00221268 /* Model */ = {
 			isa = PBXGroup;
 			children = (
+				D02816D21998B765006C7FDC /* ManagedObjects */,
 				D0BCCA711990C1360047D2D2 /* ServerManager.h */,
 				D0BCCA721990C1360047D2D2 /* ServerManager.m */,
 				D0BCCA731990C1360047D2D2 /* ServiceErrorCodes.h */,
 				D0C4E0F0198A8AA5003C09A1 /* Model.xcdatamodeld */,
-				D04BBC9F19922C290002DFC5 /* EquipMovement.h */,
-				D04BBCA019922C290002DFC5 /* EquipMovement.m */,
-				D04BBCA519922F010002DFC5 /* Equipment.h */,
-				D04BBCA619922F010002DFC5 /* Equipment.m */,
-				D04BBCAE19922FED0002DFC5 /* GenericLocation.h */,
-				D04BBCAF19922FED0002DFC5 /* GenericLocation.m */,
-				D04BBCAB19922FED0002DFC5 /* Generic.h */,
-				D04BBCAC19922FED0002DFC5 /* Generic.m */,
 				D04BBCB1199243520002DFC5 /* ModelManager.h */,
 				D04BBCB2199243520002DFC5 /* ModelManager.m */,
 				D029A0A71993195400F4FA28 /* ResponseParseStrategy.h */,
@@ -806,7 +819,6 @@
 			files = (
 				D034F3A71988D373004DE04E /* ScanManager.m in Sources */,
 				D033E134198912FC0034EBC8 /* NSArray+MASAdditions.m in Sources */,
-				D04BBCA719922F010002DFC5 /* Equipment.m in Sources */,
 				D00E3EAC198CA4B600AFE9EC /* FavoritesGenericsTableViewCell.m in Sources */,
 				D00E3EB5198CD8F900AFE9EC /* RecentGenericsTableViewCell.m in Sources */,
 				D04A389E198F84740063554C /* SBJsonStreamWriterState.m in Sources */,
@@ -817,6 +829,7 @@
 				D0BCCA741990C1360047D2D2 /* ServerManager.m in Sources */,
 				D01EEC6B199377A4006D3DAC /* SearchLocationTableViewCell.m in Sources */,
 				D00E3EB8198CD90E00AFE9EC /* RecentEquipmentTableViewCell.m in Sources */,
+				D02816D51998B7D3006C7FDC /* Alert.m in Sources */,
 				D0BCCA8E1990C1EA0047D2D2 /* AFPropertyListRequestOperation.m in Sources */,
 				D0BCCA891990C1EA0047D2D2 /* AFHTTPClient.m in Sources */,
 				D09D7F9C198BD60700F8904B /* FavoritesViewController.m in Sources */,
@@ -828,10 +841,10 @@
 				D033E131198912FC0034EBC8 /* MASLayoutConstraint.m in Sources */,
 				D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */,
 				D0A1D2B5198F88F700167093 /* UIManager.m in Sources */,
+				D02816E41998C6E3006C7FDC /* Equipment.m in Sources */,
 				D0C9CF481989E0F500221268 /* SearchViewController.m in Sources */,
 				D033E12F198912FC0034EBC8 /* MASConstraint.m in Sources */,
 				D0C4E0EC198A4130003C09A1 /* UserNameViewController.m in Sources */,
-				D04BBCAD19922FED0002DFC5 /* Generic.m in Sources */,
 				D09D7F8D198BCD2700F8904B /* AppContext.m in Sources */,
 				D0A1D2AD198F87BD00167093 /* UIImage+RoundedCorner.m in Sources */,
 				D033E135198912FC0034EBC8 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
@@ -842,9 +855,9 @@
 				D04A389F198F84740063554C /* SBJsonTokeniser.m in Sources */,
 				D04A3897198F84740063554C /* SBJsonParser.m in Sources */,
 				D00E3EB2198CD89B00AFE9EC /* RecentViewController.m in Sources */,
+				D02816E11998B7D3006C7FDC /* GenericLocation.m in Sources */,
 				D00E3EBB198CDD7B00AFE9EC /* NearmeGenericsTableViewCell.m in Sources */,
 				D034F3781988CAF4004DE04E /* AppDelegate.m in Sources */,
-				D04BBCA119922C290002DFC5 /* EquipMovement.m in Sources */,
 				D00E3EBE198CDD9600AFE9EC /* NearmeEquipmentTableViewCell.m in Sources */,
 				D0A1D2A7198F87BD00167093 /* NSString+WhereNow.m in Sources */,
 				D0C9CF351989CFDD00221268 /* GenericsTableViewCell.m in Sources */,
@@ -863,12 +876,13 @@
 				D04A3875198F81630063554C /* GBKApi.m in Sources */,
 				D0A1D2AA198F87BD00167093 /* UIImage+ProportionalFill.m in Sources */,
 				D0BCCA8A1990C1EA0047D2D2 /* AFHTTPRequestOperation.m in Sources */,
+				D02816DB1998B7D3006C7FDC /* EquipMovement.m in Sources */,
 				D0C9CF381989D88C00221268 /* EquipmentTableViewCell.m in Sources */,
 				D0A1D2A9198F87BD00167093 /* UIImage+Knotable.m in Sources */,
 				D0A1D2AC198F87BD00167093 /* UIImage+Retina4.m in Sources */,
 				D0BCCA8F1990C1EA0047D2D2 /* AFURLConnectionOperation.m in Sources */,
+				D02816D81998B7D3006C7FDC /* Generic.m in Sources */,
 				D0C9CF451989E0F500221268 /* LoginViewController.m in Sources */,
-				D04BBCB019922FED0002DFC5 /* GenericLocation.m in Sources */,
 				D04A3899198F84740063554C /* SBJsonStreamParserAccumulator.m in Sources */,
 				D04A389B198F84740063554C /* SBJsonStreamParserState.m in Sources */,
 				D0BCCA8B1990C1EA0047D2D2 /* AFImageRequestOperation.m in Sources */,

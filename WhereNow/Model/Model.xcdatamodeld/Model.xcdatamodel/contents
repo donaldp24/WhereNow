@@ -1,16 +1,30 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+    <entity name="Alert" representedClassName="Alert" syncable="YES">
+        <attribute name="alert_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="alert_type" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_level" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note1" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="note2" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <entity name="Equipment" representedClassName="Equipment" syncable="YES">
         <attribute name="barcode_no" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="current_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="current_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="equipment_file_location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="equipment_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="has_beacon" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="home_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="home_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="manufacturer_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="model_file_location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="model_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="model_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_name_no" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="serial_no" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
@@ -42,9 +56,10 @@
         <attribute name="warning_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
+        <element name="Alert" positionX="-36" positionY="117" width="128" height="135"/>
+        <element name="Equipment" positionX="-36" positionY="81" width="128" height="315"/>
+        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="148"/>
         <element name="Generic" positionX="-63" positionY="-18" width="128" height="118"/>
         <element name="GenericLocation" positionX="-54" positionY="18" width="128" height="178"/>
-        <element name="Equipment" positionX="-36" positionY="81" width="128" height="223"/>
-        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="148"/>
     </elements>
 </model>

@@ -14,5 +14,6 @@
 + (ResponseParseStrategy *)sharedParseStrategy;
 
 - (BOOL)parseGenericResponse:(NSDictionary *)dicResult;
+- (BOOL)parseEquipmentResponse:(NSDictionary *)dicResult;
 
 @end

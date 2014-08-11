@@ -105,7 +105,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 
 
 #pragma mark - User Login
-- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure
+- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId))success failure:(void (^)(NSString *))failure
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
@@ -126,7 +126,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
             }
             else
             {
-                success(@"SESID-AABB");
+                success(@"SESID-AABB", @"27");
             }
             return;
         }
@@ -150,18 +150,18 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 //        
 //        [User setCurrentUser:user];
         
-        success(@"SESID-AABB");
+        success(@"SESID-AABB", @"27");
         
     }];
 }
 
 #pragma mark - get generics
-- (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure
+- (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
    
-    NSString *methodName = [NSString stringWithFormat:@"%@/%@", sessionId, @"getglist.json"];
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", sessionId, @"getglist", userId];
 
     [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
         
@@ -194,5 +194,45 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         
     }];
     
+}
+
+#pragma mark - get equipments
+- (void)getEquipments:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = nil;
+    DEF_SERVERMANAGER
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", sessionId, @"getelist", userId];
+    
+    [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid User Name and Password!");
+            }
+            else
+            {
+                //
+            }
+            return;
+        }
+        else
+        {
+            // parse response, insert & update managed objects, save context
+            [self.parser parseGenericResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+        
+    }];
 }
 @end

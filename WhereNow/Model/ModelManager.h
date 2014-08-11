@@ -13,6 +13,7 @@
 #import "Equipment.h"
 #import "GenericLocation.h"
 #import "EquipMovement.h"
+#import "Alert.h"
 
 #define SQLITE_DB_NAME      @"wherenow.sqlite"
 
@@ -35,11 +36,12 @@
 - (NSMutableArray *)retrieveFavoritesEquipments;
 
 - (NSMutableArray *)retrieveGenerics;
-- (NSMutableArray *)retrieveEquipments;
+
+- (NSMutableArray *)retrieveEquipmentsWithBeacon:(BOOL)withBeacon;
 
 - (NSMutableArray *)locationsForGeneric:(Generic *)generic;
 
-- (NSMutableArray *)equipmentsForGeneric:(Generic *)generic;
+- (NSMutableArray *)equipmentsForGeneric:(Generic *)generic withBeacon:(BOOL)withBeacon;
 
 - (NSMutableArray *)retrieveGenericsWithKeyword:(NSString *)keyword;
 
@@ -52,5 +54,7 @@
 - (NSMutableArray *)searchEquipmentsWithGenerics:(Generic *)generic withKeyword:(NSString *)keyword;
 
 - (NSMutableArray *)equipmovementsForEquipment:(Equipment *)equipment;
+
+- (NSMutableArray *)retrieveAlerts;
 
 @end

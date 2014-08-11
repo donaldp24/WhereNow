@@ -27,6 +27,7 @@ static UserContext *_sharedUserContext = nil;
         _password = @"";
         _isLastLoggedin = NO;
         _sessionId = @"invalid";
+        _userId = @"";
         
         [self load];
     }
@@ -48,6 +49,9 @@ static UserContext *_sharedUserContext = nil;
     obj = [userDefaults objectForKey:@"sessionid"];
     if (obj != nil)
         _sessionId = (NSString *)obj;
+    obj = [userDefaults objectForKey:@"userid"];
+    if (obj != nil)
+        _userId = (NSString *)obj;
 }
 
 - (void)save
@@ -57,6 +61,7 @@ static UserContext *_sharedUserContext = nil;
     [userDefaults setObject:self.password forKey:@"password"];
     [userDefaults setObject:@(self.isLastLoggedin) forKey:@"islastloggedin"];
     [userDefaults setObject:self.sessionId forKey:@"sessionid"];
+    [userDefaults setObject:self.userId forKey:@"userid"];
     
     [userDefaults synchronize];
 }
@@ -82,6 +87,12 @@ static UserContext *_sharedUserContext = nil;
 - (void)setSessionId:(NSString *)sessionId
 {
     _sessionId = sessionId;
+    [self save];
+}
+
+- (void)setUserId:(NSString *)userId
+{
+    _userId = userId;
     [self save];
 }
 

@@ -37,7 +37,7 @@
 - (void)loadData
 {
     self.recentGenericsArray = [[ModelManager sharedManager] retrieveGenerics];
-    self.recentEquipmentArray = [[ModelManager sharedManager] retrieveEquipments];
+    self.recentEquipmentArray = [[ModelManager sharedManager] retrieveEquipmentsWithBeacon:YES];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -207,7 +207,7 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
             [self.segment setSelectedSegmentIndex:1];
             
             self.selectedGenerics = [self.recentGenericsArray objectAtIndex:indexPath.row];
-            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
             
             
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];

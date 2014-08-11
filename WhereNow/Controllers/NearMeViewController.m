@@ -38,7 +38,7 @@
 {
     
     self.nearmeGenericsArray = [[ModelManager sharedManager] retrieveGenerics];
-    self.nearmeEquipmentArray = [[ModelManager sharedManager] retrieveEquipments];
+    self.nearmeEquipmentArray = [[ModelManager sharedManager] retrieveEquipmentsWithBeacon:YES];
     
 }
 
@@ -206,7 +206,7 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         [UIView animateWithDuration:0.3 animations:^{
             [self.segment setSelectedSegmentIndex:1];
             self.selectedGenerics = [self.nearmeGenericsArray objectAtIndex:indexPath.row];
-            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+            _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
             
             
             [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];

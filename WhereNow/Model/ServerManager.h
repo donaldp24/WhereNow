@@ -10,6 +10,7 @@
 #import "ServiceErrorCodes.h"
 #import "ResponseParseStrategyProtocol.h"
 
+#define BASE_URL    @"http://dev.scmedical.com.au/"
 #define SERVICE_URL @"http://dev.scmedical.com.au/mobile/index.php/api/v1/scmd/"
 
 
@@ -27,8 +28,10 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)postMethod:(NSString *)methodName params:(NSDictionary *)params handler:(ServerManagerRequestHandlerBlock)handler;
 
 
-- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId))success failure:(void (^)(NSString *))failure;
+- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId))success failure:(void (^)(NSString *))failure;
 
-- (void)getGenerics:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)getEquipments:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 @end

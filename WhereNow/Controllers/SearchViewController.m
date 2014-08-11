@@ -56,7 +56,7 @@
     ModelManager *manager = [ModelManager sharedManager];
     
     self.genericsArray = [manager retrieveGenerics];
-    self.equipmentArray = [manager retrieveEquipments];
+    self.equipmentArray = [manager retrieveEquipmentsWithBeacon:YES];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -106,7 +106,7 @@
     [self.navigationItem setTitleView:searchBar];
     
     // get data from server
-    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId success:^() {
+    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
         [[NSOperationQueue mainQueue] addOperationWithBlock:^(){
             
             
@@ -241,7 +241,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
         else
         {
             if (self.selectedGenerics != nil)
-                return [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+                return [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
             else
                 return self.equipmentArray;
         }
@@ -361,7 +361,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
             if ([self isGenericCell:indexPath])
             {
                 self.selectedGenerics = [arrayData objectAtIndex:indexPath.row];
-                _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+                _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
                 
                 [UIView animateWithDuration:0.3 animations:^{
                     
@@ -423,7 +423,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
     if ((name == nil) || [name length] == 0)
     {
         if (self.selectedGenerics)
-            self.searchResults = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics];
+            self.searchResults = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
         else
             self.searchResults = [[NSMutableArray alloc] init];
         return;
