@@ -161,7 +161,7 @@ enum  {
         
         // login
         SHOW_PROGRESS(@"Please Wait");
-        [ServerManager loginUserWithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId)
+        [[ServerManager sharedManager] loginUserWithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId)
          {
              [SVProgressHUD dismiss];
              
@@ -171,6 +171,7 @@ enum  {
              //[UserContext sharedUserContext].password = self.passwordTextField.text;
              [UserContext sharedUserContext].isLastLoggedin = YES;
              [UserContext sharedUserContext].sessionId = sessionId;
+             [UserContext sharedUserContext].userId = userId;
              
              [self performSegueWithIdentifier:@"goMain" sender:self];
          } failure:^(NSString *msg) {
@@ -466,7 +467,7 @@ enum  {
         [self showAlertMessage:nInput];
     } else {
         SHOW_PROGRESS(@"Please Wait");
-        [ServerManager loginUserWithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId)
+        [[ServerManager sharedManager] loginUserWithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId)
         {
             [SVProgressHUD dismiss];
             
@@ -571,13 +572,8 @@ enum  {
     [termsText appendAttributedString:bodyAttString];
     
     _termsTextView.attributedText = termsText;
-    
-    
-    
+
     [self.view addSubview:_termsTextView];
-    
-    
-    
     
     [_termsTextView mas_makeConstraints:^(MASConstraintMaker *make) {
         make.width.equalTo(@256.0);
@@ -586,11 +582,7 @@ enum  {
         make.top.equalTo(@190.0);
     }];
     
-    
-    
-    
     [self.view layoutIfNeeded];
-    
     
     [_termsTextView mas_updateConstraints:^(MASConstraintMaker *make) {
         make.centerX.equalTo(@0.0);

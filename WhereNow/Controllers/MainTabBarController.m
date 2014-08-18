@@ -7,6 +7,8 @@
 //
 
 #import "MainTabBarController.h"
+#import "ServerManager.h"
+#import "UserContext.h"
 
 @interface MainTabBarController ()
 
@@ -29,6 +31,11 @@
     // Do any additional setup after loading the view.
     
     self.navigationController.navigationBarHidden = YES;
+    
+    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+    } failure: ^(NSString *msg) {
+        NSLog(@"Data request failed : %@", msg);
+    }];
 }
 
 - (void)didReceiveMemoryWarning

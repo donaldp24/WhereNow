@@ -2,7 +2,7 @@
 //  EquipMovement.h
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 11/08/14.
+//  Created by Xiaoxue Han on 18/08/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -19,5 +19,8 @@
 @property (nonatomic, retain) NSString * location_name;
 @property (nonatomic, retain) NSString * stay_time;
 @property (nonatomic, retain) NSString * time;
+@property (nonatomic, retain) NSNumber * stay_minutes;
+@property (nonatomic, retain) NSNumber * time_limit;
+@property (nonatomic, retain) NSString * direction;
 
 @end

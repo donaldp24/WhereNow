@@ -10,6 +10,7 @@
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
 #import "ModelManager.h"
+#import "ServerManager.h"
 
 @interface HistoryViewController () <UIActionSheetDelegate>
 {
@@ -89,6 +90,14 @@
         self.groupedMovements = [[NSMutableDictionary alloc] init];
         self.groupedDates = [[NSMutableArray alloc] init];
     }
+    
+    // set images
+    [[ServerManager sharedManager] setImageContent:self.ivImg1 urlString:_equipment.equipment_file_location];
+    [[ServerManager sharedManager] setImageContent:self.ivImg2 urlString:_equipment.model_file_location];
+    
+    // set empty view to footer view
+    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
+    self.tableView.tableFooterView = v;
     
 }
 

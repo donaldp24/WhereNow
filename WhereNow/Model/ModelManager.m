@@ -128,6 +128,13 @@ static ModelManager *_sharedModelManager = nil;
     return descriptor1;
 }
 
+- (NSSortDescriptor *)sortForRecentItems
+{
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"recenttime" ascending:NO];
+    return descriptor1;
+}
+
+
 - (NSMutableArray *)retrieveFavoritesGenerics
 {
     // generic array -----------
@@ -230,7 +237,7 @@ static ModelManager *_sharedModelManager = nil;
     return result;
 }
 
-- (NSMutableArray *)retrieveEquipmentsWithBeacon:(BOOL)withBeacon
+- (NSMutableArray *)retrieveEquipmentsWithHasBeacon:(BOOL)withBeacon
 {
     // equipment array -------------------
     NSMutableArray *result = [[NSMutableArray alloc] init];
@@ -578,5 +585,120 @@ static ModelManager *_sharedModelManager = nil;
     
     return result;
 }
+
+- (NSMutableArray *)retrieveRecentGenerics
+{
+    // generic array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Generic"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForRecentItems];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // isrecent
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:
+                                      @"isrecent == %@", @(YES)];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Generic *generic = (Generic *)[fetchedObjects objectAtIndex:i];
+            [result addObject:generic];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveRecentEquipments
+{
+    // generic array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForRecentItems];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // isrecent
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:
+                              @"has_beacon == %@ AND isrecent == %@", @(YES), @(YES)];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Equipment *generic = (Equipment *)[fetchedObjects objectAtIndex:i];
+            [result addObject:generic];
+        }
+    }
+    
+    return result;
+}
+
+- (void)addRecentGeneric:(Generic *)generic
+{
+    NSMutableArray *arrayGenerics = [self retrieveRecentGenerics];
+    if ([arrayGenerics containsObject:generic])
+    {
+        generic.recenttime = [NSDate date];
+        [self saveContext];
+    }
+    else
+    {
+        generic.isrecent = @(YES);
+        generic.recenttime = [NSDate date];
+        if (arrayGenerics.count >= 50)
+        {
+            Generic *oldOne = [arrayGenerics lastObject];
+            oldOne.isrecent = @(NO);
+        }
+        [self saveContext];
+    }
+}
+
+- (void)addRecentEquipment:(Equipment *)equipment
+{
+    NSMutableArray *arrayEquipments = [self retrieveRecentEquipments];
+    if ([arrayEquipments containsObject:equipment])
+    {
+        equipment.recenttime = [NSDate date];
+        [self saveContext];
+    }
+    else
+    {
+        equipment.isrecent = @(YES);
+        equipment.recenttime = [NSDate date];
+        if (arrayEquipments.count >= 50)
+        {
+            Equipment *oldOne = [arrayEquipments lastObject];
+            oldOne.isrecent = @(NO);
+        }
+        [self saveContext];
+    }
+}
+
 
 @end

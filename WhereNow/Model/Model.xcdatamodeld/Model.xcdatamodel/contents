@@ -21,28 +21,35 @@
         <attribute name="home_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="home_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isrecent" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="manufacturer_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_file_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_id" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_name_no" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recenttime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="serial_no" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="EquipMovement" representedClassName="EquipMovement" syncable="YES">
         <attribute name="ble_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="check_in_date" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="date" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="direction" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="stay_minutes" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="stay_time" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="time_limit" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
     <entity name="Generic" representedClassName="Generic" syncable="YES">
         <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="genericwise_equipment_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="isrecent" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="recenttime" optional="YES" attributeType="Date" syncable="YES"/>
     </entity>
     <entity name="GenericLocation" representedClassName="GenericLocation" syncable="YES">
         <attribute name="ble_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -57,9 +64,9 @@
     </entity>
     <elements>
         <element name="Alert" positionX="-36" positionY="117" width="128" height="135"/>
-        <element name="Equipment" positionX="-36" positionY="81" width="128" height="315"/>
-        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="148"/>
-        <element name="Generic" positionX="-63" positionY="-18" width="128" height="118"/>
+        <element name="Equipment" positionX="-36" positionY="81" width="128" height="343"/>
+        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="195"/>
+        <element name="Generic" positionX="-63" positionY="-18" width="128" height="148"/>
         <element name="GenericLocation" positionX="-54" positionY="18" width="128" height="178"/>
     </elements>
 </model>

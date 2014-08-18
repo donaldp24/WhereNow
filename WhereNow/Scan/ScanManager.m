@@ -163,9 +163,9 @@
             self.previousVicinityBeacons = [arrayVicinityBeacons copy];
             
             // delegates
-            if (self.delegate && [self.delegate respondsToSelector:@selector(vicinityBeacons:)])
+            if (self.delegate && [self.delegate respondsToSelector:@selector(vicinityBeaconsFound:)])
             {
-                [self.delegate vicinityBeacons:self.previousVicinityBeacons];
+                [self.delegate vicinityBeaconsFound:self.previousVicinityBeacons];
             }
         }
     }

@@ -12,6 +12,7 @@
 #import <netinet/in.h>
 #import "AFNetworking.h"
 #import "SBJson.h"
+#import <CoreLocation/CoreLocation.h>
 
 static ServerManager *_sharedServerManager = nil;
 
@@ -175,7 +176,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         {
             if ([responseStr isEqualToString:@"Invalid Parameters\n"])
             {
-                failure(@"Invalid User Name and Password!");
+                failure(@"Invalid Parameters!");
             }
             else
             {
@@ -216,7 +217,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         {
             if ([responseStr isEqualToString:@"Invalid Parameters\n"])
             {
-                failure(@"Invalid User Name and Password!");
+                failure(@"Invalid Parameters!");
             }
             else
             {
@@ -235,4 +236,87 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         
     }];
 }
+
+- (void)getCurrLocation:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))sc failure:(void (^)(NSString *))failure
+{
+    
+    DEF_SERVERMANAGER
+    
+    // parse beacon arrays and make params
+    NSMutableArray *beaconsJsonArray = [[NSMutableArray alloc] init];
+    for (CLBeacon *beacon in arrayBeacons) {
+        NSMutableDictionary *dicBeacon = [[NSMutableDictionary alloc] init];
+        [dicBeacon setObject:[beacon.proximityUUID UUIDString] forKey:@"uuid"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.major intValue]] forKey:@"major"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.minor intValue]] forKey:@"minor"];
+        [beaconsJsonArray addObject:dicBeacon];
+    }
+    
+    if (arrayBeacons.count <= 0)
+    {
+        NSMutableDictionary *dicBeacon = [[NSMutableDictionary alloc] init];
+        [dicBeacon setObject:@"B125AA4F-2D82-401D-92E5-F962E8037F5C" forKey:@"uuid"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", 100] forKey:@"major"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", 10] forKey:@"minor"];
+        [beaconsJsonArray addObject:dicBeacon];
+    }
+    
+    NSData *serializedData = [NSJSONSerialization dataWithJSONObject:beaconsJsonArray options:0 error:nil];
+    NSString *strJsonScanned = [[NSString alloc] initWithBytes:[serializedData bytes] length:[serializedData length] encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *params = [NSDictionary dictionaryWithObjectsAndKeys:strJsonScanned, @"scanned", nil];
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", sessionId, @"getglist", userId];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            // parse response
+            [self.parser parseNearmeResponse:response complete:^(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments) {
+                
+                sc(arrayGenerics, arrayVicinityEquipments, arrayLocationEquipments);
+                
+            } failure:^() {
+                //
+                failure(@"failed to parse response");
+            }];
+        }
+    }];
+}
+
+#pragma mark - Utilities
+- (void) setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString
+{
+    if (urlString != nil && ![urlString isEqualToString:@""])
+    {
+        NSString *strImage = [NSString stringWithFormat:@"%@%@", BASE_URL, urlString];
+        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
+    }
+    else
+    {
+        // url is incorrect
+        NSString *strImage = [NSString stringWithFormat:@"%@%@", BASE_URL, urlString];
+        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
+    }
+}
+
 @end

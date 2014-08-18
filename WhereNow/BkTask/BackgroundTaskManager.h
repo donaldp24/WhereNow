@@ -16,7 +16,20 @@
 
 @property (nonatomic, retain) ScanManager *scanManager;
 
+/**
+ * locateArray
+ */
+@property (nonatomic, strong) NSMutableArray *locateArray;
+
+@property (nonatomic, strong) NSMutableArray *arrayNearmeGenerics;
+@property (nonatomic, strong) NSMutableArray *arrayVicinityEquipments;
+@property (nonatomic, strong) NSMutableArray *arrayLocationEquipments;
+
 - (void)startScanning;
 - (void)stopScanning;
+
+- (NSMutableArray *)nearmeBeacons;
+
+- (void)requestLocationInfo:(NSMutableArray *)arrayBeacons complete:(void(^)())complete;
 
 @end

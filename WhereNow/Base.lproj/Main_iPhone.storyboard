@@ -155,6 +155,7 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="Jxh-Tv-Y1P">
                                                             <rect key="frame" x="10" y="10" width="64" height="64"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                         </imageView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="status_green" translatesAutoresizingMaskIntoConstraints="NO" id="r4Y-mQ-ea8">
                                                             <rect key="frame" x="77" y="25" width="21" height="21"/>
@@ -270,10 +271,10 @@
             </objects>
             <point key="canvasLocation" x="197" y="-730"/>
         </scene>
-        <!--Tab Bar Controller-->
+        <!--Main Tab Bar Controller-->
         <scene sceneID="yyz-ek-HQL">
             <objects>
-                <tabBarController definesPresentationContext="YES" id="Jiq-82-Rah" sceneMemberID="viewController">
+                <tabBarController definesPresentationContext="YES" id="Jiq-82-Rah" customClass="MainTabBarController" sceneMemberID="viewController">
                     <navigationItem key="navigationItem" id="jX6-rp-XmZ"/>
                     <nil key="simulatedBottomBarMetrics"/>
                     <tabBar key="tabBar" contentMode="scaleToFill" id="knu-mT-rEK">
@@ -414,6 +415,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btnFavorites" destination="1tB-RV-S0P" id="fqH-Af-fcI"/>
                                             <outlet property="ivStatus" destination="nhp-f2-C8T" id="XJg-l5-xPE"/>
                                             <outlet property="lblName" destination="MA3-e8-HFZ" id="dQ0-aj-TAT"/>
                                             <outlet property="lblNotes" destination="x83-gS-qYy" id="XUv-dP-Niw"/>
@@ -457,6 +459,7 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="f4i-aD-abU">
                                                             <rect key="frame" x="10" y="10" width="64" height="64"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                         </imageView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="status_green" translatesAutoresizingMaskIntoConstraints="NO" id="DKS-qd-z6z">
                                                             <rect key="frame" x="77" y="25" width="21" height="21"/>
@@ -487,12 +490,49 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btnFavorites" destination="tzt-b6-BrQ" id="tVL-mJ-s8D"/>
                                             <outlet property="ivImg" destination="f4i-aD-abU" id="CPx-he-nCy"/>
                                             <outlet property="ivStatus" destination="DKS-qd-z6z" id="jUp-8E-OAv"/>
                                             <outlet property="lblLocation" destination="fx0-5P-ZWK" id="Zgb-Ij-qNx"/>
                                             <outlet property="lblName" destination="n4N-cq-BQZ" id="bcX-tB-1sF"/>
                                             <outlet property="lblSn" destination="dKm-Ma-mgo" id="8RA-bK-Vz1"/>
                                             <outlet property="shadowView" destination="l7A-ps-9Dj" id="d2R-ca-AmW"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="locationcell" rowHeight="64" id="3y0-kT-rkY" customClass="RecentLocationTableViewCell">
+                                        <rect key="frame" x="0.0" y="206" width="320" height="64"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="3y0-kT-rkY" id="cSX-zf-xY4">
+                                            <rect key="frame" x="0.0" y="0.0" width="320" height="63"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="3 in area" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9pN-my-SkC">
+                                                    <rect key="frame" x="161" y="5" width="150" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Hutchinson" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fqz-Cw-ZuQ">
+                                                    <rect key="frame" x="25" y="19" width="122" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Oversupplied by 1" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="XWB-ag-krm">
+                                                    <rect key="frame" x="161" y="25" width="150" height="21"/>
+                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                                    <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                            </subviews>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="lblCount" destination="9pN-my-SkC" id="ExR-SA-Mgd"/>
+                                            <outlet property="lblName" destination="fqz-Cw-ZuQ" id="BFg-B8-rep"/>
+                                            <outlet property="lblNote" destination="XWB-ag-krm" id="RAM-gw-N5t"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>
@@ -710,6 +750,7 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="LVF-1I-ucq">
                                                             <rect key="frame" x="10" y="10" width="64" height="64"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                         </imageView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="status_green" translatesAutoresizingMaskIntoConstraints="NO" id="kpm-Rk-3M9">
                                                             <rect key="frame" x="77" y="25" width="21" height="21"/>
@@ -1270,6 +1311,8 @@
                     <tabBarItem key="tabBarItem" title="Item" id="Bb0-LY-Vr4"/>
                     <navigationItem key="navigationItem" title="Overview" id="eWi-e1-cyV"/>
                     <connections>
+                        <outlet property="ivEquipment" destination="0GP-Fk-SpM" id="dbZ-Is-qMQ"/>
+                        <outlet property="ivModel" destination="1lQ-hu-csx" id="KQd-SO-Ogu"/>
                         <outlet property="lblBarcodeNo" destination="LQa-Ku-Nli" id="Spe-YO-PeI"/>
                         <outlet property="lblCurrentLevel" destination="TeH-Uc-vcQ" id="CXF-Sv-vhv"/>
                         <outlet property="lblCurrentLocation" destination="2rO-yg-sEG" id="b09-IM-96K"/>
@@ -1454,6 +1497,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btnFavorites" destination="eV1-sO-sBj" id="HSw-Qk-bh9"/>
                                             <outlet property="ivStatus" destination="JQf-ap-bSB" id="NVT-DD-sCW"/>
                                             <outlet property="lblName" destination="PPS-jv-s01" id="3Nw-qO-kzL"/>
                                             <outlet property="lblNotes" destination="3t4-IZ-QLV" id="bZj-D1-sXc"/>
@@ -1497,6 +1541,7 @@
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="PZR-eT-8so">
                                                             <rect key="frame" x="10" y="10" width="64" height="64"/>
                                                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                                            <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                                         </imageView>
                                                         <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="status_green" translatesAutoresizingMaskIntoConstraints="NO" id="Vfo-12-7hA">
                                                             <rect key="frame" x="77" y="25" width="21" height="21"/>
@@ -1527,6 +1572,7 @@
                                             </subviews>
                                         </tableViewCellContentView>
                                         <connections>
+                                            <outlet property="btnFavorites" destination="jlk-8X-dCU" id="RW7-NA-Fbf"/>
                                             <outlet property="ivImg" destination="PZR-eT-8so" id="3kC-ZR-hEK"/>
                                             <outlet property="ivStatus" destination="Vfo-12-7hA" id="wJA-le-kLl"/>
                                             <outlet property="lblLocation" destination="mcd-uP-Khb" id="J9H-sf-fky"/>

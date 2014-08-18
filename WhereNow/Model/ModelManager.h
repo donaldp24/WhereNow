@@ -37,7 +37,7 @@
 
 - (NSMutableArray *)retrieveGenerics;
 
-- (NSMutableArray *)retrieveEquipmentsWithBeacon:(BOOL)withBeacon;
+- (NSMutableArray *)retrieveEquipmentsWithHasBeacon:(BOOL)withBeacon;
 
 - (NSMutableArray *)locationsForGeneric:(Generic *)generic;
 
@@ -56,5 +56,13 @@
 - (NSMutableArray *)equipmovementsForEquipment:(Equipment *)equipment;
 
 - (NSMutableArray *)retrieveAlerts;
+
+- (NSMutableArray *)retrieveRecentGenerics;
+
+- (NSMutableArray *)retrieveRecentEquipments;
+
+- (void)addRecentGeneric:(Generic *)generic;
+- (void)addRecentEquipment:(Equipment *)equipment;
+
 
 @end

@@ -9,6 +9,7 @@
 #import "OverviewViewController.h"
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
+#import "ServerManager.h"
 
 @interface OverviewViewController () <UIActionSheetDelegate>
 {
@@ -22,6 +23,8 @@
     __weak IBOutlet UILabel *lblCurrentLocation;
     __weak IBOutlet UILabel *lblHomeLevel;
     __weak IBOutlet UILabel *lblHomeLocation;
+    __weak IBOutlet UIImageView *ivEquipment;
+    __weak IBOutlet UIImageView *ivModel;
 }
 
 @end
@@ -73,6 +76,10 @@
         lblHomeLevel.text = @"";
         lblHomeLocation.text = _equipment.home_location;
     }
+    
+    // set image
+    [[ServerManager sharedManager] setImageContent:ivEquipment urlString:_equipment.equipment_file_location];
+    [[ServerManager sharedManager] setImageContent:ivModel urlString:_equipment.model_file_location];
 
 }
 

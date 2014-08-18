@@ -63,7 +63,7 @@
     self.cellType = cellType;
     
     self.lblName.text = generic.generic_name;
-    self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", [generic.genericwise_equipment_count integerValue]];
+    self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", (int)[generic.genericwise_equipment_count integerValue]];
     self.lblNotes.text = generic.note;
     
     if ([generic.isfavorites boolValue])
@@ -75,6 +75,7 @@
     frame = CGRectMake(frame.origin.x, frame.origin.y, self.contentView.frame.size.width, frame.size.height);
     self.shadowView.frame = frame;
     
+   
     _editor = NO;
  
     [self layoutIfNeeded];

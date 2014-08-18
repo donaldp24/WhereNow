@@ -14,6 +14,7 @@
 @optional
 - (BOOL)parseGenericResponse:(NSDictionary *)dicResult;
 - (BOOL)parseEquipmentResponse:(NSDictionary *)dicResult;
+- (BOOL)parseNearmeResponse:(NSDictionary *)dicResult complete:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))complete failure:(void(^)())failure;
 
 @end
 

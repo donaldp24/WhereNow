@@ -10,6 +10,7 @@
 #import "UIManager.h"
 #import "Config.h"
 #import "ModelManager.h"
+#import "ServerManager.h"
 
 #define kButtonWidth        75.0
 
@@ -69,14 +70,19 @@
     self.lblLocation.text = equipment.current_location;
     self.lblSn.text = [NSString stringWithFormat:@"SN : %@", equipment.serial_no];
     
+    // favourites icon
     if ([equipment.isfavorites boolValue])
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
     else
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon"] forState:UIControlStateNormal];
     
+    // frame for shadowview
     CGRect frame = self.shadowView.frame;
     frame = CGRectMake(frame.origin.x, frame.origin.y, self.contentView.frame.size.width, frame.size.height);
     self.shadowView.frame = frame;
+    
+    // set image
+    [[ServerManager sharedManager] setImageContent:self.ivImg urlString:equipment.equipment_file_location];
     
     _editor = NO;
     

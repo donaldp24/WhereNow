@@ -46,6 +46,8 @@
 
 @property (nonatomic, strong) UISearchBar *customSearchBar;
 
+@property (nonatomic, weak) UIRefreshControl *refresh;
+
 
 @end
 
@@ -56,7 +58,7 @@
     ModelManager *manager = [ModelManager sharedManager];
     
     self.genericsArray = [manager retrieveGenerics];
-    self.equipmentArray = [manager retrieveEquipmentsWithBeacon:YES];
+    self.equipmentArray = [manager retrieveEquipmentsWithHasBeacon:YES];
 }
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
@@ -105,36 +107,14 @@
     self.customSearchBar = searchBar;
     [self.navigationItem setTitleView:searchBar];
     
+    UIRefreshControl *refresh = [UIRefreshControl new];
+    //refresh.tintColor = [UIColor whiteColor];
+    [refresh addTarget:self action:@selector(refreshPulled) forControlEvents:UIControlEventValueChanged];
+    [self.tableView addSubview:refresh];
+    self.refresh = refresh;
+    
     // get data from server
-    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^(){
-            
-            
-            // reload data
-            [self loadData];
-            
-            self.selectedGenerics = nil;
-            if (editingCell)
-                [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
-            
-            editingIndexPath = nil;
-            editingCell = nil;
-            
-            [_expandingLocationArray removeAllObjects];
-            
-            if (_isSearching)
-            {
-                if (self.segment.selectedSegmentIndex == 0)
-                    [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
-                else
-                    [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
-            }
-            
-            [self.tableView reloadData];
-        }];
-    } failure:^(NSString *failureMsg) {
-        //
-    }];
+    //[self requestData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -374,11 +354,17 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
                     
                     [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
                 }];
+                
+                // save selected generic to recent list
+                [[ModelManager sharedManager] addRecentGeneric:self.selectedGenerics];
             }
         }
         else
         {
             Equipment *equipment = [arrayData objectAtIndex:indexPath.row];
+            
+            // save selected equipment to recent list
+            [[ModelManager sharedManager] addRecentEquipment:equipment];
             
             // push new tab bar
             EquipmentTabBarController *equipTabBar = [self.storyboard instantiateViewControllerWithIdentifier:@"EquipmentTabBarController"];
@@ -648,6 +634,64 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
     [searchBar resignFirstResponder];
     
     [self.tableView reloadData];
+}
+
+#pragma mark - Refresh pulled
+- (void) refreshPulled
+{
+    NSLog(@"refreshPulled");
+    [self.refresh beginRefreshing];
+    
+    // request data from server
+    [self requestData];
+}
+
+
+#pragma mark - request data to server
+
+/**
+ * requestData
+ * 
+ * call "glist" to get generic list
+ */
+- (void) requestData
+{
+    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+        
+        // main thread
+        [[NSOperationQueue mainQueue] addOperationWithBlock:^(){
+            
+            // reload data
+            [self loadData];
+            
+            self.selectedGenerics = nil;
+            if (editingCell)
+                [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+            
+            editingIndexPath = nil;
+            editingCell = nil;
+            
+            [_expandingLocationArray removeAllObjects];
+            
+            if (_isSearching)
+            {
+                if (self.segment.selectedSegmentIndex == 0)
+                    [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
+                else
+                    [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
+            }
+            
+            [self.tableView reloadData];
+            
+            // stop refresh
+            if ([self.refresh isRefreshing])
+                [self.refresh endRefreshing];
+        }];
+    } failure:^(NSString *failureMsg) {
+        // stop refresh
+        if ([self.refresh isRefreshing])
+            [self.refresh endRefreshing];
+    }];
 }
 
 #pragma mark Keyboard Methods

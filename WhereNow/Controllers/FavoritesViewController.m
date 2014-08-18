@@ -311,6 +311,9 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
                 //[self.segment sendActionsForControlEvents:UIControlEventValueChanged];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
             }];
+            
+            // save selected generic to recent list
+            [[ModelManager sharedManager] addRecentGeneric:self.selectedGeneric];
         }
         else
         {
@@ -321,6 +324,9 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
     {
         Equipment *equipment = nil;
         equipment = [arrayData objectAtIndex:indexPath.row];
+        
+        // save selected equipment to recent list
+        [[ModelManager sharedManager] addRecentEquipment:equipment];
 
         // push new tab bar
         EquipmentTabBarController *equipTabBar = [self.storyboard instantiateViewControllerWithIdentifier:@"EquipmentTabBarController"];

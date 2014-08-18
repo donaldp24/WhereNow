@@ -10,6 +10,20 @@
 #import "ServerManager.h"
 #import "ModelManager.h"
 
+#define GET_SAFE_INT(dest, dic, key, default)     \
+    int dest; \
+    if ([dic objectForKey:key] == nil || [[dic objectForKey:key] isEqual:[NSNull null]]) \
+        dest = default; \
+    else \
+        dest = [[dic objectForKey:key] intValue];
+
+#define GET_SAFE_STRING(dest, dic, key, default)    \
+    NSString *dest; \
+    if ([dic objectForKey:key] == nil || [[dic objectForKey:key] isEqual:[NSNull null]]) \
+        dest = default; \
+    else    \
+        dest = [dic objectForKey:key];
+
 static ResponseParseStrategy *_sharedParseStrategy = nil;
 
 @implementation ResponseParseStrategy
@@ -43,19 +57,28 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
          time	string
          
          stay_time	string
+         
+         time_limit long seconds
+         
+         direction IN or OUT
+         
+         stay_minutes long (minutes for stay_time)
          */
         
         NSMutableArray *arrayNewMovements = [[NSMutableArray alloc] init];
         
         for (NSDictionary *dicMovement in arrayMovements) {
-            
-            int ble_location_id = [[dicMovement objectForKey:@"ble_location_id"] intValue];
-            NSString *location_name = [dicMovement objectForKey:@"location_name"];
-            NSString *check_in_date = [dicMovement objectForKey:@"check_in_date"];
-            int equipment_id = [[dicMovement objectForKey:@"equipment_id"] intValue];
-            NSString *date = [dicMovement objectForKey:@"date"];
-            NSString *time = [dicMovement objectForKey:@"time"];
-            NSString *stay_time = [dicMovement objectForKey:@"stay_time"];
+           
+            GET_SAFE_INT(ble_location_id, dicMovement, @"ble_location_id", 0);
+            GET_SAFE_STRING(location_name, dicMovement, @"location_name", @"");
+            GET_SAFE_STRING(check_in_date, dicMovement, @"check_in_date", @"");
+            GET_SAFE_INT(equipment_id, dicMovement, @"equipment_id", 0);
+            GET_SAFE_STRING(date, dicMovement, @"date", @"");
+            GET_SAFE_STRING(time, dicMovement, @"time", @"");
+            GET_SAFE_STRING(stay_time, dicMovement, @"stay_time", @"");
+            GET_SAFE_INT(time_limit, dicMovement, @"time_limit", 0);
+            GET_SAFE_STRING(direction, dicMovement, @"direction", @"");
+            GET_SAFE_INT(stay_minutes, dicMovement, @"stay_minutes", 0);
             
             
             EquipMovement *existMovement = nil;
@@ -86,6 +109,10 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existMovement.date = date;
                 existMovement.time = time;
                 existMovement.stay_time = stay_time;
+                existMovement.stay_minutes = @(stay_minutes);
+                existMovement.time_limit = @(time_limit);
+                existMovement.direction = direction;
+                
                 
                 [arrayNewMovements addObject:existMovement];
             }
@@ -102,6 +129,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 movement.date = date;
                 movement.time = time;
                 movement.stay_time = stay_time;
+                movement.stay_minutes = @(stay_minutes);
+                movement.time_limit = @(time_limit);
+                movement.direction = direction;
                 
                 [arrayNewMovements addObject:movement];
             }
@@ -247,10 +277,12 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             if (arrayHierarchy)
             {
                 for (NSDictionary *dicHierarchy in arrayHierarchy) {
+                    /*
                     int h_ble_location_id = [[dicHierarchy objectForKey:@"ble_location_id"] intValue];
                     int h_company_id = [[dicHierarchy objectForKey:@"company_id"] intValue];
                     int h_location_parent_id = [[dicHierarchy objectForKey:@"location_parent_id"] intValue];
                     NSString *h_location_name = [dicHierarchy objectForKey:@"location_name"];
+                     */
                 }
             }
         }
@@ -395,10 +427,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                     // resave file to local
                     existEquipment.model_file_location = model_file_location;
                 }
-                
-                
-                
-               
+
                 
                 [arrayNewEquipments addObject:existEquipment];
                 
@@ -433,6 +462,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 // have to save file to local
                 existEquipment.equipment_file_location_local = equipment_file_location_local;
                 existEquipment.model_file_location_local = model_file_location_local;
+                
+                existEquipment.isrecent = @(NO);
+                existEquipment.recenttime = [NSDate date];
                 
                 [arrayNewEquipments addObject:equipment];
                 
@@ -509,6 +541,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 newGeneric.isfavorites = @(isfavorites);
                 newGeneric.note = note;
                 
+                newGeneric.isrecent = @(NO);
+                newGeneric.recenttime = [NSDate date];
+                
                 [arrayNewGenerics addObject:newGeneric];
             }
 
@@ -536,7 +571,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     BOOL bRet = YES;
     @autoreleasepool {
         // parse dic result
-        NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithBeacon:NO];
+        NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:NO];
         NSMutableArray *arrayNewEquipments = [[NSMutableArray alloc] init];
         
         NSArray *arrayResult = (NSArray *)dicResult;
@@ -624,6 +659,72 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
         }
     }
     return bRet;
+}
+
+- (BOOL)parseNearmeResponse:(NSDictionary *)dicResult complete:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))complete failure:(void(^)())failure
+{
+    NSMutableArray *arrayGenerics = [[NSMutableArray alloc] init];
+    NSMutableArray *arrayVicinityEquipments = [[NSMutableArray alloc] init];
+    NSMutableArray *arrayLocationEquipments = [[NSMutableArray alloc] init];
+    
+    NSMutableArray *arrayExistGenerics = [[ModelManager sharedManager] retrieveGenerics];
+    NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+    
+    NSArray *arrayResult = (NSArray *)dicResult;
+    for (NSDictionary *dicGeneric in arrayResult) {
+        int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
+        
+        Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
+        if (generic == nil)
+            continue;
+        
+        if (![arrayGenerics containsObject:generic])
+            [arrayGenerics addObject:generic];
+        
+        NSArray *arrayEquipments = [dicGeneric objectForKey:@"equipment_array"];
+        if (arrayEquipments != nil)
+        {
+            for (NSDictionary *dicEquipment in arrayEquipments) {
+                int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
+                Equipment *equipment = [self equipmentWithEquipmentId:equipment_id equipments:arrayExistEquipments];
+                if (equipment == nil)
+                    continue;
+                
+                NSString *location_type = [dicEquipment objectForKey:@"location_type"];
+                if ([location_type isEqualToString:@"IMMEDIATE VICINITY"])
+                {
+                    if (![arrayVicinityEquipments containsObject:equipment])
+                        [arrayVicinityEquipments addObject:equipment];
+                }
+                else
+                {
+                    if (![arrayLocationEquipments containsObject:equipment])
+                        [arrayLocationEquipments addObject:equipment];
+                }
+            }
+        }
+    }
+    
+    complete(arrayGenerics, arrayVicinityEquipments, arrayLocationEquipments);
+    return YES;
+}
+
+- (Generic *)genericWithGenericId:(int)generic_id generics:(NSMutableArray *)arrayGenerics
+{
+    for (Generic *generic in arrayGenerics) {
+        if ([generic.generic_id intValue] == generic_id)
+            return generic;
+    }
+    return nil;
+}
+
+- (Equipment *)equipmentWithEquipmentId:(int)equipment_id equipments:(NSMutableArray *)arrayEquipments
+{
+    for (Equipment *equipment in arrayEquipments) {
+        if ([equipment.equipment_id intValue] == equipment_id)
+            return equipment;
+    }
+    return nil;
 }
 
 

@@ -2,7 +2,7 @@
 //  Generic.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 11/08/14.
+//  Created by Xiaoxue Han on 12/08/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -16,5 +16,7 @@
 @dynamic genericwise_equipment_count;
 @dynamic isfavorites;
 @dynamic note;
+@dynamic isrecent;
+@dynamic recenttime;
 
 @end
