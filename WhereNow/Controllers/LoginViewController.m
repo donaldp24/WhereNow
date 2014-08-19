@@ -11,6 +11,7 @@
 #import "NSString+WhereNow.h"
 #import "SVProgressHUD+WhereNow.h"
 #import "ServerManager.h"
+#import "ModelManager.h"
 
 #define verticalGap 3.0
 #define ktDefaultLoginTimeInterval 20.0
@@ -151,7 +152,7 @@ enum  {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tap];
     
-#ifndef DEBUG
+#if 1
     // login when last user logged in already
     if ([UserContext sharedUserContext].isLastLoggedin)
     {
@@ -164,8 +165,7 @@ enum  {
         [[ServerManager sharedManager] loginUserWithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId)
          {
              [SVProgressHUD dismiss];
-             
-             
+
              // save status
              //[UserContext sharedUserContext].userName = self.usernameTextField.text;
              //[UserContext sharedUserContext].password = self.passwordTextField.text;
@@ -459,7 +459,7 @@ enum  {
     if (currentResponder) {
         [currentResponder resignFirstResponder];
     }
-#ifndef DEBUG
+#if 1
     
     int nInput = [self getInputType];
     
@@ -471,6 +471,31 @@ enum  {
         {
             [SVProgressHUD dismiss];
             
+            NSString *oldUser = [UserContext sharedUserContext].userName;
+            if ([oldUser isEqualToString:self.usernameTextField.text])
+            {
+                //
+            }
+            else
+            {
+                if (![oldUser isEqualToString:@""])
+                {
+                    // remove favorites/recents
+                    NSMutableArray *arrayGenerics = [[ModelManager sharedManager] retrieveGenerics];
+                    for (Generic *generic in arrayGenerics) {
+                        generic.isfavorites = @(NO);
+                        generic.isrecent = @(NO);
+                    }
+                    
+                    NSMutableArray *arrayEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+                    for (Equipment *equipment in arrayEquipments) {
+                        equipment.isfavorites = @(NO);
+                        equipment.isrecent = @(NO);
+                    }
+                    
+                    [[ModelManager sharedManager] saveContext];
+                }
+            }
             
             // save status
             [UserContext sharedUserContext].userName = self.usernameTextField.text;
@@ -481,7 +506,7 @@ enum  {
             
             [self performSegueWithIdentifier:@"goMain" sender:self];
         } failure:^(NSString *msg) {
-            HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
+            HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"%@", msg]));
         }];
     }
 #else

@@ -206,14 +206,15 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
         NSMutableArray *arrayNewLocations = [[NSMutableArray alloc] init];
         
         for (NSDictionary *dicLocation in arrayLocations) {
-            int generic_id = [[dicLocation objectForKey:@"generic_id"] intValue];
-            NSString *generic_name = (NSString *)[dicLocation objectForKey:@"generic_name"];
-            int ble_location_id = [[dicLocation objectForKey:@"ble_location_id"] intValue];
-            NSString *location_name = (NSString *)[dicLocation objectForKey:@"location_name"];
-            int location_wise_equipment_count = [[dicLocation objectForKey:@"location_wise_equipment_count"] intValue];
-            int optimal_level = [[dicLocation objectForKey:@"optimal_level"] intValue];
-            int warning_level = [[dicLocation objectForKey:@"warning_level"] intValue];
-            int minimum_level = [[dicLocation objectForKey:@"minimum_level"] intValue];
+            GET_SAFE_INT(generic_id, dicLocation, @"generic_id", 0);
+            GET_SAFE_STRING(generic_name, dicLocation, @"generic_name", @"");
+            GET_SAFE_INT(ble_location_id, dicLocation, @"ble_location_id", 0);
+            GET_SAFE_STRING(location_name, dicLocation, @"location_name", @"");
+            GET_SAFE_INT(location_wise_equipment_count, dicLocation, @"location_wise_equipment_count", 0);
+            GET_SAFE_INT(optimal_level, dicLocation, @"optimal_level", 0);
+            GET_SAFE_INT(warning_level, dicLocation, @"warning_level", 0);
+            GET_SAFE_INT(minimum_level, dicLocation, @"minimum_level", 0);
+
             
             NSMutableArray *arrayHierarchy = [dicLocation objectForKey:@"location_hierarchy"];
             
@@ -348,34 +349,26 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
         NSMutableArray *arrayNewEquipments = [[NSMutableArray alloc] init];
         
         for (NSDictionary *dicEquipment in arrayEquipments) {
-            
-            int generic_id = [[dicEquipment objectForKey:@"generic_id"] intValue];
-            NSString *generic_name = (NSString *)[dicEquipment objectForKey:@"generic_name"];
-            
-            int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
-            NSString *serial_no = [dicEquipment objectForKey:@"serial_no"];
-            NSString *barcode_no = [dicEquipment objectForKey:@"barcode_no"];
-            int current_location_id = [[dicEquipment objectForKey:@"current_location_id"] intValue];
-            NSString *current_location = [dicEquipment objectForKey:@"current_location"];
-            NSString *manufacurer_name = [dicEquipment objectForKey:@"manufacturer_name"];
-            NSString *model_name_no = [dicEquipment objectForKey:@"model_name_no"];
-            int home_location_id = [[dicEquipment objectForKey:@"home_location_id"] intValue];
-            NSString *home_location = [dicEquipment objectForKey:@"home_location"];
-            if (home_location == nil || [home_location isEqual:[NSNull null]])
-                home_location = @"";
+            GET_SAFE_INT(generic_id, dicEquipment, @"generic_id", 0);
+            GET_SAFE_STRING(generic_name, dicEquipment, @"generic_name", @"");
+            GET_SAFE_INT(equipment_id, dicEquipment, @"equipment_id", 0);
+            GET_SAFE_STRING(serial_no, dicEquipment, @"serial_no", @"");
+            GET_SAFE_STRING(barcode_no, dicEquipment, @"barcode_no", @"");
+            GET_SAFE_INT(current_location_id, dicEquipment, @"current_location_id", 0);
+            GET_SAFE_STRING(current_location, dicEquipment, @"current_location", @"");
+            GET_SAFE_STRING(manufacurer_name, dicEquipment, @"manufacturer_name", @"");
+            GET_SAFE_STRING(model_name_no, dicEquipment, @"model_name_no", @"");
+            GET_SAFE_INT(home_location_id, dicEquipment, @"home_location_id", 0);
+            GET_SAFE_STRING(home_location, dicEquipment, @"home_location", @"");
+
             
             NSArray *movement_array = [dicEquipment objectForKey:@"movement_array"];
             
             BOOL isfavorites = NO;
             
-            NSString *model_id = [dicEquipment objectForKey:@"model_id"];
-            
-            NSString *equipment_file_location = [dicEquipment objectForKey:@"equipment_file_location"];
-            if (equipment_file_location == nil || [equipment_file_location isEqual:[NSNull null]])
-                equipment_file_location = @"";
-            NSString *model_file_location = [dicEquipment objectForKey:@"model_file_location"];
-            if (model_file_location == nil || [model_file_location isEqual:[NSNull null]])
-                model_file_location = @"";
+            GET_SAFE_STRING(model_id, dicEquipment, @"model_id", @"");
+            GET_SAFE_STRING(equipment_file_location, dicEquipment, @"equipment_file_location", @"");
+            GET_SAFE_STRING(model_file_location, dicEquipment, @"model_file_location", @"");
             
             NSString *equipment_file_location_local = @"";
             NSString *model_file_location_local = @"";
@@ -470,6 +463,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 if (movement_array)
                     [self parseMovements:movement_array withEquipment:existEquipment];
+                else
+                    [self parseMovements:[[NSMutableArray alloc] init] withEquipment:existEquipment];
             }
         }
         
@@ -500,9 +495,10 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
         for (NSDictionary *dicGeneric in arrayResult) {
             
             // generic
-            int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
-            NSString *generic_name = (NSString *)[dicGeneric objectForKey:@"generic_name"];
-            int genericwipse_equipment_count = [[dicGeneric objectForKey:@"genericwise_equipment_count"] intValue];
+            GET_SAFE_INT(generic_id, dicGeneric, @"generic_id", 0);
+            GET_SAFE_STRING(generic_name, dicGeneric, @"generic_name", @"");
+            GET_SAFE_INT(genericwise_equipment_count, dicGeneric, @"genericwise_equipment_count", 0);
+
             BOOL isfavorites = NO;
             NSString *note = @"";
             
@@ -523,7 +519,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             {
                 existGeneric.generic_id = [NSNumber numberWithInt:generic_id];
                 existGeneric.generic_name = generic_name;
-                existGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwipse_equipment_count];
+                existGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
                 existGeneric.note = note;
                 
                 [arrayNewGenerics addObject:existGeneric];
@@ -537,7 +533,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 newGeneric.generic_id = [NSNumber numberWithInt:generic_id];
                 newGeneric.generic_name = generic_name;
-                newGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwipse_equipment_count];
+                newGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
                 newGeneric.isfavorites = @(isfavorites);
                 newGeneric.note = note;
                 
@@ -554,10 +550,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             // locations for generic
             if (locationArray)
                 [self parseLoations:locationArray withGeneric:existGeneric];
+            else
+                [self parseLoations:[[NSMutableArray alloc] init] withGeneric:existGeneric];
            
             // equipments for generic
             if (equipmentArray)
                 [self parseEquipments:equipmentArray withGeneric:existGeneric];
+            else
+                [self parseEquipments:[[NSMutableArray alloc] init] withGeneric:existGeneric];
         }
     }
     
@@ -586,14 +586,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
              [model_name_no] => 8015 SERIES
              [model_id] => 1378
              */
-            int generic_id = [[dicEquipment objectForKey:@"generic_id"] intValue];
-            NSString *generic_name = [dicEquipment objectForKey:@"generic_name"];
-            int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
-            NSString *serial_no = [dicEquipment objectForKey:@"serial_no"];
-            NSString *barcode_no = [dicEquipment objectForKey:@"barcode_no"];
-            NSString *manufacturer_name = [dicEquipment objectForKey:@"manufacturer_name"];
-            NSString *model_name_no = [dicEquipment objectForKey:@"model_name_no"];
-            NSString *model_id = [dicEquipment objectForKey:@"model_id"];
+            GET_SAFE_INT(generic_id, dicEquipment, @"generic_id", 0);
+            GET_SAFE_STRING(generic_name, dicEquipment, @"generic_name", @"");
+            GET_SAFE_INT(equipment_id, dicEquipment, @"equipment_id", 0);
+            GET_SAFE_STRING(serial_no, dicEquipment, @"serial_no", @"");
+            GET_SAFE_STRING(barcode_no, dicEquipment, @"barcode_no", @"");
+            GET_SAFE_STRING(manufacturer_name, dicEquipment, @"manufacturer_name", @"");
+            GET_SAFE_STRING(model_name_no, dicEquipment, @"model_name_no", @"");
+            GET_SAFE_STRING(model_id, dicEquipment, @"model_id", @"");
             
             // is exist
             Equipment *existEquipment = nil;

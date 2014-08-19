@@ -110,7 +110,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
-    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@", @"ulin", userName, pwd];
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", @"ulin", userName, pwd];
     [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
         
         if (error != nil)
@@ -121,7 +121,8 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         
         if (response == nil)
         {
-            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"] ||
+                [responseStr isEqualToString:@"Invalid User Name Password\n"])
             {
                 failure(@"Invalid User Name and Password!");
             }
@@ -133,7 +134,24 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         }
         else
         {
-            //
+            //{"ERROR":"Invalid User Name or Password"}
+            // or {"ID":"SESID-AABB","UID":"27"}
+            NSString *userId = [response objectForKey:@"UID"];
+            if (userId == nil || [userId isEqual:[NSNull null]])
+            {
+                NSString *msg = [response objectForKey:@"ERROR"];
+                if (msg == nil)
+                    msg = @"Unknown error";
+                failure(msg);
+            }
+            else
+            {
+                NSString *sessionId = [response objectForKey:@"ID"];
+                if (sessionId == nil || [sessionId isEqual:[NSNull null]])
+                    failure(@"Invalid response");
+                else
+                    success(sessionId, userId);
+            }
         }
 //        
 //        int errorCode = [[response objectForKey:kResponseErrorKey] intValue];
@@ -150,9 +168,6 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 //        user.type = UserTypeNormal;
 //        
 //        [User setCurrentUser:user];
-        
-        success(@"SESID-AABB", @"27");
-        
     }];
 }
 
