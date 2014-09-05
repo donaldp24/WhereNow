@@ -12,6 +12,7 @@
 #import "SVProgressHUD+WhereNow.h"
 #import "ServerManager.h"
 #import "ModelManager.h"
+#import "BackgroundTaskManager.h"
 
 #define verticalGap 3.0
 #define ktDefaultLoginTimeInterval 20.0
@@ -172,6 +173,9 @@ enum  {
              [UserContext sharedUserContext].isLastLoggedin = YES;
              [UserContext sharedUserContext].sessionId = sessionId;
              [UserContext sharedUserContext].userId = userId;
+             
+             // start scanning
+             [[BackgroundTaskManager sharedManager] startScanning];
              
              [self performSegueWithIdentifier:@"goMain" sender:self];
          } failure:^(NSString *msg) {
@@ -503,6 +507,9 @@ enum  {
             [UserContext sharedUserContext].isLastLoggedin = YES;
             [UserContext sharedUserContext].sessionId = sessionId;
             [UserContext sharedUserContext].userId = userId;
+            
+            // start scanning
+            [[BackgroundTaskManager sharedManager] startScanning];
             
             [self performSegueWithIdentifier:@"goMain" sender:self];
         } failure:^(NSString *msg) {

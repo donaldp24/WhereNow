@@ -10,6 +10,7 @@
 #import "UIManager.h"
 #import "Config.h"
 #import "ModelManager.h"
+#import "ServerManager.h"
 
 @interface GenericsTableViewCell()
 
@@ -66,6 +67,7 @@
     self.lblNumberOfNearby.text = [NSString stringWithFormat:@"%d nearby", (int)[generic.genericwise_equipment_count integerValue]];
     self.lblNotes.text = generic.note;
     
+    // favourites icon
     if ([generic.isfavorites boolValue])
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
     else
@@ -75,6 +77,8 @@
     frame = CGRectMake(frame.origin.x, frame.origin.y, self.contentView.frame.size.width, frame.size.height);
     self.shadowView.frame = frame;
     
+    // set status image
+    [[ServerManager sharedManager] setImageContent:self.ivStatus urlString:self.generic.alert_icon];
    
     _editor = NO;
  

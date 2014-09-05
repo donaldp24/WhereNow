@@ -31,56 +31,7 @@
 
 - (void)loadData
 {
-    self.arrayAlerts = [[ModelManager sharedManager] retrieveAlerts];
-    
-    if (self.arrayAlerts.count == 0)
-    {
-        NSManagedObjectContext *managedObjectContext = [ModelManager sharedManager].managedObjectContext;
-        Alert *alert = [NSEntityDescription
-                        insertNewObjectForEntityForName:@"Alert"
-                        inManagedObjectContext:managedObjectContext];
-        
-        alert.alert_type = @"Current Alerts";
-        alert.location_level = @"Level 1";
-        alert.location_name = @"Radiology";
-        alert.note1 = @"exceeds time limit";
-        alert.note2 = @"return to Level 3 Storeroom";
-        
-        [self.arrayAlerts addObject:alert];
-        
-        alert = [NSEntityDescription
-                 insertNewObjectForEntityForName:@"Alert"
-                 inManagedObjectContext:managedObjectContext];
-        alert.alert_type = @"Time Alerts";
-        alert.location_level = @"Level 1";
-        alert.location_name = @"Radiology";
-        alert.note1 = @"alerts after 1 day";
-        alert.note2 = @"alerts 4 users";
-        
-        [self.arrayAlerts addObject:alert];
-
-        alert = [NSEntityDescription
-                 insertNewObjectForEntityForName:@"Alert"
-                 inManagedObjectContext:managedObjectContext];
-        alert.alert_type = @"Time Alerts";
-        alert.location_level = @"";
-        alert.location_name = @"Any location";
-        alert.note1 = @"alerts after 2 day";
-        alert.note2 = @"alerts 1 users";
-        
-        [self.arrayAlerts addObject:alert];
-        
-        alert = [NSEntityDescription
-                 insertNewObjectForEntityForName:@"Alert"
-                 inManagedObjectContext:managedObjectContext];
-        alert.alert_type = @"Time Alerts";
-        alert.location_level = @"Level G";
-        alert.location_name = @"Cafe";
-        alert.note1 = @"alerts after 2 hours";
-        alert.note2 = @"alerts 4 users";
-        
-        [self.arrayAlerts addObject:alert];
-    }
+    self.arrayAlerts = [[ModelManager sharedManager] retrieveAlertsForEquipment:_equipment];
     
     self.groupedAlerts = [[NSMutableDictionary alloc] init];
     self.arrayTypes = [[NSMutableArray alloc] init];
@@ -238,10 +189,27 @@ static UITableViewCell *_prototypeAlertCell = nil;
     UILabel *lblNote1 = (UILabel *)[cell viewWithTag:102];
     UILabel *lblNote2 = (UILabel *)[cell viewWithTag:103];
     
-    lblLevel.text = alert.location_level;
-    lblLocation.text = alert.location_name;
-    lblNote1.text = alert.note1;
-    lblNote2.text = alert.note2;
+    if ([alert.alert_type isEqualToString:@"Current Alerts"])
+    {
+        lblLevel.text = alert.current_location_name;
+        lblLocation.text = @"";
+        lblNote1.text = @"exceeds time limit";
+        lblNote2.text = [NSString stringWithFormat:@"return to %@", alert.location_name];
+    }
+    else if ([alert.alert_type isEqualToString:@"Time Alerts"])
+    {
+        lblLevel.text = alert.location_name;
+        lblLocation.text = @"";
+        lblNote1.text = [NSString stringWithFormat:@"alerts after %@", alert.trigger_string];
+        lblNote2.text = [NSString stringWithFormat:@"alerts %d user", [alert.user_count intValue]];
+    }
+    else
+    {
+        lblLevel.text = alert.location_name;;
+        lblLocation.text = @"";
+        lblNote1.text = [NSString stringWithFormat:@"alerts %d user", [alert.user_count intValue]];
+        lblNote2.text = @"";
+    }
     
     return cell;
 }
@@ -287,7 +255,7 @@ static UITableViewCell *_prototypeAlertCell = nil;
 
 /*
 #pragma mark - Navigation
-
+ 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
 - (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender
 {

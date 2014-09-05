@@ -14,6 +14,7 @@
 #import "GenericLocation.h"
 #import "EquipMovement.h"
 #import "Alert.h"
+#import "MovementCount.h"
 
 #define SQLITE_DB_NAME      @"wherenow.sqlite"
 
@@ -55,7 +56,9 @@
 
 - (NSMutableArray *)equipmovementsForEquipment:(Equipment *)equipment;
 
-- (NSMutableArray *)retrieveAlerts;
+- (NSMutableArray *)retrieveAlertsForEquipment:(Equipment *)equipment;
+
+- (NSMutableArray *)retrieveMovementCountForEquipment:(Equipment *)equipment;
 
 - (NSMutableArray *)retrieveRecentGenerics;
 

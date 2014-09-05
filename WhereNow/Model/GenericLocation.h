@@ -2,7 +2,7 @@
 //  GenericLocation.h
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 11/08/14.
+//  Created by Xiaoxue Han on 22/08/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -21,5 +21,8 @@
 @property (nonatomic, retain) NSString * note;
 @property (nonatomic, retain) NSNumber * optimal_level;
 @property (nonatomic, retain) NSNumber * warning_level;
+@property (nonatomic, retain) NSString * uuid;
+@property (nonatomic, retain) NSNumber * major;
+@property (nonatomic, retain) NSNumber * minor;
 
 @end

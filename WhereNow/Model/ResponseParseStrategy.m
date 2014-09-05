@@ -151,6 +151,186 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     return YES;
 }
 
+- (BOOL)parseAlertsWithCurrentAlerts:(NSArray *)currentAlerts timeAlerts:(NSArray *)timeAlerts entryAlerts:(NSArray *)entryAlerts exitAlerts:(NSArray *)exitAlerts withEquipment:(Equipment *)equipment
+{
+    @autoreleasepool {
+        NSArray *arrayExistAlerts = nil;
+        if (equipment) {
+            arrayExistAlerts = [[ModelManager sharedManager] retrieveAlertsForEquipment:equipment];
+        }
+
+        for (NSDictionary *dicAlert in currentAlerts) {
+            /*
+             
+             [location_name] => Ward B
+             [serial_no] => 12856010
+             [equipment_id] => 1630
+             [current_location_name] => Ward B
+            */
+            GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
+            GET_SAFE_STRING(serial_no, dicAlert, @"serial_no", @"");
+            GET_SAFE_INT(equipment_id, dicAlert, @"equipment_id", 0);
+            GET_SAFE_STRING(current_location_name, dicAlert, @"current_location_name", @"");
+            
+            Alert *alert = [NSEntityDescription
+                            insertNewObjectForEntityForName:@"Alert"
+                            inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+            
+            alert.alert_type = @"Current Alerts";
+            alert.location_name = location_name;
+            alert.serial_no = serial_no;
+            alert.equipment_id = @(equipment_id);
+            alert.current_location_name = current_location_name;
+
+        }
+        
+        for (NSDictionary *dicAlert in timeAlerts) {
+            /*
+             [user_count] => 1
+             [trigger_datetime] => 2014-08-22 23:14:54
+             [current_location_id] => 16
+             [location_name] => Ward B
+             [trigger_string] => 1 day
+             */
+            
+            GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
+            GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
+            GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
+            GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
+            GET_SAFE_STRING(trigger_string, dicAlert, @"trigger_string", @"");
+            
+            Alert *alert = [NSEntityDescription
+                            insertNewObjectForEntityForName:@"Alert"
+                            inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+            
+            alert.alert_type = @"Time Alerts";
+            alert.user_count = @(user_count);
+            alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
+            alert.current_location_id = @(current_location_id);
+            alert.location_name = location_name;
+            alert.trigger_string = trigger_string;
+            
+            alert.equipment_id = equipment.equipment_id;
+        }
+        
+        for (NSDictionary *dicAlert in entryAlerts) {
+            /*
+             
+             [user_count] => 1
+             [trigger_datetime] => 2014-08-22 23:14:54
+             [current_location_id] => 16
+             [location_name] => Ward B
+             [direction] => IN
+             */
+            GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
+            GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
+            GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
+            GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
+            GET_SAFE_STRING(direction, dicAlert, @"direction", @"");
+            
+            Alert *alert = [NSEntityDescription
+                            insertNewObjectForEntityForName:@"Alert"
+                            inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+            
+            alert.alert_type = @"Entry Alerts";
+            alert.user_count = @(user_count);
+            alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
+            alert.current_location_id = @(current_location_id);
+            alert.location_name = location_name;
+            alert.direction = direction;
+            
+            alert.equipment_id = equipment.equipment_id;
+        }
+        
+        for (NSDictionary *dicAlert in exitAlerts) {
+            /*
+             
+             [user_count] => 1
+             [trigger_datetime] => 2014-08-22 23:14:54
+             [current_location_id] => 16
+             [location_name] => Ward B
+             [direction] => IN
+             */
+            GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
+            GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
+            GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
+            GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
+            GET_SAFE_STRING(direction, dicAlert, @"direction", @"");
+            
+            Alert *alert = [NSEntityDescription
+                            insertNewObjectForEntityForName:@"Alert"
+                            inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+            
+            alert.alert_type = @"Exit Alerts";
+            alert.user_count = @(user_count);
+            alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
+            alert.current_location_id = @(current_location_id);
+            alert.location_name = location_name;
+            alert.direction = direction;
+            
+            alert.equipment_id = equipment.equipment_id;
+        }
+        
+        // delete objects
+        for (Alert *existAlert in arrayExistAlerts) {
+            [[ModelManager sharedManager].managedObjectContext deleteObject:existAlert];
+        }
+  
+    }
+    
+    return YES;
+}
+
+- (BOOL)parseMovementCount:(NSArray *)arrayMovementCount withEquipment:(Equipment *)equipment
+{
+    @autoreleasepool {
+        NSArray *arrayExistMovementCount = nil;
+        if (equipment) {
+            arrayExistMovementCount = [[ModelManager sharedManager] retrieveMovementCountForEquipment:equipment];
+        }
+        
+        for (NSDictionary *dicMovementCount in arrayMovementCount) {
+            /*
+             [Mon] => 75
+             [Tue] => 69
+             [Wed] => 6
+             [Thu] => 0
+             [Fri] => 36
+             [Sat] => 54
+             [Sun] => 0
+             */
+            GET_SAFE_INT(mon, dicMovementCount, @"Mon", 0);
+            GET_SAFE_INT(tue, dicMovementCount, @"Tue", 0);
+            GET_SAFE_INT(wed, dicMovementCount, @"Wed", 0);
+            GET_SAFE_INT(thu, dicMovementCount, @"Thu", 0);
+            GET_SAFE_INT(fri, dicMovementCount, @"Fri", 0);
+            GET_SAFE_INT(sat, dicMovementCount, @"Sat", 0);
+            GET_SAFE_INT(sun, dicMovementCount, @"Sun", 0);
+            
+            MovementCount *movementcount = [NSEntityDescription
+                            insertNewObjectForEntityForName:@"MovementCount"
+                            inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
+            
+            movementcount.equipment_id = equipment.equipment_id;
+            movementcount.mon = @(mon);
+            movementcount.tue = @(tue);
+            movementcount.wed = @(wed);
+            movementcount.thu = @(thu);
+            movementcount.fri = @(fri);
+            movementcount.sat = @(sat);
+            movementcount.sun = @(sun);
+        }
+
+        // delete objects
+        for (MovementCount *existMovementCount in arrayExistMovementCount) {
+            [[ModelManager sharedManager].managedObjectContext deleteObject:existMovementCount];
+        }
+        
+    }
+    
+    return YES;
+}
+
 - (BOOL)parseLoations:(NSArray *)arrayLocations withGeneric:(Generic *)generic
 {
     @autoreleasepool {
@@ -214,6 +394,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(optimal_level, dicLocation, @"optimal_level", 0);
             GET_SAFE_INT(warning_level, dicLocation, @"warning_level", 0);
             GET_SAFE_INT(minimum_level, dicLocation, @"minimum_level", 0);
+            GET_SAFE_STRING(uuid, dicLocation, @"UUID", @"");
+            GET_SAFE_INT(major, dicLocation, @"Major", 0);
+            GET_SAFE_INT(minor, dicLocation, @"Minor", 0);
 
             
             NSMutableArray *arrayHierarchy = [dicLocation objectForKey:@"location_hierarchy"];
@@ -249,6 +432,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existLocation.warning_level = [NSNumber numberWithInt:warning_level];
                 existLocation.minimum_level = [NSNumber numberWithInt:minimum_level];
                 existLocation.note = note;
+                existLocation.uuid = uuid;
+                existLocation.major = @(major);
+                existLocation.minor = @(minor);
                 
                 [arrayNewLocations addObject:existLocation];
                 
@@ -268,6 +454,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 location.warning_level = [NSNumber numberWithInt:warning_level];
                 location.minimum_level = [NSNumber numberWithInt:minimum_level];
                 location.note = note;
+                location.uuid = uuid;
+                location.major = @(major);
+                location.minor = @(minor);
                 
                 [arrayNewLocations addObject:location];
                 
@@ -340,9 +529,20 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
 
          movement_array	array
          
+         movement_count array
+         
          equipment_file_location
          
          model_file_location
+         
+         UUID
+         
+         Major
+         
+         Minor
+         
+         current_location_parent_name   
+         current_location_parent_id
 
          */
         
@@ -364,6 +564,19 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             
             NSArray *movement_array = [dicEquipment objectForKey:@"movement_array"];
             
+            // movement count
+            NSArray *movement_count = [dicEquipment objectForKey:@"movement_count"];
+            
+            // alerts
+            NSArray *current_alert = [dicEquipment objectForKey:@"current_alert"];
+            
+            NSArray *time_alert = [dicEquipment objectForKey:@"time_alert"];
+            
+            NSArray *entry_alert = [dicEquipment objectForKey:@"entry_alert"];
+            
+            NSArray *exit_alert = [dicEquipment objectForKey:@"exit_alert"];
+            
+            
             BOOL isfavorites = NO;
             
             GET_SAFE_STRING(model_id, dicEquipment, @"model_id", @"");
@@ -372,6 +585,13 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             
             NSString *equipment_file_location_local = @"";
             NSString *model_file_location_local = @"";
+            
+            GET_SAFE_STRING(uuid, dicEquipment, @"UUID", @"");
+            GET_SAFE_INT(major, dicEquipment, @"Major", 0);
+            GET_SAFE_INT(minor, dicEquipment, @"Minor", 0);
+            
+            GET_SAFE_STRING(current_location_parent_name, dicEquipment, @"current_location_parent_name", @"");
+            GET_SAFE_INT(current_location_parent_id, dicEquipment, @"current_location_parent_id", 0);
             
             
             
@@ -420,12 +640,23 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                     // resave file to local
                     existEquipment.model_file_location = model_file_location;
                 }
+                
+                existEquipment.uuid = uuid;
+                existEquipment.major = @(major);
+                existEquipment.minor = @(minor);
+                
+                existEquipment.current_location_parent_name = current_location_parent_name;
+                existEquipment.current_location_parent_id = @(current_location_parent_id);
 
                 
                 [arrayNewEquipments addObject:existEquipment];
                 
                 if (movement_array)
                     [self parseMovements:movement_array withEquipment:existEquipment];
+                
+                [self parseAlertsWithCurrentAlerts:current_alert timeAlerts:time_alert entryAlerts:entry_alert exitAlerts:exit_alert withEquipment:existEquipment];
+                
+                [self parseMovementCount:movement_count withEquipment:existEquipment];
             }
             else
             {
@@ -453,11 +684,18 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 equipment.model_file_location = model_file_location;
                 
                 // have to save file to local
-                existEquipment.equipment_file_location_local = equipment_file_location_local;
-                existEquipment.model_file_location_local = model_file_location_local;
+                equipment.equipment_file_location_local = equipment_file_location_local;
+                equipment.model_file_location_local = model_file_location_local;
                 
-                existEquipment.isrecent = @(NO);
-                existEquipment.recenttime = [NSDate date];
+                equipment.isrecent = @(NO);
+                equipment.recenttime = [NSDate date];
+                
+                equipment.uuid = uuid;
+                equipment.major = @(major);
+                equipment.minor = @(minor);
+                
+                equipment.current_location_parent_name = current_location_parent_name;
+                equipment.current_location_parent_id = @(current_location_parent_id);
                 
                 [arrayNewEquipments addObject:equipment];
                 
@@ -465,6 +703,10 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                     [self parseMovements:movement_array withEquipment:existEquipment];
                 else
                     [self parseMovements:[[NSMutableArray alloc] init] withEquipment:existEquipment];
+                
+                [self parseAlertsWithCurrentAlerts:current_alert timeAlerts:time_alert entryAlerts:entry_alert exitAlerts:exit_alert withEquipment:equipment];
+                
+                [self parseMovementCount:movement_count withEquipment:equipment];
             }
         }
         
@@ -498,6 +740,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(generic_id, dicGeneric, @"generic_id", 0);
             GET_SAFE_STRING(generic_name, dicGeneric, @"generic_name", @"");
             GET_SAFE_INT(genericwise_equipment_count, dicGeneric, @"genericwise_equipment_count", 0);
+            GET_SAFE_INT(alert_count, dicGeneric, @"alert_count", 0);
+            GET_SAFE_STRING(alert_icon, dicGeneric, @"alert_icon", @"");
 
             BOOL isfavorites = NO;
             NSString *note = @"";
@@ -521,6 +765,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existGeneric.generic_name = generic_name;
                 existGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
                 existGeneric.note = note;
+                existGeneric.alert_count = @(alert_count);
+                existGeneric.alert_icon = alert_icon;
                 
                 [arrayNewGenerics addObject:existGeneric];
             }
@@ -536,6 +782,10 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 newGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
                 newGeneric.isfavorites = @(isfavorites);
                 newGeneric.note = note;
+                
+                
+                newGeneric.alert_count = @(alert_count);
+                newGeneric.alert_icon = alert_icon;
                 
                 newGeneric.isrecent = @(NO);
                 newGeneric.recenttime = [NSDate date];

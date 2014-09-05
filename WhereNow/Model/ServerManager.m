@@ -70,6 +70,9 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         else
         {
             NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
+            // remove <pre> tag if exists
+            if ([[responseStr substringToIndex:5] isEqualToString:@"<pre>"])
+                responseStr = [responseStr substringFromIndex:5];
             NSDictionary *responseDic = [responseStr JSONValue];
             NSLog(@"Request Successful, response '%@'", responseStr);
             handler(responseStr, responseDic, nil);

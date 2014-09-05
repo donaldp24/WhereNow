@@ -74,9 +74,14 @@
 - (void)initRegion {
     
     NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:GLOBAL_UUID];
+#if 0
     self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid
                                                                 major:HOSPITAL_MAJOR
                                                            identifier:@"com.app.BeaconRegion"];
+#else
+    self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid
+                                                           identifier:@"com.app.BeaconRegion"];
+#endif
     [self.locationManager startMonitoringForRegion:self.beaconRegion];
     
     NSLog(@"init region");
@@ -104,7 +109,7 @@
 }
 
 
--(void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
+- (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
     
     @autoreleasepool {
@@ -367,6 +372,26 @@
         return YES;
     if (beacon.proximity == CLProximityImmediate)
         return YES;
+    return NO;
+}
+
+#pragma mark - Utility functions for location service
++ (BOOL)locationServiceEnabled
+{
+    return [CLLocationManager locationServicesEnabled];
+}
+
++ (BOOL)permissionEnabled
+{
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized) {
+        return YES;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+        return NO;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+        return NO;
+    }
     return NO;
 }
 

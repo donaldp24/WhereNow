@@ -9,6 +9,7 @@
 #import "AccountViewController.h"
 #import "UserContext.h"
 #import "UIManager.h"
+#import "BackgroundTaskManager.h"
 
 @interface AccountViewController ()
 
@@ -135,6 +136,9 @@
 {
     // save status
     [UserContext sharedUserContext].isLastLoggedin = NO;
+    
+    // stop scanning
+    [[BackgroundTaskManager sharedManager] stopScanning];
     
     [self.tabBarController.navigationController popToRootViewControllerAnimated:YES];
 }

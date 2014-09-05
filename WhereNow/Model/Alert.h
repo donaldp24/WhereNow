@@ -2,7 +2,7 @@
 //  Alert.h
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 11/08/14.
+//  Created by Xiaoxue Han on 22/08/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -14,9 +14,14 @@
 
 @property (nonatomic, retain) NSNumber * alert_id;
 @property (nonatomic, retain) NSString * alert_type;
-@property (nonatomic, retain) NSString * location_level;
 @property (nonatomic, retain) NSString * location_name;
-@property (nonatomic, retain) NSString * note1;
-@property (nonatomic, retain) NSString * note2;
+@property (nonatomic, retain) NSString * serial_no;
+@property (nonatomic, retain) NSNumber * equipment_id;
+@property (nonatomic, retain) NSString * current_location_name;
+@property (nonatomic, retain) NSNumber * user_count;
+@property (nonatomic, retain) NSDate * trigger_datetime;
+@property (nonatomic, retain) NSNumber * current_location_id;
+@property (nonatomic, retain) NSString * direction;
+@property (nonatomic, retain) NSString * trigger_string;
 
 @end

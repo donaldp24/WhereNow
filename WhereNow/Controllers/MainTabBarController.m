@@ -9,6 +9,7 @@
 #import "MainTabBarController.h"
 #import "ServerManager.h"
 #import "UserContext.h"
+#import "ScanManager.h"
 
 @interface MainTabBarController ()
 
@@ -36,6 +37,31 @@
     } failure: ^(NSString *msg) {
         NSLog(@"Data request failed : %@", msg);
     }];
+    
+    if([ScanManager locationServiceEnabled]){
+        
+        NSLog(@"Location Services Enabled");
+        
+        if(![ScanManager permissionEnabled]){
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"App Permission Denied"
+                                               message:@"To re-enable, please go to Settings and turn on Location Service for this app."
+                                              delegate:nil
+                                     cancelButtonTitle:@"OK"
+                                     otherButtonTitles:nil];
+            [alert show];
+        }
+    }
+    else
+    {
+        NSLog(@"Location Services Disabled");
+        
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Location Services Disabled"
+                                                        message:@"To enable, please go to Settings and turn on Location Service."
+                                                       delegate:nil
+                                              cancelButtonTitle:@"OK"
+                                              otherButtonTitles:nil];
+        [alert show];
+    }
 }
 
 - (void)didReceiveMemoryWarning

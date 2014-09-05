@@ -67,7 +67,13 @@
     self.cellType = cellType;
     
     self.lblName.text = [NSString stringWithFormat:@"%@-%@", equipment.manufacturer_name, equipment.model_name_no] ;
-    self.lblLocation.text = equipment.current_location;
+    
+    // location name = parent location name + current location name
+    if (![equipment.current_location_parent_name isEqualToString:@""])
+        self.lblLocation.text = [NSString stringWithFormat:@"%@ %@", equipment.current_location_parent_name, equipment.current_location];
+    else
+        self.lblLocation.text = [NSString stringWithFormat:@"%@", equipment.current_location];
+    
     self.lblSn.text = [NSString stringWithFormat:@"SN : %@", equipment.serial_no];
     
     // favourites icon

@@ -11,7 +11,7 @@
 
 //#define GLOBAL_UUID         @"B9407F30-F5F8-466E-AFF9-25556B57FE6D"
 #define GLOBAL_UUID         @"B125AA4F-2D82-401D-92E5-F962E8037F5C"
-#define HOSPITAL_MAJOR      51
+//#define HOSPITAL_MAJOR      51
 
 
 @protocol ScanManagerDelegate <NSObject>
@@ -41,5 +41,9 @@
 - (void)stop;
 
 - (BOOL)isStarted;
+
++ (BOOL)locationServiceEnabled;
+
++ (BOOL)permissionEnabled;
 
 @end

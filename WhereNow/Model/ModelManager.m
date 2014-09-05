@@ -555,7 +555,7 @@ static ModelManager *_sharedModelManager = nil;
     return arrayResult;
 }
 
-- (NSMutableArray *)retrieveAlerts
+- (NSMutableArray *)retrieveAlertsForEquipment:(Equipment *)equipment
 {
     // alert array -----------
     NSMutableArray *result = [[NSMutableArray alloc] init];
@@ -565,11 +565,16 @@ static ModelManager *_sharedModelManager = nil;
                                    inManagedObjectContext:_managedObjectContext];
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
+    // equipment_id
+    NSPredicate* predEquipMovement = [NSPredicate predicateWithFormat:
+                                      @"equipment_id == %@", equipment.equipment_id];
+    
     // sort
     NSSortDescriptor *descriptor1 = [self sortForAlerts];
     NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
     
     [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predEquipMovement];
     [fetchRequest setSortDescriptors:sortDescriptors];
     
     NSError *error = nil;
@@ -580,6 +585,38 @@ static ModelManager *_sharedModelManager = nil;
         for (int i = 0; i < [fetchedObjects count]; i++) {
             Alert *alert = (Alert *)[fetchedObjects objectAtIndex:i];
             [result addObject:alert];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveMovementCountForEquipment:(Equipment *)equipment
+{
+    // alert array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"MovementCount"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // equipment_id
+    NSPredicate* predEquipMovement = [NSPredicate predicateWithFormat:
+                                      @"equipment_id == %@", equipment.equipment_id];
+    
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predEquipMovement];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            MovementCount *movementcount = (MovementCount *)[fetchedObjects objectAtIndex:i];
+            [result addObject:movementcount];
         }
     }
     

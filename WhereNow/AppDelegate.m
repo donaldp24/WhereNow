@@ -23,7 +23,9 @@
     
     [[ModelManager sharedManager] initModelManager];
     [ServerManager sharedManager].parser = [ResponseParseStrategy sharedParseStrategy];
-    [[BackgroundTaskManager sharedManager] startScanning];
+    
+    // have to start scanning after logged in
+    //[[BackgroundTaskManager sharedManager] startScanning];
     
     return YES;
 }
