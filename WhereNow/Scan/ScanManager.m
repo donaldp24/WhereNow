@@ -7,13 +7,20 @@
 //
 
 #import "ScanManager.h"
+#include <sys/time.h>
 
-@interface ScanManager()
+@interface ScanManager() {
+    NSTimer *timer;
+    long scanStartedTime;
+    long scanEndedTime;
+    BOOL bScanReceive;
+}
 
 @property (retain, nonatomic) CLBeaconRegion *beaconRegion;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) BOOL isStarted;
 @property (nonatomic, retain) NSMutableArray *previousVicinityBeacons;
+@property (nonatomic, retain) NSMutableArray *scannedBeacons;
 
 @end
 
@@ -23,7 +30,7 @@
 {
     self = [super init];
     if (self) {
-        //
+        [self initMembers];
     }
     
     return self;
@@ -37,8 +44,17 @@
     }
     
     self.delegate = delegate;
-    self.isStarted = NO;
+    
+    [self initMembers];
+    
     return self;
+}
+
+- (void)initMembers
+{
+    self.isStarted = NO;
+    timer = nil;
+    bScanReceive = NO;
 }
 
 #pragma mark - public functions
@@ -49,16 +65,25 @@
         return;
     
     self.previousVicinityBeacons = [[NSMutableArray alloc] init];
+    self.scannedBeacons = [[NSMutableArray alloc] init];
     
     self.locationManager = [[CLLocationManager alloc] init];
     self.locationManager.delegate = self;
     [self initRegion];
     
     self.isStarted = YES;
+    
+    scanEndedTime = scanStartedTime = [self getCurrentMilliTime];
+    bScanReceive = YES;
+    timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerProc:) userInfo:nil repeats:YES];
 }
+
 
 - (void)stop
 {
+    if (timer)
+        [timer invalidate];
+    
     [self.locationManager stopRangingBeaconsInRegion:self.beaconRegion];
     [self.locationManager stopMonitoringForRegion:self.beaconRegion];
     
@@ -68,6 +93,81 @@
 - (BOOL)isStarted
 {
     return _isStarted;
+}
+
+#pragma mark - scanning
+
+- (long)getCurrentMilliTime
+{
+    struct timeval time;
+    gettimeofday(&time, NULL);
+    long millis = (time.tv_sec * 1000) + (time.tv_usec / 1000);
+    return millis;
+}
+
+- (void)timerProc:(id)tm
+{
+    long currTime = [self getCurrentMilliTime];
+    if (bScanReceive)
+    {
+        if (currTime - scanStartedTime >= 10 * 1000)
+        {
+            scanEndedTime = currTime;
+            bScanReceive = NO;
+        }
+    }
+    else
+    {
+        if (currTime - scanEndedTime >= 60 * 1000)
+        {
+            scanEndedTime = scanStartedTime = currTime;
+            bScanReceive = YES;
+            
+            [self compareBeaconsAndDelegate];
+        }
+    }
+}
+
+- (void)compareBeaconsAndDelegate
+{
+    // compare previous vicinity beacons
+    BOOL isEqual =  YES;
+    if (self.previousVicinityBeacons.count != self.scannedBeacons.count)
+    {
+        // not equal
+        isEqual = NO;
+    }
+    else
+    {
+        for (CLBeacon *beacon in self.previousVicinityBeacons) {
+            BOOL isExist = NO;
+            for (CLBeacon *currBeacon in self.scannedBeacons) {
+                if ([currBeacon.major intValue] == [beacon.major intValue]
+                    && [currBeacon.minor intValue] == [beacon.minor intValue])
+                {
+                    isExist = YES;
+                    break;
+                }
+            }
+            
+            if (isExist == NO)
+            {
+                isEqual = NO;
+                break;
+            }
+        }
+    }
+    
+    if (!isEqual)
+    {
+        self.previousVicinityBeacons = [self.scannedBeacons copy];
+        
+        // delegates
+        if (self.delegate && [self.delegate respondsToSelector:@selector(vicinityBeaconsFound:)])
+        {
+            [self.delegate vicinityBeaconsFound:self.previousVicinityBeacons];
+        }
+    }
 }
 
 #pragma mark - internal functions
@@ -111,16 +211,16 @@
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
+    if (!bScanReceive)
+        return;
     
     @autoreleasepool {
         
-        NSMutableArray *arrayVicinityBeacons = [[NSMutableArray alloc] init];
-        
         // when change
         for (CLBeacon *beacon in beacons) {
-            int beaconMajor = [beacon.major integerValue];
-            int beaconMinor = [beacon.minor integerValue];
-            int rssi = beacon.rssi;
+            int beaconMajor = [beacon.major intValue];
+            int beaconMinor = [beacon.minor intValue];
+            int rssi = (int)beacon.rssi;
             
             NSLog(@"beacon(%d, %d) : %d", beaconMajor, beaconMinor, rssi);
             
@@ -131,234 +231,21 @@
             else
             {
                 // add it to vicinity array
-                [arrayVicinityBeacons addObject:beacon];
-            }
-        }
-
-        // compare previous vicinity beacons
-        BOOL isEqual =  YES;
-        if (self.previousVicinityBeacons.count != arrayVicinityBeacons.count)
-        {
-            // not equal
-            isEqual = NO;
-        }
-        else
-        {
-            for (CLBeacon *beacon in self.previousVicinityBeacons) {
+                // check exist
                 BOOL isExist = NO;
-                for (CLBeacon *currBeacon in arrayVicinityBeacons) {
-                    if ([currBeacon.major intValue] == [beacon.major intValue]
-                        && [currBeacon.minor intValue] == [beacon.minor intValue])
+                for (CLBeacon *scannedBeacon in self.scannedBeacons) {
+                    if ([scannedBeacon.major intValue] == beaconMajor &&
+                        [scannedBeacon.minor intValue] == beaconMinor)
                     {
                         isExist = YES;
                         break;
                     }
                 }
-                
-                if (isExist == NO)
-                {
-                    isEqual = NO;
-                    break;
-                }
-            }
-        }
-        
-        if (!isEqual)
-        {
-            self.previousVicinityBeacons = [arrayVicinityBeacons copy];
-            
-            // delegates
-            if (self.delegate && [self.delegate respondsToSelector:@selector(vicinityBeaconsFound:)])
-            {
-                [self.delegate vicinityBeaconsFound:self.previousVicinityBeacons];
+                if (!isExist)
+                    [self.scannedBeacons addObject:beacon];
             }
         }
     }
-    
-    
-#if 0
-#ifdef USE_TRY
-    @try {
-#endif
-        CLBeacon *beacon;// = [[CLBeacon alloc] init];
-        beacon = [beacons firstObject];//[[beacons firstObject] copy];
-        
-        if (beacons == nil || [beacons count] == 0 || beacon == nil)
-        {
-            if (beacons == nil)
-                NSLog(@"beacons = nil");
-            else if ([beacons count] == 0)
-                NSLog(@"beacons count = 0");
-            else
-                NSLog(@"beacon = nil");
-        }
-        else
-        {
-            CLProximity beaconProximity = beacon.proximity;
-            NSString *beaconUUID = [NSString stringWithFormat:@"%@", beacon.proximityUUID.UUIDString];
-            int beaconMajor = [beacon.major intValue];
-            int beaconMinor = [beacon.minor intValue];
-            
-#if ENTER_WHEN_NEAR
-            if (beaconProximity == CLProximityUnknown || beaconProximity == CLProximityFar || beaconProximity == CLProximityNear)
-#else
-                if (beaconProximity == CLProximityUnknown)
-#endif
-                {
-                    NSLog(@"out of range : %d", (int)beaconProximity);
-                    
-                    animIndex = 0;
-                    
-                    if (currMajor != -1 && currMinor != -1)
-                    {
-                        // ------ duplicate checking -----------
-                        NSDate *currDate = [NSDate date];
-                        
-                        BOOL isDuplicated = YES;
-                        if (exitTime == nil)
-                            isDuplicated = NO;
-                        else
-                        {
-                            NSTimeInterval secs = [currDate timeIntervalSinceDate:exitTime];
-                            if (secs < kDuplicateInterval)
-                                isDuplicated = YES;
-                            else
-                                isDuplicated = NO;
-                        }
-                        exitTime = currDate;
-                        
-#if ENABLE_RECORDING_OUT
-                        User *user = [User currentUser];
-                        if (user)
-                        {
-                            PFObject *event = [PFObject objectWithClassName:@"Events"];
-                            event[@"email"] = user.email;
-                            event[@"type"] = @"out of range";
-                            event[@"uuid"] = beaconUUID;
-                            event[@"major"] = [NSString stringWithFormat:@"%d", currMajor];
-                            event[@"minior"] = [NSString stringWithFormat:@"%d", currMinor];
-                            event[@"localtime"] = [Common date2str:[NSDate date] withFormat:DATETIME_FORMAT];
-                            [event saveInBackground];
-                        }
-                        else
-                            NSLog(@"out event not recorded since user is null");
-#endif
-                        
-                        currMajor = currMinor = -1;
-                        
-                        self.lblStatus.text = @"user exited in a range of beacon";
-                        
-                        NSLog(@"exited -------------------- \n");
-                    }
-                    
-                }
-                else
-                {
-                    animIndex = (animIndex + 1) % [bluetoothIcons count];
-                    
-                    if (currMajor != beaconMajor || currMinor != beaconMinor) {
-                        
-                        NSLog(@"user enterend %d, %d", beaconMajor, beaconMinor);
-                        
-                        // ------ duplicate checking -----------
-                        NSDate *currDate = [NSDate date];
-                        
-                        BOOL isDuplicated = YES;
-                        if (enterTime == nil)
-                            isDuplicated = NO;
-                        else
-                        {
-                            NSTimeInterval secs = [currDate timeIntervalSinceDate:enterTime];
-                            if (secs < kDuplicateInterval)
-                                isDuplicated = YES;
-                            else
-                                isDuplicated = NO;
-                        }
-                        enterTime = currDate;
-                        
-                        // --------
-                        User *user = [User currentUser];
-                        
-                        if (user && !isDuplicated)
-                        {
-                            PFObject *event = [PFObject objectWithClassName:@"Events"];
-                            event[@"email"] = user.email;
-                            BOOL isEnter = NO;
-                            if (currMajor == -1 && currMinor == -1)
-                            {
-                                event[@"type"] = @"enter into range";
-                                isEnter = YES;
-                            }
-                            else
-                            {
-                                event[@"type"] = @"move in range";
-                                isEnter = NO;
-                            }
-                            event[@"uuid"] = beaconUUID;
-                            event[@"major"] = [NSString stringWithFormat:@"%d", beaconMajor];
-                            event[@"minior"] = [NSString stringWithFormat:@"%d", beaconMinor];
-                            event[@"localtime"] = [Common date2str:[NSDate date] withFormat:DATETIME_FORMAT];
-                            if (isEnter == NO)
-                            {
-#if ENABLE_RECORDING_MOVE
-                                [event saveInBackground];
-#endif
-                            }
-                            else
-                            {
-                                [event saveInBackground];
-                            }
-                        }
-                        else
-                        {
-                            if (user == nil)
-                                NSLog(@"enter or move event not recorded since user is null");
-                            else
-                                NSLog(@"enter or move event not recorded since it is duplicated");
-                        }
-                        
-                        currMajor = beaconMajor;
-                        currMinor = beaconMinor;
-                        
-                        self.lblStatus.text = @"user entered in a range of beacon";
-                    }
-                }
-        }
-        
-        
-        /*
-         self.beaconFoundLabel.text = @"Yes";
-         self.proximityUUIDLabel.text = beacon.proximityUUID.UUIDString;
-         self.majorLabel.text = [NSString stringWithFormat:@"%@", beacon.major];
-         self.minorLabel.text = [NSString stringWithFormat:@"%@", beacon.minor];
-         self.accuracyLabel.text = [NSString stringWithFormat:@"%f", beacon.accuracy];
-         if (beacon.proximity == CLProximityUnknown) {
-         self.distanceLabel.text = @"Unknown Proximity";
-         } else if (beacon.proximity == CLProximityImmediate) {
-         self.distanceLabel.text = @"Immediate";
-         } else if (beacon.proximity == CLProximityNear) {
-         self.distanceLabel.text = @"Near";
-         } else if (beacon.proximity == CLProximityFar) {
-         self.distanceLabel.text = @"Far";
-         }
-         self.rssiLabel.text = [NSString stringWithFormat:@"%i", beacon.rssi];
-         */
-        
-#ifdef USE_TRY
-    }
-    @catch (NSException *exception) {
-        // May return nil if a tracker has not already been initialized with a
-        // property ID.
-        id tracker = [[GAI sharedInstance] defaultTracker];
-        
-        [tracker send:[[GAIDictionaryBuilder createExceptionWithDescription:[NSString stringWithFormat:@"exception %@:%@", exception.name, exception.reason] withFatal:[NSNumber numberWithBool:NO]] build]];  // isFatal (required). NO indicates non-fatal exception.
-    }
-    @finally {
-        //
-    }
-#endif
-#endif
-    
 }
 
 #pragma mark - estimate vicinity

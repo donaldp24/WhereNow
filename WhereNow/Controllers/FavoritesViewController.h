@@ -8,13 +8,8 @@
 
 #import <UIKit/UIKit.h>
 
-#import "GenericsTableViewCell.h"
-#import "EquipmentTableViewCell.h"
-
 @interface FavoritesViewController : UIViewController <UITableViewDataSource,
-    UITableViewDelegate,
-GenericsTableViewCellDelegate,
-EquipmentTableViewCellDelegate
+    UITableViewDelegate
 >
 
 @end

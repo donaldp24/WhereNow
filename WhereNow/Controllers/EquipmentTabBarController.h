@@ -9,7 +9,18 @@
 #import <UIKit/UIKit.h>
 #import "Equipment.h"
 
+@protocol EquipmentDetailMenuDelegate <NSObject>
+
+@required
+- (void)onMenu:(id)sender;
+
+@end
+
 @interface EquipmentTabBarController : UITabBarController
+<
+UITabBarControllerDelegate,
+EquipmentDetailMenuDelegate
+>
 
 @property (nonatomic, strong) Equipment *equipment;
 

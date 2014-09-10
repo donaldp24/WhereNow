@@ -192,29 +192,8 @@
 #pragma mark - Menu button
 - (void)onMenu:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:
-                                  @"Page Device",
-                                  @"Report for Service",
-                                  nil];
-//    [actionSheet setTintColor:[UIColor darkGrayColor]];
-    
-    [actionSheet showFromBarButtonItem:sender animated:YES];
-
-}
-
-#pragma mark - Action Sheet Delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        // Page Device
-    }
-    else if (buttonIndex == 1){
-        // Report for Service
-    }
+    if (self.delegate)
+        [self.delegate onMenu:sender];
 }
 
 @end

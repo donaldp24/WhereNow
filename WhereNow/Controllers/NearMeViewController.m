@@ -8,8 +8,6 @@
 
 #import "NearMeViewController.h"
 #import "SwipeTableView.h"
-#import "GenericsTableViewCell.h"
-#import "EquipmentTableViewCell.h"
 #import "AppContext.h"
 #import "UIManager.h"
 #import "EquipmentTabBarController.h"
@@ -17,9 +15,12 @@
 #import "BackgroundTaskManager.h"
 #import "ServerManager.h"
 #import "UserContext.h"
+#import "CommonGenericTableViewCell.h"
+#import "CommonEquipmentTableViewCell.h"
 
 @interface NearMeViewController () <SwipeTableViewDelegate> {
     NSManagedObjectContext *_managedObjectContext;
+    int editingSection;
     UITableViewCell *editingCell;
     NSIndexPath *editingIndexPath;
     BOOL _firstLoad;
@@ -96,6 +97,7 @@
     
     _firstLoad = YES;
     
+    editingSection = -1;
     editingCell = nil;
     editingIndexPath = nil;
     
@@ -110,6 +112,9 @@
     [refresh addTarget:self action:@selector(refreshPulled) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:refresh];
     self.refresh = refresh;
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonGenericTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
 }
 
 - (void)didReceiveMemoryWarning
@@ -140,6 +145,7 @@
     
     if (!_firstLoad)
     {
+        editingSection = -1;
         editingCell = nil;
         editingIndexPath = nil;
         
@@ -158,25 +164,42 @@
     self.selectedGenerics = nil;
     if (editingCell)
         [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+    
+    editingSection = -1;
+    editingIndexPath = nil;
+    editingCell = nil;
+    
     [self.tableView reloadData];
 }
 
 #pragma mark - tableview data source
 
-static GenericsTableViewCell *_prototypeGenericsTableViewCell = nil;
-static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
+static CommonGenericTableViewCell *_prototypeGenericsTableViewCell = nil;
+static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 
-- (GenericsTableViewCell *)prototypeGenericsTableViewCell
+- (CommonGenericTableViewCell *)prototypeGenericsTableViewCell
 {
     if (_prototypeGenericsTableViewCell == nil)
-        _prototypeGenericsTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"genericscell"];
+    {
+        _prototypeGenericsTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        if (_prototypeGenericsTableViewCell == nil)
+        {
+            _prototypeGenericsTableViewCell = [[CommonGenericTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        }
+    }
     return _prototypeGenericsTableViewCell;
 }
 
-- (EquipmentTableViewCell *)prototypeEquipmentTableViewCell
+- (CommonEquipmentTableViewCell *)prototypeEquipmentTableViewCell
 {
     if (_prototypeEquipmentTableViewCell == nil)
-        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
+    {
+        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        if (_prototypeEquipmentTableViewCell == nil)
+        {
+            _prototypeEquipmentTableViewCell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        }
+    }
     return _prototypeEquipmentTableViewCell;
 }
 
@@ -234,24 +257,48 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 {
     if (self.segment.selectedSegmentIndex == 0 && section == 1)
         return 0;
-    NSArray *arrayData = [self dataForTableView:tableView withSection:section];
+    NSArray *arrayData = [self dataForTableView:tableView withSection:(int)section];
     return arrayData.count;
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *arrayData = [self dataForTableView:tableView withSection:indexPath.section];
+    NSArray *arrayData = [self dataForTableView:tableView withSection:(int)indexPath.section];
     
     if (self.segment.selectedSegmentIndex == 0)
     {
-        GenericsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"genericscell"];
-        [cell bind:[arrayData objectAtIndex:indexPath.row] type:GenericsCellTypeSearch];
+        CommonGenericTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        if (cell == nil)
+        {
+            cell = [[CommonGenericTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        }
+        [cell bind:[arrayData objectAtIndex:indexPath.row] type:CommonGenericsCellTypeNearme];
+        
+        if (editingIndexPath != nil && editingIndexPath.row == indexPath.row && editingSection == indexPath.section)
+        {
+            editingIndexPath = indexPath;
+            editingCell = cell;
+            editingSection = (int)indexPath.section;
+            [cell setEditor:YES animate:NO];
+        }
         return cell;
     }
     else
     {
-        EquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-        [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:EquipmentCellTypeSearch];
+        CommonEquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        if (cell == nil)
+        {
+            cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        }
+        [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:CommonEquipmentCellTypeNearme];
+        
+        if (editingIndexPath != nil && editingIndexPath.row == indexPath.row && editingSection == indexPath.section)
+        {
+            editingIndexPath = indexPath;
+            editingCell = cell;
+            editingSection = (int)indexPath.section;
+            [cell setEditor:YES animate:NO];
+        }
          return cell;
     }
 }
@@ -262,11 +309,11 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     {
         if (self.segment.selectedSegmentIndex == 0)
         {
-            return [self prototypeGenericsTableViewCell].bounds.size.height;
+            return [[self prototypeGenericsTableViewCell] heightForCell];
         }
         else
         {
-            return [self prototypeEquipmentTableViewCell].bounds.size.height;
+            return [[self prototypeEquipmentTableViewCell] heightForCell];
         }
     }
     return 30.0;
@@ -275,7 +322,7 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 #pragma mark - tableview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSArray *arrayData = [self dataForTableView:tableView withSection:indexPath.section];
+    NSArray *arrayData = [self dataForTableView:tableView withSection:(int)indexPath.section];
     
     if (self.segment.selectedSegmentIndex == 0)
     {
@@ -324,12 +371,12 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 {
     if (self.segment.selectedSegmentIndex == 0)
     {
-        GenericsTableViewCell *tableCell = (GenericsTableViewCell *)cell;
+        CommonGenericTableViewCell *tableCell = (CommonGenericTableViewCell *)cell;
         [tableCell setEditor:editing];
     }
     else
     {
-        EquipmentTableViewCell *tableCell = (EquipmentTableViewCell *)cell;
+        CommonEquipmentTableViewCell *tableCell = (CommonEquipmentTableViewCell *)cell;
         [tableCell setEditor:editing];
     }
     
@@ -337,12 +384,57 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     {
         editingCell = cell;
         editingIndexPath = indexPath;
+        editingSection = (int)((NSIndexPath*)indexPath).section;
     }
     else
     {
+        editingSection = -1;
         editingCell = nil;
         editingIndexPath = nil;
     }
+}
+
+- (NSIndexPath *)setEditing:(BOOL)editing atIndexPath:(NSIndexPath *)indexPath cell:(UITableViewCell *)cell recalcIndexPath:(NSIndexPath *)recalcIndexPath
+{
+    //NSIndexPath *curIndexPath = (NSIndexPath *)indexPath;
+    //int curRow = curIndexPath.row;
+    //int calcingRow = recalcIndexPath.row;
+
+    if (editing)
+    {
+        editingSection = (int)indexPath.section;
+        editingCell = cell;
+        editingIndexPath = indexPath;
+    }
+    
+    NSIndexPath *calcedIndexPath = nil;
+    if (recalcIndexPath)
+        calcedIndexPath = [NSIndexPath indexPathForItem:recalcIndexPath.row inSection:recalcIndexPath.section];
+    
+    if (self.segment.selectedSegmentIndex == 0)
+    {
+        CommonGenericTableViewCell *tableCell = (CommonGenericTableViewCell *)cell;
+        [tableCell setEditor:editing];
+    }
+    else
+    {
+        CommonEquipmentTableViewCell *tableCell = (CommonEquipmentTableViewCell *)cell;
+        [tableCell setEditor:editing];
+    }
+    
+    if (!editing)
+    {
+        editingSection = -1;
+        editingCell = nil;
+        editingIndexPath = nil;
+    }
+    
+    return calcedIndexPath;
+}
+
+- (BOOL)canCloseEditingOnTap:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath
+{
+    return YES;
 }
 
 - (BOOL)tableView:(UITableView *)tableView canEditRowAtIndexPath:(NSIndexPath *)indexPath

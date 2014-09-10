@@ -8,13 +8,9 @@
 
 #import <UIKit/UIKit.h>
 
-#import "GenericsTableViewCell.h"
-#import "EquipmentTableViewCell.h"
-
-@interface RecentViewController : UIViewController <UITableViewDataSource,
-    UITableViewDelegate,
-    GenericsTableViewCellDelegate,
-    EquipmentTableViewCellDelegate
+@interface RecentViewController : UIViewController <
+UITableViewDataSource,
+UITableViewDelegate
 >
 
 

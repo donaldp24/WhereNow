@@ -7,8 +7,6 @@
 //
 
 #import "SearchViewController.h"
-#import "GenericsTableViewCell.h"
-#import "EquipmentTableViewCell.h"
 #import "AppContext.h"
 #import "OverviewViewController.h"
 #import "EquipmentTabBarController.h"
@@ -17,7 +15,9 @@
 #import "ModelManager.h"
 #import "ServerManager.h"
 #import "UserContext.h"
-#import "LocationTableViewCell.h"
+#import "CommonGenericTableViewCell.h"
+#import "CommonEquipmentTableViewCell.h"
+#import "CommonLocationTableViewCell.h"
 
 #define GENERICS_INDEX      0
 #define EQUIPMENT_INDEX     1
@@ -113,6 +113,10 @@
     [self.tableView addSubview:refresh];
     self.refresh = refresh;
     
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonGenericTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
+    
     // get data from server
     //[self requestData];
 }
@@ -185,28 +189,46 @@
 
 #pragma mark - table view data source
 
-static GenericsTableViewCell *_prototypeGenericsTableViewCell = nil;
-static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
-static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
+static CommonGenericTableViewCell *_prototypeGenericsTableViewCell = nil;
+static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
+static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
-- (GenericsTableViewCell *)prototypeGenericsTableViewCell
+- (CommonGenericTableViewCell *)prototypeGenericsTableViewCell
 {
     if (_prototypeGenericsTableViewCell == nil)
-        _prototypeGenericsTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"genericscell"];
+    {
+        _prototypeGenericsTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        if (_prototypeGenericsTableViewCell == nil)
+        {
+            _prototypeGenericsTableViewCell = [[CommonGenericTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+        }
+    }
     return _prototypeGenericsTableViewCell;
 }
 
-- (EquipmentTableViewCell *)prototypeEquipmentTableViewCell
+- (CommonEquipmentTableViewCell *)prototypeEquipmentTableViewCell
 {
     if (_prototypeEquipmentTableViewCell == nil)
-        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
+    {
+        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        if (_prototypeEquipmentTableViewCell == nil)
+        {
+            _prototypeEquipmentTableViewCell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        }
+    }
     return _prototypeEquipmentTableViewCell;
 }
 
-- (LocationTableViewCell *)prototypeLocationTableViewCell
+- (CommonLocationTableViewCell *)prototypeLocationTableViewCell
 {
     if (_prototypeLocationTableViewCell == nil)
-        _prototypeLocationTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"locationcell"];
+    {
+        _prototypeLocationTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
+        if (_prototypeLocationTableViewCell == nil)
+        {
+            _prototypeLocationTableViewCell = [[CommonLocationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
+        }
+    }
     return _prototypeLocationTableViewCell;
 }
 
@@ -256,7 +278,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
     int count = 0;
     if (arrayData != nil)
-        count = arrayData.count;
+        count = (int)arrayData.count;
     count += _expandingLocationArray.count;
 
     return count;
@@ -275,11 +297,15 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
         {
             if([self isGenericCell:indexPath])
             {
-                GenericsTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"genericscell"];
+                CommonGenericTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+                if (cell == nil)
+                {
+                    cell = [[CommonGenericTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
+                }
                 if (indexPath.row <= editingIndexPath.row)
-                    [cell bind:[arrayData objectAtIndex:indexPath.row] type:GenericsCellTypeSearch];
+                    [cell bind:[arrayData objectAtIndex:indexPath.row] type:CommonGenericsCellTypeSearch];
                 else
-                    [cell bind:[arrayData objectAtIndex:(indexPath.row - _expandingLocationArray.count)] type:GenericsCellTypeSearch];
+                    [cell bind:[arrayData objectAtIndex:(indexPath.row - _expandingLocationArray.count)] type:CommonGenericsCellTypeSearch];
                 
                 if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
                 {
@@ -291,15 +317,23 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
             }
             else
             {
-                LocationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"locationcell"];
+                CommonLocationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
+                if (cell == nil)
+                {
+                    cell = [[CommonLocationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
+                }
                 [cell bind:[_expandingLocationArray objectAtIndex:indexPath.row - editingIndexPath.row - 1]];
                 return cell;
             }
         }
         else
         {
-            EquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-            [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:EquipmentCellTypeSearch];
+            CommonEquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+            if (cell == nil)
+            {
+                cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+            }
+            [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:CommonEquipmentCellTypeSearch];
             if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
             {
                 editingIndexPath = indexPath;
@@ -319,13 +353,13 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
     if (self.segment.selectedSegmentIndex == 0)
     {
         if ([self isGenericCell:indexPath])
-            return [self prototypeGenericsTableViewCell].bounds.size.height;
+            return [[self prototypeGenericsTableViewCell] heightForCell];
         else
-            return [self prototypeLocationTableViewCell].bounds.size.height;
+            return [[self prototypeLocationTableViewCell] heightForCell];
     }
     else
     {
-        return [self prototypeEquipmentTableViewCell].bounds.size.height;
+        return [[self prototypeEquipmentTableViewCell] heightForCell];
     }
 }
 
@@ -449,9 +483,9 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
 - (NSIndexPath *)setEditing:(BOOL)editing atIndexPath:(NSIndexPath *)indexPath cell:(UITableViewCell *)cell recalcIndexPath:(NSIndexPath *)recalcIndexPath
 {
-    NSIndexPath *curIndexPath = (NSIndexPath *)indexPath;
-    int curRow = curIndexPath.row;
-    int calcingRow = recalcIndexPath.row;
+    //NSIndexPath *curIndexPath = (NSIndexPath *)indexPath;
+    //int curRow = curIndexPath.row;
+    //int calcingRow = recalcIndexPath.row;
     
     if (self.segment.selectedSegmentIndex == 0)
     {
@@ -481,7 +515,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
         else
         {
             
-            GenericsTableViewCell *tableCell = (GenericsTableViewCell *)cell;
+            CommonGenericTableViewCell *tableCell = (CommonGenericTableViewCell *)cell;
             [tableCell setEditor:editing];
             
             
@@ -518,8 +552,8 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
                     
                     if (recalcIndexPath != nil && recalcIndexPath.section == editingIndexPath.section)
                     {
-                        int row1 = recalcIndexPath.row;
-                        int row2 = editingIndexPath.row;
+                        //int row1 = recalcIndexPath.row;
+                        //int row2 = editingIndexPath.row;
                         if (recalcIndexPath.row >= editingIndexPath.row + _expandingLocationArray.count + 1)
                         {
                             calcedIndexPath = [NSIndexPath indexPathForItem:recalcIndexPath.row - _expandingLocationArray.count inSection:recalcIndexPath.section];
@@ -539,7 +573,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
     }
     else
     {
-        EquipmentTableViewCell *tableCell = (EquipmentTableViewCell *)cell;
+        CommonEquipmentTableViewCell *tableCell = (CommonEquipmentTableViewCell *)cell;
         [tableCell setEditor:editing];
     }
     
@@ -656,7 +690,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
  */
 - (void) requestData
 {
-    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+    [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
         
         // main thread
         [[NSOperationQueue mainQueue] addOperationWithBlock:^(){
@@ -698,7 +732,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
 - (void)keyboardShowing:(NSNotification *)note
 {
-    NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    //NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
     /*
     CGRect frame = self.tableView.frame;
     frame.size.height -= 60;
@@ -714,7 +748,7 @@ static LocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
 - (void)keyboardHiding:(NSNotification *)note
 {
-    NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
+    //NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
    /*
     [UIView animateWithDuration:duration.floatValue animations:^{
         self.logo.alpha = 1.0;

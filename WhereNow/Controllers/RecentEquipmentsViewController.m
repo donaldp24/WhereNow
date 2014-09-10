@@ -7,10 +7,10 @@
 //
 
 #import "RecentEquipmentsViewController.h"
-#import "RecentEquipmentDetailTableViewCell.h"
 #import "ModelManager.h"
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
+#import "CommonEquipmentTableViewCell.h"
 
 @interface RecentEquipmentsViewController () {
     UITableViewCell *editingCell;
@@ -65,6 +65,8 @@
     {
         self.navigationItem.title = self.generic.generic_name;
     }
+    
+    [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
 
 }
 
@@ -86,11 +88,17 @@
 */
 
 #pragma mark Table View Data Source
-static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
-- (EquipmentTableViewCell *)prototypeEquipmentTableViewCell
+static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
+- (CommonEquipmentTableViewCell *)prototypeEquipmentTableViewCell
 {
     if (_prototypeEquipmentTableViewCell == nil)
-        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
+    {
+        _prototypeEquipmentTableViewCell = [self.tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        if (_prototypeEquipmentTableViewCell == nil)
+        {
+            _prototypeEquipmentTableViewCell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+        }
+    }
     return _prototypeEquipmentTableViewCell;
 }
 
@@ -105,10 +113,19 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     return self.arrayEquipments.count;
 }
 
+- (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    return [[self prototypeEquipmentTableViewCell] heightForCell];
+}
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    EquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:@"equipmentcell"];
-    [cell bind:[self.arrayEquipments objectAtIndex:indexPath.row] generic:self.generic type:EquipmentCellTypeSearch];
+    CommonEquipmentTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+    if (cell == nil)
+    {
+        cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+    }
+    [cell bind:[self.arrayEquipments objectAtIndex:indexPath.row] generic:self.generic type:CommonEquipmentCellTypeRecent];
     return cell;
 }
 
@@ -151,7 +168,7 @@ static EquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         calcedIndexPath = [NSIndexPath indexPathForItem:recalcIndexPath.row inSection:recalcIndexPath.section];
     
     
-    EquipmentTableViewCell *tableCell = (EquipmentTableViewCell *)cell;
+    CommonEquipmentTableViewCell *tableCell = (CommonEquipmentTableViewCell *)cell;
     [tableCell setEditor:editing];
 
     

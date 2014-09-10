@@ -21,6 +21,7 @@
     Equipment *_equipment;
     LeDeviceManager *_mgr;
     NSTimer *_timerForAlert;
+    UIImage *images[11];
 }
 
 @property (nonatomic, strong) NSMutableArray *arrayMovements;
@@ -110,6 +111,19 @@
     // set empty view to footer view
     UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
     self.tableView.tableFooterView = v;
+    
+    // init percent image array
+    images[0] = [UIImage imageNamed:@"movepercent0"];
+    images[1] = [UIImage imageNamed:@"movepercent1"];
+    images[2] = [UIImage imageNamed:@"movepercent2"];
+    images[3] = [UIImage imageNamed:@"movepercent3"];
+    images[4] = [UIImage imageNamed:@"movepercent4"];
+    images[5] = [UIImage imageNamed:@"movepercent5"];
+    images[6] = [UIImage imageNamed:@"movepercent6"];
+    images[7] = [UIImage imageNamed:@"movepercent7"];
+    images[8] = [UIImage imageNamed:@"movepercent8"];
+    images[9] = [UIImage imageNamed:@"movepercent9"];
+    images[10] = [UIImage imageNamed:@"movepercent10"];
     
 }
 
@@ -212,18 +226,50 @@ static UITableViewCell *_prototypeHistoryCell = nil;
         return [self prototypeHistoryCell].bounds.size.height;
 }
 
+
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
     UITableViewCell *cell = nil;
     
     if (indexPath.section == 0)
+    {
         cell = [tableView dequeueReusableCellWithIdentifier:@"movementscell"];
+        int moves[7];
+        moves[0] = [self.movementCount.mon intValue];
+        moves[1] = [self.movementCount.tue intValue];
+        moves[2] = [self.movementCount.wed intValue];
+        moves[3] = [self.movementCount.thu intValue];
+        moves[4] = [self.movementCount.fri intValue];
+        moves[5] = [self.movementCount.sat intValue];
+        moves[6] = [self.movementCount.sun intValue];
+        int min = 10000;
+        int max = 0;
+        for (int i = 0; i < 7; i++) {
+            if (moves[i] > max)
+                max = moves[i];
+            if (moves[i] < min)
+                min = moves[i];
+        }
+        
+        for (int i = 0; i < 7; i ++) {
+            UIImageView *ivProgress = (UIImageView *)[cell viewWithTag:(100 + i)];
+            if (max == 0)
+                ivProgress.image = images[0];
+            else
+            {
+                int index = (int)(((CGFloat)moves[i] / (CGFloat)max) * 10);
+                if (index == 0 && moves[i] > 0)
+                    index = 1;
+                ivProgress.image = images[index];
+            }
+        }
+    }
     else
     {
         NSString *date = [self.groupedDates objectAtIndex:indexPath.section - 1];
         NSArray *array = [self.groupedMovements objectForKey:date];
         
-        int index = indexPath.row;
+        int index = (int)indexPath.row;
         EquipMovement *movement = [array objectAtIndex:index];
         cell = [tableView dequeueReusableCellWithIdentifier:@"historycell"];
         UILabel *lblLevel = (UILabel *)[cell viewWithTag:100];
@@ -231,6 +277,7 @@ static UITableViewCell *_prototypeHistoryCell = nil;
         UILabel *stay_time1 = (UILabel *)[cell viewWithTag:102];
         UILabel *stay_time2 = (UILabel *)[cell viewWithTag:103];
         
+        lblLevel.text = movement.parent_location_name;
         lblLocation.text = movement.location_name;
         stay_time1.text = [NSString stringWithFormat:@"arrived at %@", movement.time];
         stay_time2.text = [NSString stringWithFormat:@"at location for %@", movement.stay_time];
@@ -343,19 +390,19 @@ static UITableViewCell *_prototypeHistoryCell = nil;
     //
 }
 
-- (void)retrieveStoredDeviceUUIDsForLeDeviceManager:(LeDeviceManager *)mgr
-{
-    //
-}
-
-- (void)leDeviceManager:(LeDeviceManager *)mgr valueForDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
-{
-    //
-}
-
 - (void)leDeviceManager:(LeDeviceManager *)mgr setValue:(id)value forDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
 {
     //
+}
+
+- (id)leDeviceManager:(LeDeviceManager *)mgr valueForDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
+{
+    return nil;
+}
+
+- (NSArray *)retrieveStoredDeviceUUIDsForLeDeviceManager:(LeDeviceManager *)mgr
+{
+    return nil;
 }
 
 - (BOOL)leDeviceManager:(LeDeviceManager *)mgr willAddNewDeviceForPeripheral:(CBPeripheral*)peripheral advertisementData:(NSDictionary *)advData
@@ -380,9 +427,6 @@ static UITableViewCell *_prototypeHistoryCell = nil;
 - (void)leDeviceManager:(LeDeviceManager *)mgr didDiscoverDevice:(LeDevice *)dev advertisementData:(NSDictionary *)advData RSSI:(NSNumber *)RSSI
 {
     // check dev is the device to that we have to connect.
-    for (id key in [advData allKeys]) {
-        NSObject *obj = [advData objectForKey:key];
-    }
     
     NSLog(@"dev - %@", dev.name);
     LeSnfDevice *snfDev = (LeSnfDevice *)dev;

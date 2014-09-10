@@ -153,7 +153,6 @@ enum  {
     UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc] initWithTarget:self action:@selector(backgroundTap:)];
     [self.view addGestureRecognizer:tap];
     
-#if 1
     // login when last user logged in already
     if ([UserContext sharedUserContext].isLastLoggedin)
     {
@@ -163,7 +162,7 @@ enum  {
         
         // login
         SHOW_PROGRESS(@"Please Wait");
-        [[ServerManager sharedManager] loginUserWithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId)
+        [[ServerManager sharedManager] loginUserV2WithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId)
          {
              [SVProgressHUD dismiss];
 
@@ -189,7 +188,7 @@ enum  {
         if (![[UserContext sharedUserContext].userName isEqualToString:@""])
             self.usernameTextField.text = [UserContext sharedUserContext].userName;
     }
-#endif
+
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -463,7 +462,6 @@ enum  {
     if (currentResponder) {
         [currentResponder resignFirstResponder];
     }
-#if 1
     
     int nInput = [self getInputType];
     
@@ -471,7 +469,7 @@ enum  {
         [self showAlertMessage:nInput];
     } else {
         SHOW_PROGRESS(@"Please Wait");
-        [[ServerManager sharedManager] loginUserWithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId)
+        [[ServerManager sharedManager] loginUserV2WithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId)
         {
             [SVProgressHUD dismiss];
             
@@ -516,18 +514,7 @@ enum  {
             HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"%@", msg]));
         }];
     }
-#else
-    
-    // save status
-    [UserContext sharedUserContext].userName = @"testuser50";
-    [UserContext sharedUserContext].password = @"testuser1!";
-    [UserContext sharedUserContext].isLastLoggedin = NO;
-    [UserContext sharedUserContext].sessionId = @"SESID-AABB";
-    [UserContext sharedUserContext].userId = @"27";
-    
-    [self performSegueWithIdentifier:@"goMain" sender:self];
-    
-#endif
+
 }
 
 - (void)prepareForEnteringLoginState {

@@ -33,7 +33,7 @@
     
     self.navigationController.navigationBarHidden = YES;
     
-    [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+    [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
     } failure: ^(NSString *msg) {
         NSLog(@"Data request failed : %@", msg);
     }];

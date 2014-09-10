@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "DetailBaseTableViewController.h"
 
-@interface AlertsViewController : UITableViewController
+@interface AlertsViewController : DetailBaseTableViewController
 
 @end
  

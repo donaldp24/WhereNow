@@ -7,8 +7,9 @@
 //
 
 #import "EquipmentTabBarController.h"
+#import "DetailBaseTableViewController.h"
 
-@interface EquipmentTabBarController ()
+@interface EquipmentTabBarController () <UIActionSheetDelegate>
 
 @end
 
@@ -27,6 +28,11 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
+    
+    for (UINavigationController *nav in self.viewControllers) {
+        DetailBaseTableViewController *vc = (DetailBaseTableViewController *)[[nav viewControllers] objectAtIndex:0];
+        vc.delegate = self;
+    }
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -40,6 +46,7 @@
     // Dispose of any resources that can be recreated.
 }
 
+
 /*
 #pragma mark - Navigation
 
@@ -52,5 +59,43 @@
 */
 
 
+#pragma mark - menu delegate
+- (void)onMenu:(id)sender
+{
+    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
+                                                             delegate:self
+                                                    cancelButtonTitle:@"Cancel"
+                                               destructiveButtonTitle:nil
+                                                    otherButtonTitles:
+                                  @"Page Device",
+                                  @"Report for Service",
+                                  nil];
+    //    [actionSheet setTintColor:[UIColor darkGrayColor]];
+    
+    [actionSheet showFromBarButtonItem:sender animated:YES];
+}
+
+#pragma mark - Action Sheet Delegate
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0) {
+        // Page Device
+        [self onPageDevice:self.equipment];
+    }
+    else if (buttonIndex == 1){
+        // Report for Service
+        [self onReportForService:self.equipment];
+    }
+}
+
+- (void)onPageDevice:(Equipment *)equipment
+{
+    
+}
+
+- (void)onReportForService:(Equipment *)equipment
+{
+    //
+}
 
 @end

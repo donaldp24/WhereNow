@@ -19,6 +19,8 @@
         <attribute name="current_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="current_location_parent_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="current_location_parent_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="equipment_alert_icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="equipment_alert_icon_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="equipment_file_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -47,6 +49,7 @@
         <attribute name="direction" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="parent_location_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="stay_minutes" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="stay_time" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="time" optional="YES" attributeType="String" syncable="YES"/>
@@ -55,13 +58,14 @@
     <entity name="Generic" representedClassName="Generic" syncable="YES">
         <attribute name="alert_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="alert_icon" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="alert_icon_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="generic_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="generic_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="genericwise_equipment_count" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isrecent" optional="YES" attributeType="Boolean" syncable="YES"/>
-        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recenttime" optional="YES" attributeType="Date" syncable="YES"/>
+        <attribute name="status_message" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="GenericLocation" representedClassName="GenericLocation" syncable="YES">
         <attribute name="ble_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
@@ -72,8 +76,8 @@
         <attribute name="major" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="minimum_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
-        <attribute name="note" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="optimal_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="status_message" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="warning_level" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
@@ -89,9 +93,9 @@
     </entity>
     <elements>
         <element name="Alert" positionX="-36" positionY="117" width="128" height="210"/>
-        <element name="Equipment" positionX="-36" positionY="81" width="128" height="420"/>
-        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="195"/>
-        <element name="Generic" positionX="-63" positionY="-18" width="128" height="180"/>
+        <element name="Equipment" positionX="-36" positionY="81" width="128" height="448"/>
+        <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="210"/>
+        <element name="Generic" positionX="-63" positionY="-18" width="128" height="195"/>
         <element name="GenericLocation" positionX="-54" positionY="18" width="128" height="225"/>
         <element name="MovementCount" positionX="-36" positionY="135" width="128" height="163"/>
     </elements>

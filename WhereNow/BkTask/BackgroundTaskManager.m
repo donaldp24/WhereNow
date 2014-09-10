@@ -30,7 +30,7 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
 - (id)init
 {
     self = [super init];
-    
+
     self.arrayVicinityBeacons = [[NSMutableArray alloc] init];
     
     self.arrayNearmeGenerics = [[NSMutableArray alloc] init];
@@ -73,7 +73,7 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
 - (void)requestLocationInfo:(NSMutableArray *)arrayBeacons complete:(void (^)())complete
 {
     // send request in background
-    [[ServerManager sharedManager] getCurrLocation:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId arrayBeacons:arrayBeacons success:^(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments) {
+    [[ServerManager sharedManager] getCurrLocationV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId arrayBeacons:arrayBeacons success:^(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments) {
         
         self.arrayNearmeGenerics = arrayGenerics;
         self.arrayVicinityEquipments = arrayVicinityEquipments;

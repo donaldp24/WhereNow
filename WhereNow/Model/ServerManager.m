@@ -57,7 +57,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         return;
     }
     
-    NSURL  *url = [NSURL URLWithString:SERVICE_URL];
+    NSURL  *url = [NSURL URLWithString:API_URL];
 	AFHTTPClient  *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     
     void (^successHandler)(AFHTTPRequestOperation *operation, id responseObject)  = ^(AFHTTPRequestOperation *operation, id responseObject)
@@ -73,6 +73,35 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
             // remove <pre> tag if exists
             if ([[responseStr substringToIndex:5] isEqualToString:@"<pre>"])
                 responseStr = [responseStr substringFromIndex:5];
+            // remove prefix till to meet {
+            NSRange range = [responseStr rangeOfString:@"{" options:0 range:NSMakeRange(0, responseStr.length)];
+            NSRange range1 = [responseStr rangeOfString:@"[" options:0 range:NSMakeRange(0, responseStr.length)];
+            
+            NSRange range2;
+            range2.length = 0;
+            range2.location = NSNotFound;
+            
+            if (range.location != NSNotFound && range1.location != NSNotFound)
+            {
+                if (range1.location < range.location)
+                    range2 = range1;
+                else
+                    range2 = range;
+            }
+            else if (range.location != NSNotFound)
+            {
+                range2 = range;
+            }
+            else if (range1.location != NSNotFound)
+            {
+                range2 = range1;
+            }
+                
+            if (range2.location != NSNotFound && range2.location > 0)
+            {
+                responseStr = [responseStr substringFromIndex:range2.location];
+            }
+            
             NSDictionary *responseDic = [responseStr JSONValue];
             NSLog(@"Request Successful, response '%@'", responseStr);
             handler(responseStr, responseDic, nil);
@@ -113,7 +142,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
-    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", @"ulin", userName, pwd];
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", kMethodForLogin, userName, pwd];
     [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
         
         if (error != nil)
@@ -174,13 +203,64 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
+- (void)loginUserV2WithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId))success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = @{@"uname": userName, @"upass": pwd};
+    DEF_SERVERMANAGER
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForLoginV2];
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"] ||
+                [responseStr isEqualToString:@"Invalid User Name Password\n"])
+            {
+                failure(@"Invalid User Name and Password!");
+            }
+            else
+            {
+                success(@"SESID-AABB", @"27");
+            }
+            return;
+        }
+        else
+        {
+            //{"ERROR":"Invalid User Name or Password"}
+            // or {"ID":"SESID-AABB","UID":"27"}
+            NSString *userId = [response objectForKey:@"UID"];
+            if (userId == nil || [userId isEqual:[NSNull null]])
+            {
+                NSString *msg = [response objectForKey:@"ERROR"];
+                if (msg == nil)
+                    msg = @"Unknown error";
+                failure(msg);
+            }
+            else
+            {
+                NSString *sessionId = [response objectForKey:@"ID"];
+                if (sessionId == nil || [sessionId isEqual:[NSNull null]])
+                    failure(@"Invalid response");
+                else
+                    success(sessionId, userId);
+            }
+        }
+    }];
+}
+
+
 #pragma mark - get generics
 - (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
 {
     NSDictionary *params = nil;
     DEF_SERVERMANAGER
    
-    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", sessionId, @"getglist", userId];
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@/%@.json", kAPIBaseUrl, sessionId, @"getglist", userId];
 
     [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
         
@@ -198,12 +278,75 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
             }
             else
             {
-                //
+                failure(@"Invalid Response!");
             }
             return;
         }
         else
         {
+            NSString *msg = [response objectForKey:@"ERROR"];
+            if (msg != nil)
+            {
+                failure(msg);
+                return;
+            }
+            
+            
+            // parse response, insert & update managed objects, save context
+            [self.parser parseGenericResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+        
+    }];
+    
+}
+
+- (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = @{@"uid": userId};
+    DEF_SERVERMANAGER
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid Response!");
+            }
+            return;
+        }
+        else
+        {
+            if ([response isKindOfClass:[NSDictionary class]])
+            {
+                NSString *msg = [response objectForKey:@"ERROR"];
+                if (msg != nil)
+                {
+                    failure(msg);
+                    return;
+                }
+                else
+                {
+                    failure(@"unknown error!");
+                    return;
+                }
+            }
+            
             // parse response, insert & update managed objects, save context
             [self.parser parseGenericResponse:response];
             
@@ -321,18 +464,85 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
+- (void)getCurrLocationV2:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))sc failure:(void (^)(NSString *))failure
+{
+    
+    DEF_SERVERMANAGER
+    
+    // parse beacon arrays and make params
+    NSMutableArray *beaconsJsonArray = [[NSMutableArray alloc] init];
+    for (CLBeacon *beacon in arrayBeacons) {
+        NSMutableDictionary *dicBeacon = [[NSMutableDictionary alloc] init];
+        [dicBeacon setObject:[beacon.proximityUUID UUIDString] forKey:@"uuid"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.major intValue]] forKey:@"major"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.minor intValue]] forKey:@"minor"];
+        [beaconsJsonArray addObject:dicBeacon];
+    }
+    
+    if (arrayBeacons.count <= 0)
+    {
+        NSMutableDictionary *dicBeacon = [[NSMutableDictionary alloc] init];
+        [dicBeacon setObject:@"B125AA4F-2D82-401D-92E5-F962E8037F5C" forKey:@"uuid"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", 100] forKey:@"major"];
+        [dicBeacon setObject:[NSString stringWithFormat:@"%d", 10] forKey:@"minor"];
+        [beaconsJsonArray addObject:dicBeacon];
+    }
+    
+    NSData *serializedData = [NSJSONSerialization dataWithJSONObject:beaconsJsonArray options:0 error:nil];
+    NSString *strJsonScanned = [[NSString alloc] initWithBytes:[serializedData bytes] length:[serializedData length] encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *params = @{@"uid":userId, @"scanned":strJsonScanned};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@/%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            // parse response
+            [self.parser parseNearmeResponse:response complete:^(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments) {
+                
+                sc(arrayGenerics, arrayVicinityEquipments, arrayLocationEquipments);
+                
+            } failure:^() {
+                //
+                failure(@"failed to parse response");
+            }];
+        }
+    }];
+}
+
+
 #pragma mark - Utilities
 - (void) setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString
 {
     if (urlString != nil && ![urlString isEqualToString:@""])
     {
-        NSString *strImage = [NSString stringWithFormat:@"%@%@", BASE_URL, urlString];
+        NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
         [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
     }
     else
     {
         // url is incorrect
-        NSString *strImage = [NSString stringWithFormat:@"%@%@", BASE_URL, urlString];
+        NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
         [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
     }
 }

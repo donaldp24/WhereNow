@@ -1,14 +1,18 @@
 //
-//  LocationTableViewCell.m
+//  CommonLocationTableViewCell.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 04/08/14.
+//  Created by Xiaoxue Han on 09/09/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
-#import "LocationTableViewCell.h"
+#import "CommonLocationTableViewCell.h"
 
-@interface LocationTableViewCell ()
+#define kHeightForCell      (64.0f)
+
+@interface CommonLocationTableViewCell () {
+    //
+}
 
 @property (nonatomic, weak) IBOutlet UILabel *lblName;
 @property (nonatomic, weak) IBOutlet UILabel *lblCount;
@@ -16,16 +20,7 @@
 
 @end
 
-@implementation LocationTableViewCell
-
-- (id)initWithStyle:(UITableViewCellStyle)style reuseIdentifier:(NSString *)reuseIdentifier
-{
-    self = [super initWithStyle:style reuseIdentifier:reuseIdentifier];
-    if (self) {
-        // Initialization code
-    }
-    return self;
-}
+@implementation CommonLocationTableViewCell
 
 - (void)awakeFromNib
 {
@@ -35,14 +30,8 @@
 - (void)setSelected:(BOOL)selected animated:(BOOL)animated
 {
     [super setSelected:selected animated:animated];
-    
+
     // Configure the view for the selected state
-}
-
-- (void)setHighlighted:(BOOL)highlighted animated:(BOOL)animated
-{
-    [super setHighlighted:highlighted animated:animated];
-
 }
 
 - (void)bind:(GenericLocation *)genericLocation
@@ -50,6 +39,8 @@
     self.genericLocation = genericLocation;
     
     self.lblName.text = genericLocation.location_name;
+    self.lblCount.text = [NSString stringWithFormat:@"%d in area", [genericLocation.location_wise_equipment_count intValue]];
+    self.lblNote.text = genericLocation.status_message;
     
     [self layoutIfNeeded];
 }
@@ -59,5 +50,10 @@
     //
 }
 
+// utility
+- (CGFloat)heightForCell
+{
+    return kHeightForCell;
+}
 
 @end

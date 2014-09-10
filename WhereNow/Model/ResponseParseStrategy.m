@@ -397,11 +397,12 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_STRING(uuid, dicLocation, @"UUID", @"");
             GET_SAFE_INT(major, dicLocation, @"Major", 0);
             GET_SAFE_INT(minor, dicLocation, @"Minor", 0);
+            GET_SAFE_STRING(status_message, dicLocation, @"status_message", @"");
 
             
             NSMutableArray *arrayHierarchy = [dicLocation objectForKey:@"location_hierarchy"];
             
-            NSString *note = @"";
+            
             
             GenericLocation *existLocation = nil;
             
@@ -431,7 +432,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existLocation.optimal_level = [NSNumber numberWithInt:optimal_level];
                 existLocation.warning_level = [NSNumber numberWithInt:warning_level];
                 existLocation.minimum_level = [NSNumber numberWithInt:minimum_level];
-                existLocation.note = note;
+                existLocation.status_message = status_message;
                 existLocation.uuid = uuid;
                 existLocation.major = @(major);
                 existLocation.minor = @(minor);
@@ -453,7 +454,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 location.optimal_level = [NSNumber numberWithInt:optimal_level];
                 location.warning_level = [NSNumber numberWithInt:warning_level];
                 location.minimum_level = [NSNumber numberWithInt:minimum_level];
-                location.note = note;
+                location.status_message = status_message;
                 location.uuid = uuid;
                 location.major = @(major);
                 location.minor = @(minor);
@@ -466,14 +467,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             // arrayHierarchy
             if (arrayHierarchy)
             {
-                for (NSDictionary *dicHierarchy in arrayHierarchy) {
+                //for (NSDictionary *dicHierarchy in arrayHierarchy) {
                     /*
                     int h_ble_location_id = [[dicHierarchy objectForKey:@"ble_location_id"] intValue];
                     int h_company_id = [[dicHierarchy objectForKey:@"company_id"] intValue];
                     int h_location_parent_id = [[dicHierarchy objectForKey:@"location_parent_id"] intValue];
                     NSString *h_location_name = [dicHierarchy objectForKey:@"location_name"];
                      */
-                }
+                //}
             }
         }
         
@@ -593,6 +594,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_STRING(current_location_parent_name, dicEquipment, @"current_location_parent_name", @"");
             GET_SAFE_INT(current_location_parent_id, dicEquipment, @"current_location_parent_id", 0);
             
+            GET_SAFE_STRING(equipment_alert_icon, dicEquipment, @"equipment_alert_icon", @"");
+            GET_SAFE_INT(equipment_alert_icon_id, dicEquipment, @"equipment_alert_icon_id", 0);
+            
             
             
             Equipment *existEquipment = nil;
@@ -647,6 +651,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 existEquipment.current_location_parent_name = current_location_parent_name;
                 existEquipment.current_location_parent_id = @(current_location_parent_id);
+                
+                existEquipment.equipment_alert_icon = equipment_alert_icon;
+                existEquipment.equipment_alert_icon_id = @(equipment_alert_icon_id);
 
                 
                 [arrayNewEquipments addObject:existEquipment];
@@ -697,6 +704,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 equipment.current_location_parent_name = current_location_parent_name;
                 equipment.current_location_parent_id = @(current_location_parent_id);
                 
+                equipment.equipment_alert_icon = equipment_alert_icon;
+                equipment.equipment_alert_icon_id = @(equipment_alert_icon_id);
+                
                 [arrayNewEquipments addObject:equipment];
                 
                 if (movement_array)
@@ -742,10 +752,10 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(genericwise_equipment_count, dicGeneric, @"genericwise_equipment_count", 0);
             GET_SAFE_INT(alert_count, dicGeneric, @"alert_count", 0);
             GET_SAFE_STRING(alert_icon, dicGeneric, @"alert_icon", @"");
+            GET_SAFE_STRING(status_message, dicGeneric, @"status_message", @"");
 
             BOOL isfavorites = NO;
-            NSString *note = @"";
-            
+           
             Generic *newGeneric = nil;
             
             // is exist
@@ -764,7 +774,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existGeneric.generic_id = [NSNumber numberWithInt:generic_id];
                 existGeneric.generic_name = generic_name;
                 existGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
-                existGeneric.note = note;
+                existGeneric.status_message = status_message;
                 existGeneric.alert_count = @(alert_count);
                 existGeneric.alert_icon = alert_icon;
                 
@@ -781,7 +791,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 newGeneric.generic_name = generic_name;
                 newGeneric.genericwise_equipment_count = [NSNumber numberWithInt:genericwise_equipment_count];
                 newGeneric.isfavorites = @(isfavorites);
-                newGeneric.note = note;
+                newGeneric.status_message = status_message;
                 
                 
                 newGeneric.alert_count = @(alert_count);
