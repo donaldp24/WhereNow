@@ -13,6 +13,7 @@
 
 @required
 - (void)onMenu:(id)sender;
+- (void)onBack:(id)sender;
 
 @end
 

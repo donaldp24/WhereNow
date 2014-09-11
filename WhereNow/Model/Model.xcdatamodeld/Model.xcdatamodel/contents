@@ -5,9 +5,11 @@
         <attribute name="alert_type" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="current_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="current_location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="current_location_parent_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="direction" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="equipment_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="location_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="location_parent_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="serial_no" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="trigger_datetime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="trigger_string" optional="YES" attributeType="String" syncable="YES"/>
@@ -92,7 +94,7 @@
         <attribute name="wed" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Alert" positionX="-36" positionY="117" width="128" height="210"/>
+        <element name="Alert" positionX="-36" positionY="117" width="128" height="240"/>
         <element name="Equipment" positionX="-36" positionY="81" width="128" height="448"/>
         <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="210"/>
         <element name="Generic" positionX="-63" positionY="-18" width="128" height="195"/>

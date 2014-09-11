@@ -2,7 +2,7 @@
 //  Alert.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 22/08/14.
+//  Created by Xiaoxue Han on 11/09/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -13,14 +13,16 @@
 
 @dynamic alert_id;
 @dynamic alert_type;
+@dynamic current_location_id;
+@dynamic current_location_name;
+@dynamic direction;
+@dynamic equipment_id;
 @dynamic location_name;
 @dynamic serial_no;
-@dynamic equipment_id;
-@dynamic current_location_name;
-@dynamic user_count;
 @dynamic trigger_datetime;
-@dynamic current_location_id;
-@dynamic direction;
 @dynamic trigger_string;
+@dynamic user_count;
+@dynamic current_location_parent_name;
+@dynamic location_parent_name;
 
 @end

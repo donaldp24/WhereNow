@@ -11,15 +11,11 @@
 #import "UIManager.h"
 #import "ModelManager.h"
 #import "ServerManager.h"
-#import "BackgroundTaskManager.h"
 
-#import <snfsdk/snfsdk.h>
-
-@interface HistoryViewController () <UIActionSheetDelegate, LeDeviceManagerDelegate, LeSnfDeviceDelegate>
+@interface HistoryViewController ()
 {
     UIBarButtonItem *_backButton;
     Equipment *_equipment;
-    LeDeviceManager *_mgr;
     NSTimer *_timerForAlert;
     UIImage *images[11];
 }
@@ -343,136 +339,16 @@ static UITableViewCell *_prototypeHistoryCell = nil;
 #pragma mark - Back button
 - (void)onBack:(id)sender
 {
-    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    if (self.delegate)
+        [self.delegate onBack:sender];
 }
 
 #pragma mark - Menu button
 - (void)onMenu:(id)sender
 {
-    UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
-                                                             delegate:self
-                                                    cancelButtonTitle:@"Cancel"
-                                               destructiveButtonTitle:nil
-                                                    otherButtonTitles:
-                                  @"Page Device",
-                                  @"Report for Service",
-                                  nil];
-    //    [actionSheet setTintColor:[UIColor darkGrayColor]];
+    if (self.delegate)
+        [self.delegate onMenu:sender];
     
-    [actionSheet showFromBarButtonItem:sender animated:YES];
-    
-}
-
-#pragma mark - Action Sheet Delegate
-- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
-{
-    if (buttonIndex == 0) {
-        // Page Device
-        [self onPageDevice];
-    }
-    else if (buttonIndex == 1){
-        // Report for Service
-    }
-}
-
-- (void)onPageDevice
-{
-    [[BackgroundTaskManager sharedManager] stopScanning];
-    
-    //
-    _mgr = [[LeDeviceManager alloc] initWithSupportedDevices:@[[LeSnfDevice class]] delegate:self];
-    [_mgr startScan];
-}
-
-#pragma mark - LeDeviceManagerdelegate
-- (void)leDeviceManager:(LeDeviceManager *)mgr didAddNewDevice:(LeDevice *)dev
-{
-    //
-}
-
-- (void)leDeviceManager:(LeDeviceManager *)mgr setValue:(id)value forDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
-{
-    //
-}
-
-- (id)leDeviceManager:(LeDeviceManager *)mgr valueForDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
-{
-    return nil;
-}
-
-- (NSArray *)retrieveStoredDeviceUUIDsForLeDeviceManager:(LeDeviceManager *)mgr
-{
-    return nil;
-}
-
-- (BOOL)leDeviceManager:(LeDeviceManager *)mgr willAddNewDeviceForPeripheral:(CBPeripheral*)peripheral advertisementData:(NSDictionary *)advData
-{
-    for (id key in [advData allKeys]) {
-        NSObject *obj = [advData objectForKey:key];
-        if (obj && [(NSString *)key isEqualToString:@"kCBAdvDataServiceUUIDs"]) {
-            NSArray *arrayServices = (NSArray *)obj;
-            for (CBUUID *uuid in arrayServices) {
-                NSLog(@"Service uuid - %@", uuid.UUIDString);
-            }
-        }
-    }
-    return YES;
-}
-
-- (Class)leDeviceManager:(LeDeviceManager *)mgr didDiscoverUnknownPeripheral:(CBPeripheral*)peripheral advertisementData:(NSDictionary *)advData RSSI:(NSNumber *)RSSI
-{
-    return nil;
-}
-
-- (void)leDeviceManager:(LeDeviceManager *)mgr didDiscoverDevice:(LeDevice *)dev advertisementData:(NSDictionary *)advData RSSI:(NSNumber *)RSSI
-{
-    // check dev is the device to that we have to connect.
-    
-    NSLog(@"dev - %@", dev.name);
-    LeSnfDevice *snfDev = (LeSnfDevice *)dev;
-    if (snfDev.state == LE_DEVICE_STATE_DISCONNECTED) {
-        NSLog(@"connecting to %@ ", dev.name);
-        snfDev.delegate = self;
-        [snfDev connect];
-    }
-    
-}
-
-
-#pragma mark - LeSnfDeviceDelegate
-/*
- called when the connection state of a device changes.
- */
-- (void)leSnfDevice:(LeSnfDevice *)dev didChangeState:(int)state
-{
-    if (state == LE_DEVICE_STATE_CONNECTED)
-    {
-        NSLog(@"device connected");
-        
-        // enable alert sound
-        [dev enableAlertSound:YES light:YES];
-    }
-    else if (state == LE_DEVICE_STATE_DISCONNECTED)
-    {
-        NSLog(@"device disconnected ");
-    }
-}
-
-/*
- called when a broadcast from the device is received.
- */
-- (void)didDiscoverLeSnfDevice:(LeSnfDevice *)dev
-{
-    NSLog(@"didDiscoverLeSnfDevice : %@", dev.name);
-}
-
-- (void)didEnableAlertForLeSnfDevice:(LeSnfDevice *)dev success:(BOOL)success
-{
-    NSLog(@"didEnableAlertForLeSnfDevice : %@ - %@", dev.name, (success)?@"success":@"failed");
-    
-    [dev disconnect];
-    [_mgr stopScan];
-    _mgr = nil;
 }
 
 

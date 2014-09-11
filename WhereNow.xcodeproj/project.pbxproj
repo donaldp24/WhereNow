@@ -81,6 +81,7 @@
 		D04BBCB3199243520002DFC5 /* ModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCB2199243520002DFC5 /* ModelManager.m */; };
 		D0551D6D19BEAEDB0066DF53 /* CommonLocationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */; };
 		D0551D6E19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */; };
+		D06B3B0119C126FE00EC80C8 /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = D06B3B0019C126FE00EC80C8 /* Alert.m */; };
 		D083B1331989EFC8006E006B /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */; };
 		D083B1341989EFC8006E006B /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B12E1989EFC8006E006B /* SVProgressHUD.m */; };
 		D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B1311989EFC8006E006B /* SwipeTableView.m */; };
@@ -101,7 +102,6 @@
 		D0BCCA911990C1EA0047D2D2 /* UIImageView+AFNetworking.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BCCA881990C1EA0047D2D2 /* UIImageView+AFNetworking.m */; };
 		D0BD1051198B5C3E0076800E /* UserContext.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BD1050198B5C3E0076800E /* UserContext.m */; };
 		D0BF690019A66ADB009573E8 /* MovementCount.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BF68FF19A66ADB009573E8 /* MovementCount.m */; };
-		D0BF690319A67015009573E8 /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BF690219A67015009573E8 /* Alert.m */; };
 		D0C0BCD719A3196A0016787F /* RecentEquipmentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C0BCD619A3196A0016787F /* RecentEquipmentsViewController.m */; };
 		D0C4E0E9198A3A13003C09A1 /* AccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0E8198A3A13003C09A1 /* AccountViewController.m */; };
 		D0C4E0EC198A4130003C09A1 /* UserNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0EB198A4130003C09A1 /* UserNameViewController.m */; };
@@ -263,6 +263,8 @@
 		D0551D6A19BEAEDB0066DF53 /* CommonLocationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonLocationTableViewCell.h; sourceTree = "<group>"; };
 		D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonLocationTableViewCell.m; sourceTree = "<group>"; };
 		D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommonLocationTableViewCell.xib; sourceTree = "<group>"; };
+		D06B3AFF19C126FE00EC80C8 /* Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alert.h; sourceTree = "<group>"; };
+		D06B3B0019C126FE00EC80C8 /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
 		D083B12B1989EFC8006E006B /* SVProgressHUD+utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+utils.h"; sourceTree = "<group>"; };
 		D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		D083B12D1989EFC8006E006B /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
@@ -307,8 +309,6 @@
 		D0BD1050198B5C3E0076800E /* UserContext.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserContext.m; sourceTree = "<group>"; };
 		D0BF68FE19A66ADB009573E8 /* MovementCount.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MovementCount.h; sourceTree = "<group>"; };
 		D0BF68FF19A66ADB009573E8 /* MovementCount.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MovementCount.m; sourceTree = "<group>"; };
-		D0BF690119A67015009573E8 /* Alert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Alert.h; sourceTree = "<group>"; };
-		D0BF690219A67015009573E8 /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
 		D0C0BCD519A3196A0016787F /* RecentEquipmentsViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentEquipmentsViewController.h; sourceTree = "<group>"; };
 		D0C0BCD619A3196A0016787F /* RecentEquipmentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentEquipmentsViewController.m; sourceTree = "<group>"; };
 		D0C4E0E7198A3A13003C09A1 /* AccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountViewController.h; sourceTree = "<group>"; };
@@ -360,8 +360,6 @@
 			children = (
 				D0BF68FE19A66ADB009573E8 /* MovementCount.h */,
 				D0BF68FF19A66ADB009573E8 /* MovementCount.m */,
-				D0BF690119A67015009573E8 /* Alert.h */,
-				D0BF690219A67015009573E8 /* Alert.m */,
 				D0130AC019BD3F8D00A5EFFC /* EquipMovement.h */,
 				D0130AC119BD3F8D00A5EFFC /* EquipMovement.m */,
 				D03AC28D19BFD85C0024BF10 /* GenericLocation.h */,
@@ -370,6 +368,8 @@
 				D03AC29519BFFCAB0024BF10 /* Generic.m */,
 				D03AC29719C006820024BF10 /* Equipment.h */,
 				D03AC29819C006820024BF10 /* Equipment.m */,
+				D06B3AFF19C126FE00EC80C8 /* Alert.h */,
+				D06B3B0019C126FE00EC80C8 /* Alert.m */,
 			);
 			name = ManagedObjects;
 			sourceTree = "<group>";
@@ -862,7 +862,6 @@
 				D034F3A71988D373004DE04E /* ScanManager.m in Sources */,
 				D033E134198912FC0034EBC8 /* NSArray+MASAdditions.m in Sources */,
 				D03AC28F19BFD85C0024BF10 /* GenericLocation.m in Sources */,
-				D0BF690319A67015009573E8 /* Alert.m in Sources */,
 				D0C0BCD719A3196A0016787F /* RecentEquipmentsViewController.m in Sources */,
 				D04A389E198F84740063554C /* SBJsonStreamWriterState.m in Sources */,
 				D02817091998CE1B006C7FDC /* SDWebImageDownloaderOperation.m in Sources */,
@@ -877,6 +876,7 @@
 				D04A38A5198F849A0063554C /* Reachability.m in Sources */,
 				D033E136198912FC0034EBC8 /* View+MASAdditions.m in Sources */,
 				D0BCCA901990C1EA0047D2D2 /* AFXMLRequestOperation.m in Sources */,
+				D06B3B0119C126FE00EC80C8 /* Alert.m in Sources */,
 				D04A38A0198F84740063554C /* SBJsonUTF8Stream.m in Sources */,
 				D0130ACB19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.m in Sources */,
 				D0C9CF461989E0F500221268 /* MainTabBarController.m in Sources */,

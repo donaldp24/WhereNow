@@ -191,22 +191,31 @@ static UITableViewCell *_prototypeAlertCell = nil;
     
     if ([alert.alert_type isEqualToString:@"Current Alerts"])
     {
-        lblLevel.text = alert.current_location_name;
-        lblLocation.text = @"";
+        if (alert.current_location_parent_name != nil && ![alert.current_location_parent_name isEqualToString:@""])
+            lblLevel.text = alert.current_location_parent_name;
+        else
+            lblLevel.text = @"";
+        lblLocation.text = alert.current_location_name;
         lblNote1.text = @"exceeds time limit";
         lblNote2.text = [NSString stringWithFormat:@"return to %@", alert.location_name];
     }
     else if ([alert.alert_type isEqualToString:@"Time Alerts"])
     {
-        lblLevel.text = alert.location_name;
-        lblLocation.text = @"";
+        if (alert.location_parent_name != nil && ![alert.location_parent_name isEqualToString:@""])
+            lblLevel.text = alert.location_parent_name;
+        else
+            lblLevel.text = @"";
+        lblLocation.text = alert.location_name;
         lblNote1.text = [NSString stringWithFormat:@"alerts after %@", alert.trigger_string];
         lblNote2.text = [NSString stringWithFormat:@"alerts %d user", [alert.user_count intValue]];
     }
     else
     {
-        lblLevel.text = alert.location_name;;
-        lblLocation.text = @"";
+        if (alert.location_parent_name != nil && ![alert.location_parent_name isEqualToString:@""])
+            lblLevel.text = alert.location_parent_name;
+        else
+            lblLevel.text = @"";
+        lblLocation.text = alert.location_name;
         lblNote1.text = [NSString stringWithFormat:@"alerts %d user", [alert.user_count intValue]];
         lblNote2.text = @"";
     }
@@ -267,7 +276,8 @@ static UITableViewCell *_prototypeAlertCell = nil;
 #pragma mark - Back button
 - (void)onBack:(id)sender
 {
-    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];
+    if (self.delegate)
+        [self.delegate onBack:sender];
 }
 
 #pragma mark - Menu button

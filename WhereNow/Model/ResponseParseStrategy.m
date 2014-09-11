@@ -39,6 +39,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
 {
     @autoreleasepool {
         NSArray *arrayExistMovements = nil;
+        
         if (equipment) {
             arrayExistMovements = [[ModelManager sharedManager] equipmovementsForEquipment:equipment];
         }
@@ -171,6 +172,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_STRING(serial_no, dicAlert, @"serial_no", @"");
             GET_SAFE_INT(equipment_id, dicAlert, @"equipment_id", 0);
             GET_SAFE_STRING(current_location_name, dicAlert, @"current_location_name", @"");
+            GET_SAFE_STRING(location_parent_name, dicAlert, @"location_parent_name", @"");
+            GET_SAFE_STRING(current_location_parent_name, dicAlert, @"current_location_parent_name", @"");
             
             Alert *alert = [NSEntityDescription
                             insertNewObjectForEntityForName:@"Alert"
@@ -181,6 +184,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             alert.serial_no = serial_no;
             alert.equipment_id = @(equipment_id);
             alert.current_location_name = current_location_name;
+            alert.current_location_parent_name = current_location_parent_name;
+            alert.location_parent_name = location_parent_name;
 
         }
         
@@ -198,6 +203,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
             GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
             GET_SAFE_STRING(trigger_string, dicAlert, @"trigger_string", @"");
+            GET_SAFE_STRING(location_parent_name, dicAlert, @"location_parent_name", @"");
+            
             
             Alert *alert = [NSEntityDescription
                             insertNewObjectForEntityForName:@"Alert"
@@ -209,6 +216,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             alert.current_location_id = @(current_location_id);
             alert.location_name = location_name;
             alert.trigger_string = trigger_string;
+            alert.location_parent_name = location_parent_name;
             
             alert.equipment_id = equipment.equipment_id;
         }
@@ -227,6 +235,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
             GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
             GET_SAFE_STRING(direction, dicAlert, @"direction", @"");
+            GET_SAFE_STRING(location_parent_name, dicAlert, @"location_parent_name", @"");
             
             Alert *alert = [NSEntityDescription
                             insertNewObjectForEntityForName:@"Alert"
@@ -238,6 +247,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             alert.current_location_id = @(current_location_id);
             alert.location_name = location_name;
             alert.direction = direction;
+            alert.location_parent_name = location_parent_name;
             
             alert.equipment_id = equipment.equipment_id;
         }
@@ -256,6 +266,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
             GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
             GET_SAFE_STRING(direction, dicAlert, @"direction", @"");
+            GET_SAFE_STRING(location_parent_name, dicAlert, @"location_parent_name", @"");
             
             Alert *alert = [NSEntityDescription
                             insertNewObjectForEntityForName:@"Alert"
@@ -267,6 +278,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             alert.current_location_id = @(current_location_id);
             alert.location_name = location_name;
             alert.direction = direction;
+            alert.location_parent_name = location_parent_name;
             
             alert.equipment_id = equipment.equipment_id;
         }
@@ -284,6 +296,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
 - (BOOL)parseMovementCount:(NSArray *)arrayMovementCount withEquipment:(Equipment *)equipment
 {
     @autoreleasepool {
+        
         NSArray *arrayExistMovementCount = nil;
         if (equipment) {
             arrayExistMovementCount = [[ModelManager sharedManager] retrieveMovementCountForEquipment:equipment];
@@ -598,7 +611,6 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(equipment_alert_icon_id, dicEquipment, @"equipment_alert_icon_id", 0);
             
             
-            
             Equipment *existEquipment = nil;
             
             if (!generic)
@@ -658,8 +670,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 [arrayNewEquipments addObject:existEquipment];
                 
-                if (movement_array)
-                    [self parseMovements:movement_array withEquipment:existEquipment];
+                [self parseMovements:movement_array withEquipment:existEquipment];
                 
                 [self parseAlertsWithCurrentAlerts:current_alert timeAlerts:time_alert entryAlerts:entry_alert exitAlerts:exit_alert withEquipment:existEquipment];
                 

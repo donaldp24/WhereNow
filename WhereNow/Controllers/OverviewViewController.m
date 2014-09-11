@@ -186,7 +186,8 @@
 #pragma mark - Back button
 - (void)onBack:(id)sender
 {
-    [self.tabBarController dismissViewControllerAnimated:YES completion:nil];    
+    if (self.delegate)
+        [self.delegate onBack:sender];
 }
 
 #pragma mark - Menu button
