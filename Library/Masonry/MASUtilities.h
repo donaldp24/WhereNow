@@ -15,11 +15,11 @@
     #define MASEdgeInsets UIEdgeInsets
 
     enum {
-        MASLayoutPriorityRequired = UILayoutPriorityRequired,
-        MASLayoutPriorityDefaultHigh = UILayoutPriorityDefaultHigh,
+        MASLayoutPriorityRequired = 1000,
+        MASLayoutPriorityDefaultHigh = 750,
         MASLayoutPriorityDefaultMedium = 500,
-        MASLayoutPriorityDefaultLow = UILayoutPriorityDefaultLow,
-        MASLayoutPriorityFittingSizeLevel = UILayoutPriorityFittingSizeLevel,
+        MASLayoutPriorityDefaultLow = 250,
+        MASLayoutPriorityFittingSizeLevel = 50,
     };
     typedef float MASLayoutPriority;
 

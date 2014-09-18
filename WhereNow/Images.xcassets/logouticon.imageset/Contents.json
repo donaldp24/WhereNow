@@ -8,6 +8,10 @@
       "idiom" : "iphone",
       "scale" : "2x",
       "filename" : "logouticon@2x.png"
+    },
+    {
+      "idiom" : "iphone",
+      "scale" : "3x"
     }
   ],
   "info" : {

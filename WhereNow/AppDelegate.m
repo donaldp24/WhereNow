@@ -27,6 +27,9 @@
     // have to start scanning after logged in
     //[[BackgroundTaskManager sharedManager] startScanning];
     
+    // register push notification
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+    
     return YES;
 }
 							
@@ -63,6 +66,36 @@
     [[ModelManager sharedManager] saveContext];
 }
 
+#pragma mark - APNS
+- (void)application:(UIApplication *)application didRegisterForRemoteNotificationsWithDeviceToken:(NSData *)deviceToken
+{
+#if TARGET_IPHONE_SIMULATOR
+    
+#else
+    NSString* cleanDeviceToken = [[[[deviceToken description]
+                                    stringByReplacingOccurrencesOfString: @"<" withString: @""]
+                                   stringByReplacingOccurrencesOfString: @">" withString: @""]
+                                  stringByReplacingOccurrencesOfString: @" " withString: @""];
+    
+    NSLog(@"Registered for remote notifications  %@", cleanDeviceToken);
+    
+    // [[KNCommunicationManager sharedInstance] actionUpdateWithStringToken:cleanDeviceToken comletion:blockComplete];
+
+#endif
+}
+
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+{
+    NSLog(@"didReceiveRemoteNotification ---------- \n%@", userInfo);
+}
+
+- (void)application:(UIApplication *)application didFailToRegisterForRemoteNotificationsWithError:(NSError *)error
+{
+    if (error != nil)
+        NSLog(@"registering for remote notification failed : %@", [error description]);
+    else
+        NSLog(@"registering for remote notification failed");
+}
 
 
 @end

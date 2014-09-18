@@ -11,6 +11,10 @@
       "filename" : "login-password@2x.png"
     },
     {
+      "idiom" : "iphone",
+      "scale" : "3x"
+    },
+    {
       "idiom" : "ipad",
       "scale" : "1x"
     },

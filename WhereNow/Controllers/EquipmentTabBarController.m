@@ -96,11 +96,11 @@
 
 - (void)onPageDevice:(Equipment *)equipment
 {
-    [[BackgroundTaskManager sharedManager] stopScanning];
-    
-    //
-    _mgr = [[LeDeviceManager alloc] initWithSupportedDevices:@[[LeSnfDevice class]] delegate:self];
-    [_mgr startScan];
+//    [[BackgroundTaskManager sharedManager] stopScanning];
+//    
+//    //
+//    _mgr = [[LeDeviceManager alloc] initWithSupportedDevices:@[[LeSnfDevice class]] delegate:self];
+//    [_mgr startScan];
 }
 
 - (void)onReportForService:(Equipment *)equipment

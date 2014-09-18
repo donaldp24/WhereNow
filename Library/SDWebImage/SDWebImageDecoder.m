@@ -17,7 +17,7 @@
         // Do not decode animated images
         return image;
     }
-    
+
     CGImageRef imageRef = image.CGImage;
     CGSize imageSize = CGSizeMake(CGImageGetWidth(imageRef), CGImageGetHeight(imageRef));
     CGRect imageRect = (CGRect){.origin = CGPointZero, .size = imageSize};
