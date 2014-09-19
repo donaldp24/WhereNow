@@ -27,8 +27,19 @@
     // have to start scanning after logged in
     //[[BackgroundTaskManager sharedManager] startScanning];
     
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
+        [[UIApplication sharedApplication] registerUserNotificationSettings:[UIUserNotificationSettings settingsForTypes:(UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeBadge) categories:nil]];
+        [[UIApplication sharedApplication] registerForRemoteNotifications];
+    }
+    else
+    {
+        [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeAlert | UIRemoteNotificationTypeSound)];
+    }
+#else
     // register push notification
     [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
+#endif
     
     return YES;
 }
@@ -79,7 +90,8 @@
     
     NSLog(@"Registered for remote notifications  %@", cleanDeviceToken);
     
-    // [[KNCommunicationManager sharedInstance] actionUpdateWithStringToken:cleanDeviceToken comletion:blockComplete];
+    //if ([UserContext sharedUserContext].l)
+    //[ServerManager sharedManager] updateDeviceToken:<#(NSString *)#> userId:<#(NSString *)#> success:<#^(NSString *tokenId)success#> failure:<#^(NSString *)failure#>
 
 #endif
 }

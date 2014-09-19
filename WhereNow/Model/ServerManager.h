@@ -22,6 +22,7 @@
 // v2
 #define kAPIBaseUrlV2       @"api/v2/"
 #define kMethodForLoginV2   kAPIBaseUrlV2"user"
+#define kMethodForRegisterToken  kAPIBaseUrl"registertoken"
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -49,6 +50,8 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)getEquipments:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)updateDeviceToken:(NSString *)deviceToken userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
 
 /**
  *

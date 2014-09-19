@@ -608,6 +608,40 @@
             </objects>
             <point key="canvasLocation" x="2037" y="1379"/>
         </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="bLf-WV-bID">
+            <objects>
+                <navigationController storyboardIdentifier="AlertDetailNavigationViewController" definesPresentationContext="YES" id="jiZ-n6-0mA" sceneMemberID="viewController">
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="JB0-2y-5LF">
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <connections>
+                        <segue destination="hlU-Hy-ltW" kind="relationship" relationship="rootViewController" id="bRs-Xw-Lnb"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LsY-FF-j2V" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-1248" y="881"/>
+        </scene>
+        <!--Alert Detail View Controller-->
+        <scene sceneID="B3M-DV-I15">
+            <objects>
+                <viewController storyboardIdentifier="AlertDetailViewController" id="hlU-Hy-ltW" customClass="AlertDetailViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="VTZ-lL-I5N"/>
+                        <viewControllerLayoutGuide type="bottom" id="DW0-sI-gb4"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="CfM-W6-vAE">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" id="kR5-Wk-vXJ"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="qfE-MZ-Mfb" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-774" y="881"/>
+        </scene>
         <!--Alerts View Controller - Alerts-->
         <scene sceneID="GIh-bE-4g1">
             <objects>

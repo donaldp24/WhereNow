@@ -530,6 +530,44 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
+- (void)updateDeviceToken:(NSString *)deviceToken userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
+{
+    
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"uid":userId, @"utoken":deviceToken};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForRegisterToken];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            //NSString *userId = [response objectForKey:@"UID"];
+            NSString *tokenId = [response objectForKey:@"tokenID"];
+            success(tokenId);
+        }
+    }];
+}
+
 
 #pragma mark - Utilities
 - (void) setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString

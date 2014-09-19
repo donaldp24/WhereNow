@@ -19,6 +19,7 @@
 		D0130ACC19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0130ACA19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib */; };
 		D029A0A91993195400F4FA28 /* ResponseParseStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */; };
 		D02A8EDA19ADC1E20033A9D6 /* snfsdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D02A8ED919ADC1E20033A9D6 /* snfsdk.framework */; };
+		D02DB53F19CC54B90022DE20 /* AlertDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D02DB53E19CC54B90022DE20 /* AlertDetailViewController.m */; };
 		D033E12E198912FC0034EBC8 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E119198912FC0034EBC8 /* MASCompositeConstraint.m */; };
 		D033E12F198912FC0034EBC8 /* MASConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E11B198912FC0034EBC8 /* MASConstraint.m */; };
 		D033E130198912FC0034EBC8 /* MASConstraintMaker.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E11D198912FC0034EBC8 /* MASConstraintMaker.m */; };
@@ -148,6 +149,8 @@
 		D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseParseStrategy.m; sourceTree = "<group>"; };
 		D029A0AA199319F900F4FA28 /* ResponseParseStrategyProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseParseStrategyProtocol.h; sourceTree = "<group>"; };
 		D02A8ED919ADC1E20033A9D6 /* snfsdk.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = snfsdk.framework; path = Library/snfsdk.framework; sourceTree = "<group>"; };
+		D02DB53D19CC54B90022DE20 /* AlertDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AlertDetailViewController.h; sourceTree = "<group>"; };
+		D02DB53E19CC54B90022DE20 /* AlertDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AlertDetailViewController.m; sourceTree = "<group>"; };
 		D033E118198912FC0034EBC8 /* MASCompositeConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASCompositeConstraint.h; sourceTree = "<group>"; };
 		D033E119198912FC0034EBC8 /* MASCompositeConstraint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MASCompositeConstraint.m; sourceTree = "<group>"; };
 		D033E11A198912FC0034EBC8 /* MASConstraint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MASConstraint.h; sourceTree = "<group>"; };
@@ -700,6 +703,8 @@
 		D0C9CF391989E0F500221268 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				D02DB53D19CC54B90022DE20 /* AlertDetailViewController.h */,
+				D02DB53E19CC54B90022DE20 /* AlertDetailViewController.m */,
 				D03D826619BBFFF900D8CA91 /* EquipmentDetails */,
 				D0C9CF3C1989E0F500221268 /* LoginViewController.h */,
 				D0C9CF3D1989E0F500221268 /* LoginViewController.m */,
@@ -925,6 +930,7 @@
 				D03AC29619BFFCAB0024BF10 /* Generic.m in Sources */,
 				D0EA38F219C6CE0E006112C2 /* UIImageView+HighlightedWebCache.m in Sources */,
 				D0EA38EF19C6CE0E006112C2 /* UIImage+GIF.m in Sources */,
+				D02DB53F19CC54B90022DE20 /* AlertDetailViewController.m in Sources */,
 				D0BCCA911990C1EA0047D2D2 /* UIImageView+AFNetworking.m in Sources */,
 				D0EA38EA19C6CE0E006112C2 /* SDWebImageDownloader.m in Sources */,
 				D0BCCA8C1990C1EA0047D2D2 /* AFJSONRequestOperation.m in Sources */,
