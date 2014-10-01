@@ -13,11 +13,16 @@
 #define GLOBAL_UUID         @"B125AA4F-2D82-401D-92E5-F962E8037F5C"
 //#define HOSPITAL_MAJOR      51
 
+typedef NS_ENUM(NSUInteger, ScanMode) {
+    ScanModeNormal,
+    ScanModeNearme
+};
 
 @protocol ScanManagerDelegate <NSObject>
 
 @required
-- (void)vicinityBeaconsFound:(NSMutableArray *)arrayBeacons;
+- (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons;
+- (void)didBeaconsFound:(NSMutableArray *)arrayBeacons;
 
 @end
 
@@ -27,6 +32,7 @@
  * 
  */
 @property (nonatomic, strong) id<ScanManagerDelegate> delegate;
+@property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
 
@@ -39,6 +45,8 @@
  * stop ranging & mornitoring
  */
 - (void)stop;
+
+- (void)changeMode:(ScanMode)scanMode;
 
 - (BOOL)isStarted;
 

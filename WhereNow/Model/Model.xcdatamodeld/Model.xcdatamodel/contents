@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="5064" systemVersion="13E28" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
+<model userDefinedModelVersionIdentifier="" type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="6244" systemVersion="13F34" minimumToolsVersion="Xcode 4.3" macOSVersion="Automatic" iOSVersion="Automatic">
     <entity name="Alert" representedClassName="Alert" syncable="YES">
         <attribute name="alert_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="alert_type" optional="YES" attributeType="String" syncable="YES"/>
@@ -31,10 +31,16 @@
         <attribute name="has_beacon" optional="YES" attributeType="Boolean" defaultValueString="0" syncable="YES"/>
         <attribute name="home_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="home_location_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="home_location_parent_id" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="home_location_parent_name" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="isfavorites" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="islocating" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="isrecent" optional="YES" attributeType="Boolean" syncable="YES"/>
         <attribute name="major" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="manufacturer_file_location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="manufacturer_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="manufacturer_name" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="manufacturer_path_key" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="minor" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="model_file_location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="model_file_location_local" optional="YES" attributeType="String" syncable="YES"/>
@@ -42,6 +48,7 @@
         <attribute name="model_name_no" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="recenttime" optional="YES" attributeType="Date" syncable="YES"/>
         <attribute name="serial_no" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="sticknfind_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="uuid" optional="YES" attributeType="String" syncable="YES"/>
     </entity>
     <entity name="EquipMovement" representedClassName="EquipMovement" syncable="YES">
@@ -93,12 +100,18 @@
         <attribute name="tue" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
         <attribute name="wed" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
     </entity>
+    <entity name="TriggeredAlert" representedClassName="TriggeredAlert" syncable="YES">
+        <attribute name="alert_id" optional="YES" attributeType="Integer 32" defaultValueString="0" syncable="YES"/>
+        <attribute name="opened" optional="YES" attributeType="Boolean" syncable="YES"/>
+        <attribute name="opened_date" optional="YES" attributeType="String" syncable="YES"/>
+    </entity>
     <elements>
         <element name="Alert" positionX="-36" positionY="117" width="128" height="240"/>
-        <element name="Equipment" positionX="-36" positionY="81" width="128" height="448"/>
+        <element name="Equipment" positionX="-36" positionY="81" width="128" height="555"/>
         <element name="EquipMovement" positionX="-18" positionY="144" width="128" height="210"/>
-        <element name="Generic" positionX="-63" positionY="-18" width="128" height="195"/>
+        <element name="Generic" positionX="-63" positionY="-18" width="128" height="193"/>
         <element name="GenericLocation" positionX="-54" positionY="18" width="128" height="225"/>
         <element name="MovementCount" positionX="-36" positionY="135" width="128" height="163"/>
+        <element name="TriggeredAlert" positionX="-27" positionY="144" width="128" height="90"/>
     </elements>
 </model>

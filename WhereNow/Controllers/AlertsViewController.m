@@ -11,6 +11,7 @@
 #import "UIManager.h"
 #import "ModelManager.h"
 #import "ServerManager.h"
+#import "EquipmentImage.h"
 
 @interface AlertsViewController () <UIActionSheetDelegate>
 {
@@ -86,8 +87,19 @@
     [self loadData];
     
     // set images
-    [[ServerManager sharedManager] setImageContent:self.ivImg1 urlString:_equipment.equipment_file_location];
-    [[ServerManager sharedManager] setImageContent:self.ivImg2 urlString:_equipment.model_file_location];
+    //[[ServerManager sharedManager] setImageContent:self.ivImg1 urlString:_equipment.equipment_file_location];
+    [EquipmentImage setModelImageOfEquipment:_equipment toImageView:self.ivImg1 completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [self.ivImg1 layoutIfNeeded];
+        });
+    }];
+    
+    //[[ServerManager sharedManager] setImageContent:self.ivImg2 urlString:_equipment.model_file_location];
+    [EquipmentImage setManufacturerImageOfEquipment:_equipment toImageView:self.ivImg2 completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [self.ivImg2 layoutIfNeeded];
+        });
+    }];
     
     // set empty view to footer view
     UIView *v = [[UIView alloc] initWithFrame:CGRectZero];

@@ -10,6 +10,7 @@
 #import "UserContext.h"
 #import "UIManager.h"
 #import "BackgroundTaskManager.h"
+#import "ServerManager.h"
 
 @interface AccountViewController ()
 
@@ -134,7 +135,15 @@
 #pragma mark - Actions
 - (IBAction)onLogout:(id)sender
 {
+    // call api
+    [[ServerManager sharedManager] userLogout:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
+        //
+    } failure:^(NSString * msg) {
+        //
+    }];
+    
     // save status
+    [UserContext sharedUserContext].isLoggedIn = NO;
     [UserContext sharedUserContext].isLastLoggedin = NO;
     
     // stop scanning

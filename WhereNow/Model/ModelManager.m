@@ -9,7 +9,7 @@
 #import "ModelManager.h"
 #import "AppContext.h"
 #import "Config.h"
-
+#import "Common.h"
 
 static ModelManager *_sharedModelManager = nil;
 
@@ -736,6 +736,136 @@ static ModelManager *_sharedModelManager = nil;
         [self saveContext];
     }
 }
+
+- (Alert *)alertById:(int)alertId
+{
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Alert"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // alert_id
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:
+                                      @"alert_id == %@", @(alertId)];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count <= 0)
+        return nil;
+    
+    return [fetchedObjects objectAtIndex:0];
+}
+
+- (Equipment *)equipmentById:(int)equipmentId
+{
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // equipment_id
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:
+                              @"equipment_id == %@", @(equipmentId)];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count <= 0)
+        return nil;
+    
+    return [fetchedObjects objectAtIndex:0];
+}
+
+- (void)addTriggeredAlert:(int)alert_id
+{
+    TriggeredAlert *triggeredAlert = [NSEntityDescription
+                                   insertNewObjectForEntityForName:@"TriggeredAlert"
+                                   inManagedObjectContext:_managedObjectContext];
+    triggeredAlert.alert_id = @(alert_id);
+    triggeredAlert.opened = @(NO);
+    triggeredAlert.opened_date = @"";
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kTriggeredAlertChanged object:nil];
+}
+
+- (NSMutableArray *)retrieveTriggeredAlerts
+{
+    // alert array -----------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"TriggeredAlert"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // opened
+    NSPredicate* predicate = [NSPredicate predicateWithFormat:
+                                      @"opened == %@", @(NO)];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForAlerts];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    [fetchRequest setEntity:entity];
+    [fetchRequest setPredicate:predicate];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            TriggeredAlert *alert = (TriggeredAlert *)[fetchedObjects objectAtIndex:i];
+            [result addObject:alert];
+        }
+    }
+    
+    return result;
+}
+
+- (NSMutableArray *)retrieveLocatingEquipments
+{
+    // equipment array -------------------
+    NSMutableArray *result = [[NSMutableArray alloc] init];
+    NSEntityDescription *entity = [NSEntityDescription
+                                   entityForName:@"Equipment"
+                                   inManagedObjectContext:_managedObjectContext];
+    NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
+    
+    // sort
+    NSSortDescriptor *descriptor1 = [self sortForEquipments];
+    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    
+    // favorites flag
+    NSPredicate *predFavorite = [NSPredicate predicateWithFormat:@"islocating == %@", @(YES)];
+    
+    [fetchRequest setPredicate:predFavorite];
+    [fetchRequest setEntity:entity];
+    [fetchRequest setSortDescriptors:sortDescriptors];
+    
+    
+    NSError *error = nil;
+    
+    NSArray *fetchedObjects = [_managedObjectContext executeFetchRequest:fetchRequest error:&error];
+    if (fetchedObjects.count > 0)
+    {
+        for (int i = 0; i < [fetchedObjects count]; i++) {
+            Equipment *equipment = (Equipment *)[fetchedObjects objectAtIndex:i];
+            [result addObject:equipment];
+        }
+    }
+    
+    return result;
+}
+
 
 
 @end

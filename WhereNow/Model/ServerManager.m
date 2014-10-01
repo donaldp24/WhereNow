@@ -13,6 +13,8 @@
 #import "AFNetworking.h"
 #import "SBJson.h"
 #import <CoreLocation/CoreLocation.h>
+#import "AppContext.h"
+#import "UIImageView+WebCache.h"
 
 static ServerManager *_sharedServerManager = nil;
 
@@ -58,6 +60,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }
     
     NSURL  *url = [NSURL URLWithString:API_URL];
+    NSLog(@"requesting : %@%@\n%@", url, methodName, params);
 	AFHTTPClient  *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     
     void (^successHandler)(AFHTTPRequestOperation *operation, id responseObject)  = ^(AFHTTPRequestOperation *operation, id responseObject)
@@ -247,7 +250,19 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
                 if (sessionId == nil || [sessionId isEqual:[NSNull null]])
                     failure(@"Invalid response");
                 else
+                {
                     success(sessionId, userId);
+                    
+                    // update token
+                    if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
+                    {
+                        [self updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken userId:userId success:^(NSString *tokenId) {
+                            NSLog(@"Register device token success!");
+                        } failure:^(NSString * msg) {
+                            NSLog(@"Register device token failed : %@", msg);
+                        }];
+                    }
+                }
             }
         }
     }];
@@ -568,20 +583,191 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
+- (void)userLogout:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
+{
+    
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"uid":userId};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForLogout];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            //NSString *userId = [response objectForKey:@"UID"];
+            NSString *tokenId = [response objectForKey:@"tokenID"];
+            success(tokenId);
+        }
+    }];
+}
+
+- (void)resetBadgeCountWithToken:(NSString *)token success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"utoken":token};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForBadge];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            success();
+        }
+    }];
+}
+
+- (void)createEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSData *serializedData = [NSJSONSerialization dataWithJSONObject:arrayEquipmentIds options:0 error:nil];
+    NSString *strJsonIds = [[NSString alloc] initWithBytes:[serializedData bytes] length:[serializedData length] encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *params = @{@"utoken":token,
+                             @"eid":strJsonIds};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForCreateEquipmentWatch];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            success();
+        }
+    }];
+}
+
+- (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSData *serializedData = [NSJSONSerialization dataWithJSONObject:arrayEquipmentIds options:0 error:nil];
+    NSString *strJsonIds = [[NSString alloc] initWithBytes:[serializedData bytes] length:[serializedData length] encoding:NSUTF8StringEncoding];
+    
+    NSDictionary *params = @{@"utoken":token,
+                             @"eid":strJsonIds};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@.json", kMethodForCancelEquipmentWatch];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            success();
+        }
+    }];
+}
+
 
 #pragma mark - Utilities
-- (void) setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString
+- (void) setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString success:(void(^)(UIImage *image))success
 {
     if (urlString != nil && ![urlString isEqualToString:@""])
     {
-        NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
-        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
+        //NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
+        NSString *strImage = urlString;
+//        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]
+//                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+//                               ivContent.image = image;
+//                               success(image);
+//                           } failure:nil];
+        [ivContent sd_setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            success(image);
+        }];
     }
     else
     {
         // url is incorrect
-        NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
-        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]];
+        //NSString *strImage = [NSString stringWithFormat:@"%@%@", HOST_URL, urlString];
+        //NSString *strImage = urlString;
+//        [ivContent setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"]
+//                           success:^(NSURLRequest *request, NSHTTPURLResponse *response, UIImage *image) {
+//                               ivContent.image = image;
+//                               success(image);
+//                           } failure:nil];
+        [ivContent setImage:[UIImage imageNamed:@"Loading"]];
+        /*
+        [ivContent sd_setImageWithURL:[NSURL URLWithString:strImage] placeholderImage:[UIImage imageNamed:@"Loading"] completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+            success(image);
+        }];
+         */
+        success(nil);
     }
 }
 

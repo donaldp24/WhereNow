@@ -22,7 +22,11 @@
 // v2
 #define kAPIBaseUrlV2       @"api/v2/"
 #define kMethodForLoginV2   kAPIBaseUrlV2"user"
-#define kMethodForRegisterToken  kAPIBaseUrl"registertoken"
+#define kMethodForRegisterToken  kAPIBaseUrlV2"registertoken"
+#define kMethodForLogout    kAPIBaseUrlV2"userlogout"
+#define kMethodForBadge     kAPIBaseUrlV2"changebadge"
+#define kMethodForCreateEquipmentWatch  kAPIBaseUrlV2"createequipmentwatch"
+#define kMethodForCancelEquipmentWatch  kAPIBaseUrlV2"cancelequipmentwatch"
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -52,6 +56,10 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)getEquipments:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)updateDeviceToken:(NSString *)deviceToken userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
+- (void)userLogout:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
+- (void)resetBadgeCountWithToken:(NSString *)token success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)createEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 /**
  *
@@ -62,6 +70,6 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)getCurrLocationV2:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void(^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))success failure:(void (^)(NSString *))failure;
 
 // utilities
-- (void)setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString;
+- (void)setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString success:(void(^)(UIImage *image))success;
 
 @end

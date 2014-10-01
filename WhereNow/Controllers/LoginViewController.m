@@ -172,6 +172,7 @@ enum  {
              [UserContext sharedUserContext].isLastLoggedin = YES;
              [UserContext sharedUserContext].sessionId = sessionId;
              [UserContext sharedUserContext].userId = userId;
+             [UserContext sharedUserContext].isLoggedIn = YES;
              
              // start scanning
              [[BackgroundTaskManager sharedManager] startScanning];
@@ -505,6 +506,7 @@ enum  {
             [UserContext sharedUserContext].isLastLoggedin = YES;
             [UserContext sharedUserContext].sessionId = sessionId;
             [UserContext sharedUserContext].userId = userId;
+            [UserContext sharedUserContext].isLoggedIn = YES;
             
             // start scanning
             [[BackgroundTaskManager sharedManager] startScanning];

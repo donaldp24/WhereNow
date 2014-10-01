@@ -15,6 +15,7 @@
 #import "EquipMovement.h"
 #import "Alert.h"
 #import "MovementCount.h"
+#import "TriggeredAlert.h"
 
 #define SQLITE_DB_NAME      @"wherenow.sqlite"
 
@@ -67,5 +68,14 @@
 - (void)addRecentGeneric:(Generic *)generic;
 - (void)addRecentEquipment:(Equipment *)equipment;
 
+- (Alert *)alertById:(int)alertId;
+
+- (Equipment *)equipmentById:(int)equipmentId;
+
+- (void)addTriggeredAlert:(int)alert_id;
+
+- (NSMutableArray *)retrieveTriggeredAlerts;
+
+- (NSMutableArray *)retrieveLocatingEquipments;
 
 @end

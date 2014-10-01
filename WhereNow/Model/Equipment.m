@@ -2,7 +2,7 @@
 //  Equipment.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 10/09/14.
+//  Created by Xiaoxue Han on 01/10/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -16,6 +16,8 @@
 @dynamic current_location_id;
 @dynamic current_location_parent_id;
 @dynamic current_location_parent_name;
+@dynamic equipment_alert_icon;
+@dynamic equipment_alert_icon_id;
 @dynamic equipment_file_location;
 @dynamic equipment_file_location_local;
 @dynamic equipment_id;
@@ -24,10 +26,16 @@
 @dynamic has_beacon;
 @dynamic home_location;
 @dynamic home_location_id;
+@dynamic home_location_parent_id;
+@dynamic home_location_parent_name;
 @dynamic isfavorites;
+@dynamic islocating;
 @dynamic isrecent;
 @dynamic major;
+@dynamic manufacturer_file_location;
+@dynamic manufacturer_file_location_local;
 @dynamic manufacturer_name;
+@dynamic manufacturer_path_key;
 @dynamic minor;
 @dynamic model_file_location;
 @dynamic model_file_location_local;
@@ -36,7 +44,6 @@
 @dynamic recenttime;
 @dynamic serial_no;
 @dynamic uuid;
-@dynamic equipment_alert_icon;
-@dynamic equipment_alert_icon_id;
+@dynamic sticknfind_id;
 
 @end

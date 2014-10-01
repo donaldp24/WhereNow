@@ -168,6 +168,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
              [equipment_id] => 1630
              [current_location_name] => Ward B
             */
+            GET_SAFE_INT(alert_id, dicAlert, @"alert_id", 0);
             GET_SAFE_STRING(location_name, dicAlert, @"location_name", @"");
             GET_SAFE_STRING(serial_no, dicAlert, @"serial_no", @"");
             GET_SAFE_INT(equipment_id, dicAlert, @"equipment_id", 0);
@@ -179,6 +180,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                             insertNewObjectForEntityForName:@"Alert"
                             inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
             
+            alert.alert_id = @(alert_id);
             alert.alert_type = @"Current Alerts";
             alert.location_name = location_name;
             alert.serial_no = serial_no;
@@ -198,6 +200,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
              [trigger_string] => 1 day
              */
             
+            GET_SAFE_INT(alert_id, dicAlert, @"alert_id", 0);
             GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
             GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
@@ -210,6 +213,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                             insertNewObjectForEntityForName:@"Alert"
                             inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
             
+            alert.alert_id = @(alert_id);
             alert.alert_type = @"Time Alerts";
             alert.user_count = @(user_count);
             alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
@@ -230,6 +234,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
              [location_name] => Ward B
              [direction] => IN
              */
+            
+            GET_SAFE_INT(alert_id, dicAlert, @"alert_id", 0);
             GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
             GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
@@ -241,6 +247,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                             insertNewObjectForEntityForName:@"Alert"
                             inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
             
+            alert.alert_id = @(alert_id);
             alert.alert_type = @"Entry Alerts";
             alert.user_count = @(user_count);
             alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
@@ -261,6 +268,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
              [location_name] => Ward B
              [direction] => IN
              */
+            GET_SAFE_INT(alert_id, dicAlert, @"alert_id", 0);
             GET_SAFE_INT(user_count, dicAlert, @"user_count", 0);
             GET_SAFE_STRING(str_trigger_datetime, dicAlert, @"trigger_datetime", @"");
             GET_SAFE_INT(current_location_id, dicAlert, @"current_location_id", 0);
@@ -272,6 +280,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                             insertNewObjectForEntityForName:@"Alert"
                             inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
             
+            alert.alert_id = @(alert_id);
             alert.alert_type = @"Exit Alerts";
             alert.user_count = @(user_count);
             alert.trigger_datetime = [Common str2date:str_trigger_datetime withFormat:DATETIME_FORMAT];
@@ -557,6 +566,9 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
          
          current_location_parent_name   
          current_location_parent_id
+         
+         manufacturer_file_location
+         manufacturer_path_key
 
          */
         
@@ -599,6 +611,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             
             NSString *equipment_file_location_local = @"";
             NSString *model_file_location_local = @"";
+            NSString *manufacturer_file_location_local = @"";
             
             GET_SAFE_STRING(uuid, dicEquipment, @"UUID", @"");
             GET_SAFE_INT(major, dicEquipment, @"Major", 0);
@@ -609,6 +622,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             
             GET_SAFE_STRING(equipment_alert_icon, dicEquipment, @"equipment_alert_icon", @"");
             GET_SAFE_INT(equipment_alert_icon_id, dicEquipment, @"equipment_alert_icon_id", 0);
+            
+            GET_SAFE_STRING(manufacturer_file_location, dicEquipment, @"manufacturer_file_location", @"");
+            GET_SAFE_STRING(manufacturer_path_key, dicEquipment, @"manufacturer_path_key", @"");
+            
+            GET_SAFE_STRING(home_location_parent_id, dicEquipment, @"home_location_parent_id", @"");
+            GET_SAFE_STRING(home_location_parent_name, dicEquipment, @"home_location_parent_name", @"");
+            
+            GET_SAFE_INT(sticknfind_id, dicEquipment, @"sticknfind_id", 0);
             
             
             Equipment *existEquipment = nil;
@@ -649,12 +670,14 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 {
                     // resave file to local
                     existEquipment.equipment_file_location = equipment_file_location;
+                    existEquipment.equipment_file_location_local = @"";
                 }
                 
                 if (![existEquipment.model_file_location isEqualToString:model_file_location])
                 {
                     // resave file to local
                     existEquipment.model_file_location = model_file_location;
+                    existEquipment.model_file_location_local = @"";
                 }
                 
                 existEquipment.uuid = uuid;
@@ -666,6 +689,19 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 existEquipment.equipment_alert_icon = equipment_alert_icon;
                 existEquipment.equipment_alert_icon_id = @(equipment_alert_icon_id);
+                
+                existEquipment.manufacturer_file_location = manufacturer_file_location;
+                existEquipment.manufacturer_path_key = manufacturer_path_key;
+                if (![existEquipment.manufacturer_file_location isEqualToString:manufacturer_file_location])
+                {
+                    existEquipment.manufacturer_file_location = manufacturer_file_location;
+                    existEquipment.manufacturer_file_location_local = manufacturer_file_location_local;
+                }
+                
+                existEquipment.home_location_parent_id = home_location_parent_id;
+                existEquipment.home_location_parent_name = home_location_parent_name;
+                
+                existEquipment.sticknfind_id = @(sticknfind_id);
 
                 
                 [arrayNewEquipments addObject:existEquipment];
@@ -717,6 +753,17 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 equipment.equipment_alert_icon = equipment_alert_icon;
                 equipment.equipment_alert_icon_id = @(equipment_alert_icon_id);
+                
+                equipment.manufacturer_file_location = manufacturer_file_location;
+                equipment.manufacturer_path_key = manufacturer_path_key;
+                equipment.manufacturer_file_location_local = manufacturer_file_location_local;
+                
+                equipment.home_location_parent_id = home_location_parent_id;
+                equipment.home_location_parent_name = home_location_parent_name;
+                
+                equipment.islocating = @(NO);
+                
+                equipment.sticknfind_id = @(sticknfind_id);
                 
                 [arrayNewEquipments addObject:equipment];
                 

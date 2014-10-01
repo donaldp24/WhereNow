@@ -9,6 +9,9 @@
 #import "CommonEquipmentTableViewCell.h"
 #import "ServerManager.h"
 #import "ModelManager.h"
+#import "EquipmentImage.h"
+#import "AppContext.h"
+#import "UserContext.h"
 
 #define kButtonWidth    (75.0f)
 #define kHeightForCell  (92.0f);
@@ -69,8 +72,19 @@
     else
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon"] forState:UIControlStateNormal];
     
+    // near me icon
+    if ([equipment.islocating boolValue])
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+    else
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+    
     // set image
-    [[ServerManager sharedManager] setImageContent:self.ivImg urlString:equipment.equipment_file_location];
+    //[[ServerManager sharedManager] setImageContent:self.ivImg urlString:equipment.equipment_file_location];
+    [EquipmentImage setModelImageOfEquipment:_equipment toImageView:self.ivImg completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [self layoutIfNeeded];
+        });
+    }];
     
     
     // set status image
@@ -185,8 +199,37 @@
 
 - (IBAction)onLocate:(id)sender
 {
+    NSString *utoken = [AppContext sharedAppContext].cleanDeviceToken;
+    if ([self.equipment.islocating boolValue])
+    {
+        self.equipment.islocating = @(NO);
+        [[ServerManager sharedManager] cancelEquipmentWatch:@[self.equipment.equipment_id] token:utoken userId:[UserContext sharedUserContext].userId success:^() {
+            NSLog(@"cancelEquipmentWatch success : %@", self.equipment.equipment_id);
+        } failure:^(NSString *msg) {
+            NSLog(@"cancelEquipmentWatch failure : %@", self.equipment.equipment_id);
+        }];
+    }
+    else
+    {
+        self.equipment.islocating = @(YES);
+        [[ServerManager sharedManager] createEquipmentWatch:@[self.equipment.equipment_id] token:utoken userId:[UserContext sharedUserContext].userId success:^() {
+            NSLog(@"createEquipmentWatch success : %@", self.equipment.equipment_id);
+        } failure:^(NSString *msg) {
+            NSLog(@"createEquipmentWatch failure : %@", self.equipment.equipment_id);
+        }];
+    }
+    [[ModelManager sharedManager] saveContext];
+    
+    // near me icon
+    if ([self.equipment.islocating boolValue])
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+    else
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentLocate:)])
         [self.delegate onEquipmentLocate:self.equipment];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
 }
 
 - (IBAction)onDelete:(id)sender

@@ -28,6 +28,7 @@ static UserContext *_sharedUserContext = nil;
         _isLastLoggedin = NO;
         _sessionId = @"invalid";
         _userId = @"";
+        _isLoggedIn = NO;
         
         [self load];
     }
@@ -52,6 +53,9 @@ static UserContext *_sharedUserContext = nil;
     obj = [userDefaults objectForKey:@"userid"];
     if (obj != nil)
         _userId = (NSString *)obj;
+    obj = [userDefaults objectForKey:@"isloggedin"];
+    if (obj != nil)
+        _isLoggedIn = [(NSNumber*)obj boolValue];
 }
 
 - (void)save
@@ -62,6 +66,7 @@ static UserContext *_sharedUserContext = nil;
     [userDefaults setObject:@(self.isLastLoggedin) forKey:@"islastloggedin"];
     [userDefaults setObject:self.sessionId forKey:@"sessionid"];
     [userDefaults setObject:self.userId forKey:@"userid"];
+    [userDefaults setObject:@(self.isLoggedIn) forKey:@"isloggedin"];
     
     [userDefaults synchronize];
 }
@@ -93,6 +98,12 @@ static UserContext *_sharedUserContext = nil;
 - (void)setUserId:(NSString *)userId
 {
     _userId = userId;
+    [self save];
+}
+
+- (void)setIsLoggedIn:(BOOL)isLoggedIn
+{
+    _isLoggedIn = isLoggedIn;
     [self save];
 }
 

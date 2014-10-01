@@ -34,6 +34,8 @@
     self.navigationController.navigationBarHidden = YES;
     
     [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+        [[NSNotificationCenter defaultCenter] postNotificationName:kDataChanged object:nil];
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
     } failure: ^(NSString *msg) {
         NSLog(@"Data request failed : %@", msg);
     }];

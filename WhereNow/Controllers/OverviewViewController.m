@@ -10,6 +10,7 @@
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
 #import "ServerManager.h"
+#import "EquipmentImage.h"
 
 @interface OverviewViewController () <UIActionSheetDelegate>
 {
@@ -71,15 +72,34 @@
         lblModel.text = _equipment.model_name_no;
         lblSerialNo.text =_equipment.serial_no;
         lblBarcodeNo.text = _equipment.barcode_no;
-        lblCurrentLevel.text = @"";
+        if (_equipment.current_location_parent_name != nil && _equipment.current_location_parent_name.length > 0)
+            lblCurrentLevel.text = _equipment.current_location_parent_name;
+        else
+            lblCurrentLevel.text = @"";
         lblCurrentLocation.text = _equipment.current_location;
-        lblHomeLevel.text = @"";
+        
+        if (_equipment.home_location_parent_name != nil && _equipment.home_location_parent_name.length > 0)
+            lblHomeLevel.text = _equipment.home_location_parent_name;
+        else
+            lblHomeLevel.text = @"";
         lblHomeLocation.text = _equipment.home_location;
     }
     
     // set image
-    [[ServerManager sharedManager] setImageContent:ivEquipment urlString:_equipment.equipment_file_location];
-    [[ServerManager sharedManager] setImageContent:ivModel urlString:_equipment.model_file_location];
+    //[[ServerManager sharedManager] setImageContent:ivEquipment urlString:_equipment.equipment_file_location];
+    [EquipmentImage setModelImageOfEquipment:_equipment toImageView:ivEquipment completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [ivEquipment layoutIfNeeded];
+        });
+    }];
+    
+    
+    //[[ServerManager sharedManager] setImageContent:ivModel urlString:_equipment.model_file_location];
+    [EquipmentImage setManufacturerImageOfEquipment:_equipment toImageView:ivModel completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [ivModel layoutIfNeeded];
+        });
+    }];
 
 }
 

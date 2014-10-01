@@ -10,6 +10,8 @@
 
 @interface AppContext : NSObject
 
+@property (nonatomic, retain) NSString *cleanDeviceToken;
+
 + (AppContext *)sharedAppContext;
 
 + (NSURL *)applicationDocumentsDirectory;

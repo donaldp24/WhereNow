@@ -9,6 +9,8 @@
 #import "CommonGenericTableViewCell.h"
 #import "ModelManager.h"
 #import "ServerManager.h"
+#import "AppContext.h"
+#import "UserContext.h"
 
 #define kButtonWidth        (75.0f)
 #define kHeightForCell      (92.0f)
@@ -61,6 +63,23 @@
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon_favorited"] forState:UIControlStateNormal];
     else
         [self.btnFavorites setImage:[UIImage imageNamed:@"favoriteicon"] forState:UIControlStateNormal];
+    
+    NSMutableArray *arrayEquipments = [[ModelManager sharedManager] equipmentsForGeneric:self.generic withBeacon:YES];
+    int nLocating = 0;
+    int nUnlocating = 0;
+    for (Equipment *equipment in arrayEquipments) {
+        if ([equipment.islocating boolValue])
+            nLocating++;
+        else
+            nUnlocating++;
+    }
+    
+    if (nLocating == 0)
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+    else if (nUnlocating == 0)
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+    else
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_halflocated"] forState:UIControlStateNormal];
     
     // set status image
     //[[ServerManager sharedManager] setImageContent:self.ivStatus urlString:self.generic.alert_icon];
@@ -156,6 +175,93 @@
 
 - (IBAction)onLocate:(id)sender
 {
+    NSMutableArray *arrayEquipments = [[ModelManager sharedManager] equipmentsForGeneric:self.generic withBeacon:YES];
+    int nLocating = 0;
+    int nUnlocating = 0;
+    for (Equipment *equipment in arrayEquipments) {
+        if ([equipment.islocating boolValue])
+            nLocating++;
+        else
+            nUnlocating++;
+    }
+    
+    NSString *utoken = [AppContext sharedAppContext].cleanDeviceToken;
+    
+    if (nLocating == 0)
+    {
+        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
+        for (Equipment *equipment in arrayEquipments) {
+            if (![equipment.islocating boolValue])
+                [arrayIds addObject:equipment.equipment_id];
+            equipment.islocating = @(YES);
+        }
+        
+        if (arrayIds.count > 0)
+        {
+            [[ServerManager sharedManager] createEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
+                NSLog(@"createEquipmentWatch success : %@", arrayIds);
+            } failure:^(NSString *msg) {
+                NSLog(@"createEquipmentWatch failure : %@", arrayIds);
+            }];
+        }
+    }
+    else if (nUnlocating == 0)
+    {
+        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
+        for (Equipment *equipment in arrayEquipments) {
+            if ([equipment.islocating boolValue])
+                [arrayIds addObject:equipment.equipment_id];
+            equipment.islocating = @(NO);
+        }
+        
+        if (arrayIds.count > 0)
+        {
+            [[ServerManager sharedManager] cancelEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
+                NSLog(@"cancelEquipmentWatch success : %@", arrayIds);
+            } failure:^(NSString *msg) {
+                NSLog(@"cancelEquipmentWatch failure : %@", arrayIds);
+            }];
+        }
+    }
+    else
+    {
+        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
+        for (Equipment *equipment in arrayEquipments) {
+            if (![equipment.islocating boolValue])
+                [arrayIds addObject:equipment.equipment_id];
+            equipment.islocating = @(YES);
+        }
+        
+        if (arrayIds.count > 0)
+        {
+            [[ServerManager sharedManager] createEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
+                NSLog(@"createEquipmentWatch success : %@", arrayIds);
+            } failure:^(NSString *msg) {
+                NSLog(@"createEquipmentWatch failure : %@", arrayIds);
+            }];
+        }
+    }
+    
+    nLocating = 0;
+    nUnlocating = 0;
+    [[ModelManager sharedManager] saveContext];
+    
+    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+    
+    for (Equipment *equipment in arrayEquipments) {
+        if ([equipment.islocating boolValue])
+            nLocating++;
+        else
+            nUnlocating++;
+    }
+    
+    if (nLocating == 0)
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+    else if (nUnlocating == 0)
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+    else
+        [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_halflocated"] forState:UIControlStateNormal];
+    
     if (self.delegate && [self.delegate respondsToSelector:@selector(onGenericLocate:)])
         [self.delegate onGenericLocate:self.generic];
 }

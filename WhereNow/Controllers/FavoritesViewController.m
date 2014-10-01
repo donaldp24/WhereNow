@@ -92,6 +92,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kDataChanged object:nil];
+    
 }
 
 - (void)didReceiveMemoryWarning
@@ -568,6 +570,27 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 - (void)onEquipmentLocate:(Equipment *)equipment
 {
     //
+}
+
+- (void)onDataChanged:(id)sender
+{
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self reloadData];
+    });
+}
+
+- (void)reloadData
+{
+    _firstLoad = YES;
+    
+    editingCell = nil;
+    editingIndexPath = nil;
+    
+    self.selectedGeneric = nil;
+    
+    [self loadData];
+    
+    [self.tableView reloadData];
 }
 
 

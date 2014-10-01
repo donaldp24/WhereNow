@@ -15,6 +15,7 @@
 @property (nonatomic) BOOL isLastLoggedin;
 @property (nonatomic, strong) NSString *sessionId;
 @property (nonatomic, strong) NSString *userId;
+@property (nonatomic) BOOL isLoggedIn;
 
 + (UserContext *)sharedUserContext;
 
@@ -23,5 +24,6 @@
 - (void)setIsLastLoggedin:(BOOL)isLastLoggedin;
 - (void)setSessionId:(NSString *)sessionId;
 - (void)setUserId:(NSString *)userId;
+- (void)setIsLoggedIn:(BOOL)isLoggedIn;
 
 @end

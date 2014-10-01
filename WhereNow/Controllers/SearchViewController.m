@@ -117,6 +117,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kDataChanged object:nil];
+    
     // get data from server
     //[self requestData];
 }
@@ -755,6 +757,42 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
         [self.view layoutIfNeeded];
     }];
     */
+}
+
+- (void)onDataChanged:(id)sender
+{
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self reloadData];
+    });
+}
+
+- (void)reloadData
+{
+    // reload data
+    [self loadData];
+    
+    self.selectedGenerics = nil;
+    if (editingCell)
+        [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+    
+    editingIndexPath = nil;
+    editingCell = nil;
+    
+    [_expandingLocationArray removeAllObjects];
+    
+    if (_isSearching)
+    {
+        if (self.segment.selectedSegmentIndex == 0)
+            [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
+        else
+            [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
+    }
+    
+    [self.tableView reloadData];
+    
+    // stop refresh
+    if ([self.refresh isRefreshing])
+        [self.refresh endRefreshing];
 }
 
 @end

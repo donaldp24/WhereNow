@@ -115,6 +115,8 @@
     
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonGenericTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonGenericTableViewCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChanged:) name:kBackgroundUpdateLocationInfoNotification object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -473,6 +475,17 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         }];
         
     }];
+}
+
+- (void) onChanged:(id)sender
+{
+    if (_firstLoad)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self loadDataWithGeneric:self.selectedGenerics];
+        [self.tableView reloadData];
+    });
 }
 
 
