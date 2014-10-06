@@ -11,6 +11,7 @@
 #import "ServerManager.h"
 #import "AppContext.h"
 #import "UserContext.h"
+#import "LocatingManager.h"
 
 #define kButtonWidth        (75.0f)
 #define kHeightForCell      (92.0f)
@@ -175,79 +176,12 @@
 
 - (IBAction)onLocate:(id)sender
 {
-    NSMutableArray *arrayEquipments = [[ModelManager sharedManager] equipmentsForGeneric:self.generic withBeacon:YES];
+
+    [[LocatingManager sharedInstance] onLocatingGeneric:self.generic];
+
     int nLocating = 0;
     int nUnlocating = 0;
-    for (Equipment *equipment in arrayEquipments) {
-        if ([equipment.islocating boolValue])
-            nLocating++;
-        else
-            nUnlocating++;
-    }
-    
-    NSString *utoken = [AppContext sharedAppContext].cleanDeviceToken;
-    
-    if (nLocating == 0)
-    {
-        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
-        for (Equipment *equipment in arrayEquipments) {
-            if (![equipment.islocating boolValue])
-                [arrayIds addObject:equipment.equipment_id];
-            equipment.islocating = @(YES);
-        }
-        
-        if (arrayIds.count > 0)
-        {
-            [[ServerManager sharedManager] createEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
-                NSLog(@"createEquipmentWatch success : %@", arrayIds);
-            } failure:^(NSString *msg) {
-                NSLog(@"createEquipmentWatch failure : %@", arrayIds);
-            }];
-        }
-    }
-    else if (nUnlocating == 0)
-    {
-        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
-        for (Equipment *equipment in arrayEquipments) {
-            if ([equipment.islocating boolValue])
-                [arrayIds addObject:equipment.equipment_id];
-            equipment.islocating = @(NO);
-        }
-        
-        if (arrayIds.count > 0)
-        {
-            [[ServerManager sharedManager] cancelEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
-                NSLog(@"cancelEquipmentWatch success : %@", arrayIds);
-            } failure:^(NSString *msg) {
-                NSLog(@"cancelEquipmentWatch failure : %@", arrayIds);
-            }];
-        }
-    }
-    else
-    {
-        NSMutableArray *arrayIds = [[NSMutableArray alloc] init];
-        for (Equipment *equipment in arrayEquipments) {
-            if (![equipment.islocating boolValue])
-                [arrayIds addObject:equipment.equipment_id];
-            equipment.islocating = @(YES);
-        }
-        
-        if (arrayIds.count > 0)
-        {
-            [[ServerManager sharedManager] createEquipmentWatch:arrayIds token:utoken userId:[UserContext sharedUserContext].userId success:^() {
-                NSLog(@"createEquipmentWatch success : %@", arrayIds);
-            } failure:^(NSString *msg) {
-                NSLog(@"createEquipmentWatch failure : %@", arrayIds);
-            }];
-        }
-    }
-    
-    nLocating = 0;
-    nUnlocating = 0;
-    [[ModelManager sharedManager] saveContext];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
-    
+    NSMutableArray *arrayEquipments = [[ModelManager sharedManager] equipmentsForGeneric:self.generic withBeacon:YES];
     for (Equipment *equipment in arrayEquipments) {
         if ([equipment.islocating boolValue])
             nLocating++;

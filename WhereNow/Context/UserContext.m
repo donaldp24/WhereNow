@@ -29,6 +29,7 @@ static UserContext *_sharedUserContext = nil;
         _sessionId = @"invalid";
         _userId = @"";
         _isLoggedIn = NO;
+        _fullName = @"";
         
         [self load];
     }
@@ -56,6 +57,9 @@ static UserContext *_sharedUserContext = nil;
     obj = [userDefaults objectForKey:@"isloggedin"];
     if (obj != nil)
         _isLoggedIn = [(NSNumber*)obj boolValue];
+    obj = [userDefaults objectForKey:@"fullname"];
+    if (obj != nil)
+        _fullName = (NSString *)obj;
 }
 
 - (void)save
@@ -67,6 +71,7 @@ static UserContext *_sharedUserContext = nil;
     [userDefaults setObject:self.sessionId forKey:@"sessionid"];
     [userDefaults setObject:self.userId forKey:@"userid"];
     [userDefaults setObject:@(self.isLoggedIn) forKey:@"isloggedin"];
+    [userDefaults setObject:self.fullName forKey:@"fullname"];
     
     [userDefaults synchronize];
 }
@@ -104,6 +109,12 @@ static UserContext *_sharedUserContext = nil;
 - (void)setIsLoggedIn:(BOOL)isLoggedIn
 {
     _isLoggedIn = isLoggedIn;
+    [self save];
+}
+
+- (void)setFullName:(NSString *)fullName
+{
+    _fullName = fullName;
     [self save];
 }
 

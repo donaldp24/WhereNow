@@ -26,7 +26,7 @@ static CGFloat textFieldsUpperPos = 190.0;
 typedef enum
 {
     LoginStateLoggingIn,
-    LoginStateTerms,
+    LoginStateForgotUsername,
     LoginStateForgotPassword
 } LoginState;
 
@@ -62,7 +62,6 @@ enum  {
 @property (strong, nonatomic) UIButton *bottomRightButton;
 @property (strong, nonatomic) UIButton *bottomLeftButton;
 @property (strong, nonatomic) UIImageView *verticalDivider;
-@property (strong, nonatomic) UITextView *termsTextView;
 
 @property (strong, nonatomic) MASConstraint *loginGroupTopConstraint;
 @property (strong, nonatomic) MASConstraint *passwordFieldTopConstraint;
@@ -108,8 +107,8 @@ enum  {
     _bottomRightButton.titleLabel.font = [UIFont systemFontOfSize:12.0];
     
     _bottomLeftButton = [UIButton buttonWithType:UIButtonTypeSystem];
-    [_bottomLeftButton setTitle:@"TERMS" forState:UIControlStateNormal];
-    [_bottomLeftButton addTarget:self action:@selector(openTerms:) forControlEvents:UIControlEventTouchUpInside];
+    [_bottomLeftButton setTitle:@"USERNAME" forState:UIControlStateNormal];
+    [_bottomLeftButton addTarget:self action:@selector(enterForgotUsername:) forControlEvents:UIControlEventTouchUpInside];
     _bottomLeftButton.tintColor = _bottomRightButton.tintColor;
     _bottomLeftButton.titleLabel.font = _bottomRightButton.titleLabel.font;
     
@@ -162,7 +161,7 @@ enum  {
         
         // login
         SHOW_PROGRESS(@"Please Wait");
-        [[ServerManager sharedManager] loginUserV2WithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId)
+        [[ServerManager sharedManager] loginUserV2WithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId, NSString *fullname)
          {
              [SVProgressHUD dismiss];
 
@@ -173,6 +172,7 @@ enum  {
              [UserContext sharedUserContext].sessionId = sessionId;
              [UserContext sharedUserContext].userId = userId;
              [UserContext sharedUserContext].isLoggedIn = YES;
+             [UserContext sharedUserContext].fullName = fullname;
              
              // start scanning
              [[BackgroundTaskManager sharedManager] startScanning];
@@ -395,16 +395,27 @@ enum  {
         case LoginStateForgotPassword:
             nRet = [self validateForgotPassword];
             break;
-        default:
-            //LoginStateLoggingIn
+        case LoginStateForgotUsername:
+            nRet = [self validateForgotUsername];
+            break;
+        case LoginStateLoggingIn:
             nRet = [self validateLoggingIn];
             break;
     }
     return nRet;
 }
 
-
 - (int) validateForgotPassword {
+    if (_inputUserEmail.length == 0) {
+        return INPUT_EMAIL;
+    }
+    else if (![_inputUserEmail isValidEmail]) {
+        return INPUT_EMAIL_INVALID;
+    }
+    return INPUT_OK;
+}
+
+- (int) validateForgotUsername {
     if (_inputUserEmail.length == 0) {
         return INPUT_EMAIL;
     }
@@ -470,7 +481,7 @@ enum  {
         [self showAlertMessage:nInput];
     } else {
         SHOW_PROGRESS(@"Please Wait");
-        [[ServerManager sharedManager] loginUserV2WithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId)
+        [[ServerManager sharedManager] loginUserV2WithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId, NSString *fullname)
         {
             [SVProgressHUD dismiss];
             
@@ -507,6 +518,7 @@ enum  {
             [UserContext sharedUserContext].sessionId = sessionId;
             [UserContext sharedUserContext].userId = userId;
             [UserContext sharedUserContext].isLoggedIn = YES;
+            [UserContext sharedUserContext].fullName = fullname;
             
             // start scanning
             [[BackgroundTaskManager sharedManager] startScanning];
@@ -543,7 +555,7 @@ enum  {
     
     //Without these there is an unwanted fade animation
     [UIView setAnimationsEnabled:NO];
-    [_bottomLeftButton setTitle:@"TERMS" forState:UIControlStateNormal];
+    [_bottomLeftButton setTitle:@"USERNAME" forState:UIControlStateNormal];
     [_bottomRightButton setTitle:@"PASSWORD" forState:UIControlStateNormal];
     [_submitButton setTitle:@"LOGIN" forState:UIControlStateNormal];
     [UIView setAnimationsEnabled:YES];
@@ -557,124 +569,115 @@ enum  {
     }];
     
     
-    [_bottomLeftButton addTarget:self action:@selector(openTerms:) forControlEvents:UIControlEventTouchUpInside];
+    [_bottomLeftButton addTarget:self action:@selector(enterForgotUsername:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomRightButton addTarget:self action:@selector(enterForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [_submitButton addTarget:self action:@selector(onLogin:) forControlEvents:UIControlEventTouchUpInside];
 }
 
 - (void)leaveLoginState {
-    [_bottomLeftButton removeTarget:self action:@selector(openTerms:) forControlEvents:UIControlEventTouchUpInside];
+    [_bottomLeftButton removeTarget:self action:@selector(enterForgotUsername:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomRightButton removeTarget:self action:@selector(enterForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [_submitButton removeTarget:self action:@selector(onLogin:) forControlEvents:UIControlEventTouchUpInside];
 }
 
-#pragma mark Terms & Conditions
-
-
-- (void)openTerms:(id)sender {
+#pragma mark Forgot Username
+- (void)enterForgotUsername:(id)sender {
     [self leaveLoginState];
     
+    loginState = LoginStateForgotUsername;
     
+    _emailTextField.hidden = NO;
     
-    _termsTextView = [[UITextView alloc] initWithFrame:CGRectZero textContainer:nil];
-    _termsTextView.editable = NO;
-    _termsTextView.layer.cornerRadius = 5.0;
-    _termsTextView.layer.backgroundColor = [[UIColor colorWithRed:0.4f green:0.4f blue:0.4f alpha:0.5f] CGColor];
-    
-    NSString *titleText = @"Terms and Conditions of Use\n";
-    NSString *bodyText = @"\n1. Terms\n\nBy accessing this app, you are agreeing to be bound the app Terms and Conditions of Use, all applicable laws and regulations...";
-    
-    NSDictionary *titleAttrs = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue-Light" size:16.0], NSForegroundColorAttributeName:[UIColor whiteColor]};
-    NSDictionary *bodyAttrs = @{NSFontAttributeName:[UIFont fontWithName:@"HelveticaNeue" size:11.0], NSForegroundColorAttributeName:[UIColor whiteColor]};
-    
-    NSMutableAttributedString *termsText = [[NSMutableAttributedString alloc] initWithString:titleText attributes:titleAttrs];
-    NSAttributedString *bodyAttString = [[NSAttributedString alloc] initWithString:bodyText attributes:bodyAttrs];
-    
-    [termsText appendAttributedString:bodyAttString];
-    
-    _termsTextView.attributedText = termsText;
-
-    [self.view addSubview:_termsTextView];
-    
-    [_termsTextView mas_makeConstraints:^(MASConstraintMaker *make) {
-        make.width.equalTo(@256.0);
-        make.height.equalTo(@218.0);
-        make.centerX.equalTo(@400.0);
-        make.top.equalTo(@190.0);
-    }];
-    
-    [self.view layoutIfNeeded];
-    
-    [_termsTextView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(@0.0);
-    }];
     
     [_logo mas_updateConstraints:^(MASConstraintMaker *make) {
         make.top.equalTo(@(logoUpperPos));
     }];
-    
-    [_loginGroup mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(@-400.0);
-    }];
-    
     _bottomLeftButtonRightConstraint.offset( -8 + (_bottomLeftButton.bounds.size.width / 2.0) );
+    /*
+     [_bottomLeftButton mas_makeConstraints:^(MASConstraintMaker *make) {
+     make.right.equalTo(@0.0);
+     }];
+     */
+    
+    _loginGroupTopConstraint.offset(textFieldsUpperPos);
+    
     
     [UIView animateWithDuration:0.3 animations:^{
-        //_loginGroup.alpha = 0;
-        _bottomRightButton.alpha = 0;
+        _passwordTextField.alpha = 0;
+        _usernameTextField.alpha = 0;
         _verticalDivider.alpha = 0;
-        
+        _bottomRightButton.alpha = 0;
+        [self.view layoutIfNeeded];
         [self.view layoutIfNeeded];
         
     } completion:^(BOOL finished) {
         
-        //Without these there is an unwanted fade animation
         [UIView setAnimationsEnabled:NO];
+        
+        _usernameTextField.hidden = YES;
+        
         [_bottomLeftButton setTitle:@"BACK" forState:UIControlStateNormal];
-        [_bottomRightButton setTitle:@"PASSWORD" forState:UIControlStateNormal];
+        //[_bottomRightButton setTitle:@"" forState:UIControlStateNormal];
+        [_submitButton setTitle:@"FIND USERNAME" forState:UIControlStateNormal];
+        
         [UIView setAnimationsEnabled:YES];
         
-        [_bottomLeftButton addTarget:self action:@selector(exitTerms:) forControlEvents:UIControlEventTouchUpInside];
-        [_bottomRightButton addTarget:self action:@selector(exitTerms:) forControlEvents:UIControlEventTouchUpInside];
+        [_bottomLeftButton addTarget:self action:@selector(exitForgotUsername:) forControlEvents:UIControlEventTouchUpInside];
+        //[_bottomRightButton addTarget:self action:@selector(exitForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
+        [_submitButton addTarget:self action:@selector(getUsername) forControlEvents:UIControlEventTouchUpInside];
+        
     }];
+    
+    
 }
 
-- (void)exitTerms:(id)sender {
+- (void)getUsername {
+    if (currentResponder) {
+        [currentResponder resignFirstResponder];
+    }
+    int nInput = [self getInputType];
+    
+    if (nInput != INPUT_OK) {
+        [self showAlertMessage:nInput];
+    } else {
+        SHOW_PROGRESS(@"Please Wait");
+        [[ServerManager sharedManager] forgotUsernameWithEmail:self.emailTextField.text success:^{
+            HIDE_PROGRESS_WITH_SUCCESS(@"Sent a mail");
+        } failure:^(NSString *msg) {
+            HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
+        }];
+    }
+    
+}
 
+- (void)exitForgotUsername:(id)sender {
+    [_bottomLeftButton removeTarget:self action:@selector(exitForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
+    [_bottomRightButton removeTarget:self action:@selector(exitForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
+    [_submitButton removeTarget:self action:@selector(resetPassword) forControlEvents:UIControlEventTouchUpInside];
     
-    [_bottomLeftButton removeTarget:self action:@selector(exitTerms:) forControlEvents:UIControlEventTouchUpInside];
-    [_bottomRightButton removeTarget:self action:@selector(exitTerms:) forControlEvents:UIControlEventTouchUpInside];
     
-    
-    [_termsTextView mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(@400.0);
-    }];
-    
-    [_loginGroup mas_updateConstraints:^(MASConstraintMaker *make) {
-        make.centerX.equalTo(@0);
-    }];
+    //    [_logo mas_updateConstraints:^(MASConstraintMaker *make) {
+    //        make.top.equalTo(@(logoLowerPos));
+    //    }];
     
     _bottomLeftButtonRightConstraint.offset(-8);
     
-
+    //    _loginGroupTopConstraint.offset(textFieldsLowerPos);
+    
     [self prepareForEnteringLoginState];
     
     
     [UIView animateWithDuration:0.3 animations:^{
-        _bottomRightButton.alpha = 1.0;
+        _passwordTextField.alpha = 1.0;
         _verticalDivider.alpha = 1.0;
+        _bottomRightButton.alpha = 1.0;
         
         [self.view layoutIfNeeded];
         
     } completion:^(BOOL finished) {
-        
-        //Without these there is an unwanted fade animation
-        [UIView setAnimationsEnabled:NO];
-        
         [self configureLoginState];
-        
-        [UIView setAnimationsEnabled:YES];
     }];
+    
 }
 
 #pragma mark Forgot / Rest Password
@@ -740,11 +743,11 @@ enum  {
     } else {
         
         SHOW_PROGRESS(@"Please Wait");
-        //[User resetPasswordWithEmail:self.emailTextField.text success:^() {
+        [[ServerManager sharedManager] forgotPasswordWithEmail:self.emailTextField.text success:^{
             HIDE_PROGRESS_WITH_SUCCESS(@"Sent a mail");
-        //} failure:^(NSString *msg) {
-        //    HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
-        //}];
+        } failure:^(NSString *msg) {
+            HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
+        }];
         
     }
     

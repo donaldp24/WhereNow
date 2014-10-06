@@ -14,19 +14,18 @@
 //#define SERVICE_URL @"http://dev.scmedical.com.au/mobile/index.php/api/v1/scmd/"
 #define API_URL     @"http://dev.scmedical.com.au/mobile/index.php/"
 
-// url for action
-#define kAPIBaseUrl         @"api/v1/scmd/"
-#define kMethodForLogin     kAPIBaseUrl"ulin"
-
 
 // v2
 #define kAPIBaseUrlV2       @"api/v2/"
-#define kMethodForLoginV2   kAPIBaseUrlV2"user"
-#define kMethodForRegisterToken  kAPIBaseUrlV2"registertoken"
-#define kMethodForLogout    kAPIBaseUrlV2"userlogout"
-#define kMethodForBadge     kAPIBaseUrlV2"changebadge"
-#define kMethodForCreateEquipmentWatch  kAPIBaseUrlV2"createequipmentwatch"
-#define kMethodForCancelEquipmentWatch  kAPIBaseUrlV2"cancelequipmentwatch"
+
+#define kMethodForLoginV2           @"user"
+#define kMethodForRegisterToken     @"registertoken"
+#define kMethodForLogout            @"userlogout"
+#define kMethodForBadge             @"changebadge"
+#define kMethodForCreateEquipmentWatch  @"createequipmentwatch"
+#define kMethodForCancelEquipmentWatch  @"cancelequipmentwatch"
+#define kMethodForForgotPasswordV2   @"forgotpassword"
+#define kMethodForForgotUsernameV2   @"forgotusername"
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -42,32 +41,33 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)postMethod:(NSString *)methodName params:(NSDictionary *)params handler:(ServerManagerRequestHandlerBlock)handler;
 
 
-- (void)loginUserWithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId))success failure:(void (^)(NSString *))failure;
-
-- (void)loginUserV2WithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId))success failure:(void (^)(NSString *))failure;
+- (void)loginUserV2WithUserName:(NSString *)userName pwd:(NSString *)pwd success:(void (^)(NSString *sessionId, NSString *userId, NSString *fullname))success failure:(void (^)(NSString *))failure;
 
 /**
  * get generics list
  *
  */
-- (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 - (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
-- (void)getEquipments:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
 
-- (void)updateDeviceToken:(NSString *)deviceToken userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
-- (void)userLogout:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
-- (void)resetBadgeCountWithToken:(NSString *)token success:(void (^)())success failure:(void (^)(NSString *))failure;
-- (void)createEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
-- (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+- (void)userLogout:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
+
+- (void)resetBadgeCountWithToken:(NSString *)token sessionId:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)createEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 /**
  *
  * get information(generics/equipments) of current location
  *   request location information with beacons scaned by the phone
  */
-- (void)getCurrLocation:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void(^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))success failure:(void (^)(NSString *))failure;
 - (void)getCurrLocationV2:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void(^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))success failure:(void (^)(NSString *))failure;
+
+- (void)forgotUsernameWithEmail:(NSString *)email success:(void(^)())success failure:(void (^)(NSString *))failure;
+- (void)forgotPasswordWithEmail:(NSString *)email success:(void(^)())success failure:(void (^)(NSString *))failure;
 
 // utilities
 - (void)setImageContent:(UIImageView*)ivContent urlString:(NSString *)urlString success:(void(^)(UIImage *image))success;

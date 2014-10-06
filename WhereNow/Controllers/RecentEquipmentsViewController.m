@@ -198,5 +198,39 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     [self.navigationController popViewControllerAnimated:YES];
 }
 
+#pragma mark - swipetableview swipe delegate
+- (void)onSwipeRight:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+{
+//    if (self.segment.selectedSegmentIndex == 0)
+//        return;
+//    
+//    self.segment.selectedSegmentIndex = 0;
+//    
+//    self.selectedGenerics = nil;
+//    if (editingCell)
+//        [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+//    
+//    editingIndexPath = nil;
+//    editingCell = nil;
+//    
+//    [_expandingLocationArray removeAllObjects];
+//    
+//    if (_isSearching)
+//    {
+//        if (self.segment.selectedSegmentIndex == 0)
+//            [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
+//        else
+//            [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
+//    }
+//    
+//    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationRight];
+    [self onBack:nil];
+}
+
+- (void)onSwipeLeft:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+{
+    //
+}
+
 
 @end

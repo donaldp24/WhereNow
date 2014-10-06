@@ -25,4 +25,6 @@ EquipmentDetailMenuDelegate
 
 @property (nonatomic, strong) Equipment *equipment;
 
++ (EquipmentTabBarController *)sharedInstance;
+
 @end

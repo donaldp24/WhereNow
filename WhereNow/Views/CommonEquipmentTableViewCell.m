@@ -12,6 +12,7 @@
 #import "EquipmentImage.h"
 #import "AppContext.h"
 #import "UserContext.h"
+#import "LocatingManager.h"
 
 #define kButtonWidth    (75.0f)
 #define kHeightForCell  (92.0f);
@@ -199,26 +200,14 @@
 
 - (IBAction)onLocate:(id)sender
 {
-    NSString *utoken = [AppContext sharedAppContext].cleanDeviceToken;
     if ([self.equipment.islocating boolValue])
     {
-        self.equipment.islocating = @(NO);
-        [[ServerManager sharedManager] cancelEquipmentWatch:@[self.equipment.equipment_id] token:utoken userId:[UserContext sharedUserContext].userId success:^() {
-            NSLog(@"cancelEquipmentWatch success : %@", self.equipment.equipment_id);
-        } failure:^(NSString *msg) {
-            NSLog(@"cancelEquipmentWatch failure : %@", self.equipment.equipment_id);
-        }];
+        [[LocatingManager sharedInstance] cancelLocatingEquipment:self.equipment];
     }
     else
     {
-        self.equipment.islocating = @(YES);
-        [[ServerManager sharedManager] createEquipmentWatch:@[self.equipment.equipment_id] token:utoken userId:[UserContext sharedUserContext].userId success:^() {
-            NSLog(@"createEquipmentWatch success : %@", self.equipment.equipment_id);
-        } failure:^(NSString *msg) {
-            NSLog(@"createEquipmentWatch failure : %@", self.equipment.equipment_id);
-        }];
+        [[LocatingManager sharedInstance] locatingEquipment:self.equipment];
     }
-    [[ModelManager sharedManager] saveContext];
     
     // near me icon
     if ([self.equipment.islocating boolValue])
@@ -228,8 +217,6 @@
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentLocate:)])
         [self.delegate onEquipmentLocate:self.equipment];
-    
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
 }
 
 - (IBAction)onDelete:(id)sender

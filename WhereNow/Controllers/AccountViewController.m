@@ -14,6 +14,8 @@
 
 @interface AccountViewController ()
 
+@property (nonatomic, retain) IBOutlet UILabel *labelFullname;
+
 @end
 
 @implementation AccountViewController
@@ -38,6 +40,9 @@
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
     
     [self.navigationController.tabBarItem setSelectedImage:[UIImage imageNamed:@"accounticon_selected"]];
+    
+    self.labelFullname.text = [UserContext sharedUserContext].fullName;
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -136,7 +141,7 @@
 - (IBAction)onLogout:(id)sender
 {
     // call api
-    [[ServerManager sharedManager] userLogout:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
+    [[ServerManager sharedManager] userLogout:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
         //
     } failure:^(NSString * msg) {
         //

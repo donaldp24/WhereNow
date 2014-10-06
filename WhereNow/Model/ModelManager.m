@@ -365,7 +365,7 @@ static ModelManager *_sharedModelManager = nil;
     
     // generic_name contains
     NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
-                                @"generic_name LIKE[c] %@", keyword];
+                                @"generic_name CONTAINS[cd] %@", keyword];
     
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predGeneric];
@@ -391,7 +391,7 @@ static ModelManager *_sharedModelManager = nil;
     NSPredicate *predicate = [[NSPredicate alloc] init];
     // generic_name contains
     NSPredicate* predGeneric = [NSPredicate predicateWithFormat:
-                                @"generic_name LIKE[c] %@", keyword];
+                                @"generic_name CONTAINS[cd] %@", keyword];
     return [[NSMutableArray alloc] initWithArray:[genericArray filteredArrayUsingPredicate:predicate]];
 #else
     
@@ -428,7 +428,7 @@ static ModelManager *_sharedModelManager = nil;
     
     // manufacturer_name, model_name_no contains
     NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
-                                @"(manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@)", keyword, keyword];
+                                @"(manufacturer_name CONTAINS[cd] %@) || (model_name_no CONTAINS[cd] %@)", keyword, keyword];
     
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predEquipment];
@@ -456,7 +456,7 @@ static ModelManager *_sharedModelManager = nil;
     
     // manufacturer_name, model_name_no contains
     NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
-                                  @"(manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@)", keyword, keyword];
+                                  @"(manufacturer_name CONTAINS[cd] %@) || (model_name_no CONTAINS[cd] %@)", keyword, keyword];
     
     return [[NSMutableArray alloc] initWithArray:[equipmentArray filteredArrayUsingPredicate:predEquipment]];
     
@@ -502,7 +502,7 @@ static ModelManager *_sharedModelManager = nil;
     
     // manufacturer_name, model_name_no contains
     NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
-                                  @"generic_id == %@ AND ((manufacturer_name LIKE[c] %@) || (model_name_no LIKE[c] %@))", generic.generic_id, keyword, keyword];
+                                  @"generic_id == %@ AND ((manufacturer_name CONTAINS[cd] %@) || (model_name_no CONTAINS[cd] %@))", generic.generic_id, keyword, keyword];
     
     [fetchRequest setEntity:entity];
     [fetchRequest setPredicate:predEquipment];

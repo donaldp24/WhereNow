@@ -243,9 +243,9 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     /* Create custom view to display section header... */
     UILabel *label = [[UILabel alloc] initWithFrame:CGRectMake(20, 3, tableView.frame.size.width, 22)];
     [label setFont:[UIFont boldSystemFontOfSize:17]];
-    NSString *string = @"IMMEDIATE VICINITY";
+    NSString *string = kLocationTypeImmediateVicinity;
     if (section > 0)
-        string = @"CURRENT LOCATION";
+        string = kLocationTypeCurrentLocation;
 
     /* Section header is in 0th index... */
     [label setText:string];
@@ -457,6 +457,7 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 #ifdef DEBUG
     if (arrayBeacons.count == 0)
     {
+        [self.refresh endRefreshing];
         //CLBeacon *beacon = [[CLBeacon alloc] init];
         //beacon.proximityUUID = [[NSUUID alloc] initWithUUIDString:@""];
     }
@@ -487,6 +488,42 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         [self.tableView reloadData];
     });
 }
+
+#pragma mark - swipetableview swipe delegate
+- (void)onSwipeRight:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+{
+    if (self.segment.selectedSegmentIndex == 0)
+        return;
+    
+    self.segment.selectedSegmentIndex = 0;
+    
+    [self onSegmentIndexChanged:self.segment];
+//
+//    self.selectedGenerics = nil;
+//    if (editingCell)
+//        [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
+//    
+//    editingIndexPath = nil;
+//    editingCell = nil;
+//    
+//    [_expandingLocationArray removeAllObjects];
+//    
+//    if (_isSearching)
+//    {
+//        if (self.segment.selectedSegmentIndex == 0)
+//            [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
+//        else
+//            [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
+//    }
+//    
+//    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationRight];
+}
+
+- (void)onSwipeLeft:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
+{
+    //
+}
+
 
 
 @end

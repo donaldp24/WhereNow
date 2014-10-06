@@ -19,6 +19,8 @@ typedef enum {
     CommonEquipmentCellTypeNearme
 } CommonEquipmentCellType;
 
+@class CommonEquipmentTableViewCell;
+
 @protocol CommonEquipmentTableViewCellDelegate <NSObject>
 
 @optional

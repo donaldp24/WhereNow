@@ -15,6 +15,10 @@
 - (NSIndexPath *)setEditing:(BOOL)editing atIndexPath:(NSIndexPath *)indexPath cell:(UITableViewCell *)cell recalcIndexPath:(NSIndexPath *)recalcIndexPath;
 - (BOOL)canCloseEditingOnTap:(UITableView *)tableView atIndexPath:(NSIndexPath *)indexPath;
 
+@optional
+- (void)onSwipeRight:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
+- (void)onSwipeLeft:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath;
+
 @end
 
 @interface SwipeTableView : UITableView <UIGestureRecognizerDelegate>

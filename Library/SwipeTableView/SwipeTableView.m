@@ -138,10 +138,36 @@ const static char * kYFJLeftSwipeDeleteTableViewCellIndexPathKey = "YFJLeftSwipe
 - (void)swiped:(UISwipeGestureRecognizer *)gestureRecognizer {
     NSIndexPath * indexPath = [self cellIndexPathForGestureRecognizer:gestureRecognizer];
     if(indexPath == nil)
+    {
+        if (gestureRecognizer == _leftGestureRecognizer)
+            if (self.swipeDelegate)
+                [self.swipeDelegate onSwipeLeft:self indexPath:nil];
+        if (gestureRecognizer == _rightGestureRecognizer)
+            if (self.swipeDelegate)
+                [self.swipeDelegate onSwipeRight:self indexPath:nil];
         return;
+    }
     
     if(![self.dataSource tableView:self canEditRowAtIndexPath:indexPath]) {
         return;
+    }
+    
+    if (gestureRecognizer == _leftGestureRecognizer && [_editingIndexPath isEqual:indexPath])
+    {
+        if (self.swipeDelegate)
+        {
+            [self.swipeDelegate onSwipeLeft:self indexPath:indexPath];
+            return;
+        }
+    }
+    
+    if (gestureRecognizer == _rightGestureRecognizer && ![_editingIndexPath isEqual:indexPath])
+    {
+        if (self.swipeDelegate)
+        {
+            [self.swipeDelegate onSwipeRight:self indexPath:indexPath];
+            return;
+        }
     }
     
     if(gestureRecognizer == _leftGestureRecognizer && ![_editingIndexPath isEqual:indexPath]) {

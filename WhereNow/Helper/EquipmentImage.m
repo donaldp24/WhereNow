@@ -10,6 +10,26 @@
 
 @implementation EquipmentImage
 
++ (NSString *)getCacheDirectoryPath
+{
+    //NSString *path = NSTemporaryDirectory();
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *path = [paths objectAtIndex:0];
+    
+    NSString *dataPath = [path stringByAppendingPathComponent:@"/tmp"];
+    if (![[NSFileManager defaultManager] fileExistsAtPath:dataPath])
+    {
+        NSError *error = nil;
+        [[NSFileManager defaultManager] createDirectoryAtPath:dataPath withIntermediateDirectories:NO attributes:nil error:&error]; //Create folder
+        if (error) {
+            NSLog(@"error occurred in create tmp folder : %@", [error localizedDescription]);
+        }
+    }
+    return dataPath;
+}
+
+
 
 + (NSString *)uniqueImageName
 {
@@ -18,7 +38,10 @@
     CFRelease(uuid);
     NSString *uniqueFileName = [NSString stringWithFormat:@"%@.PNG", (__bridge NSString *)uuidString];
     CFRelease(uuidString);
-    return uniqueFileName;
+    
+    NSString *strPath = [EquipmentImage getCacheDirectoryPath];
+    NSString *filePath = [strPath stringByAppendingPathComponent:uniqueFileName];
+    return filePath;
 }
 
 

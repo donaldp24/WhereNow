@@ -54,6 +54,7 @@
 		D03AC29319BFE8500024BF10 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D03AC29219BFE8500024BF10 /* iTunesArtwork */; };
 		D03D826519BBF98400D8CA91 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D826419BBF98400D8CA91 /* SystemConfiguration.framework */; };
 		D03D826919BC005600D8CA91 /* DetailBaseTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D03D826819BC005600D8CA91 /* DetailBaseTableViewController.m */; };
+		D04101FD19DE473900E2E579 /* LocatingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D04101FC19DE473900E2E579 /* LocatingManager.m */; };
 		D0410AEE1994E5A400FCF128 /* BackgroundTaskManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D0410AED1994E5A400FCF128 /* BackgroundTaskManager.m */; };
 		D041E5FE19CE51F90089C363 /* TriggeredAlertsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D041E5FD19CE51F90089C363 /* TriggeredAlertsTableViewController.m */; };
 		D041E60419CE58B40089C363 /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = D041E60319CE58B40089C363 /* Alert.m */; };
@@ -216,6 +217,8 @@
 		D03D826419BBF98400D8CA91 /* SystemConfiguration.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SystemConfiguration.framework; path = System/Library/Frameworks/SystemConfiguration.framework; sourceTree = SDKROOT; };
 		D03D826719BC005600D8CA91 /* DetailBaseTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DetailBaseTableViewController.h; sourceTree = "<group>"; };
 		D03D826819BC005600D8CA91 /* DetailBaseTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DetailBaseTableViewController.m; sourceTree = "<group>"; };
+		D04101FB19DE473900E2E579 /* LocatingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LocatingManager.h; sourceTree = "<group>"; };
+		D04101FC19DE473900E2E579 /* LocatingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LocatingManager.m; sourceTree = "<group>"; };
 		D0410AEB1994E5A400FCF128 /* BackgroundNotifications.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundNotifications.h; sourceTree = "<group>"; };
 		D0410AEC1994E5A400FCF128 /* BackgroundTaskManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BackgroundTaskManager.h; sourceTree = "<group>"; };
 		D0410AED1994E5A400FCF128 /* BackgroundTaskManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BackgroundTaskManager.m; sourceTree = "<group>"; };
@@ -568,6 +571,8 @@
 				D0410AEB1994E5A400FCF128 /* BackgroundNotifications.h */,
 				D0410AEC1994E5A400FCF128 /* BackgroundTaskManager.h */,
 				D0410AED1994E5A400FCF128 /* BackgroundTaskManager.m */,
+				D04101FB19DE473900E2E579 /* LocatingManager.h */,
+				D04101FC19DE473900E2E579 /* LocatingManager.m */,
 			);
 			path = BkTask;
 			sourceTree = "<group>";
@@ -956,6 +961,7 @@
 				D041E60A19CE59700089C363 /* TriggeredAlert.m in Sources */,
 				D04A3897198F84740063554C /* SBJsonParser.m in Sources */,
 				D0EA38E919C6CE0E006112C2 /* SDWebImageDecoder.m in Sources */,
+				D04101FD19DE473900E2E579 /* LocatingManager.m in Sources */,
 				D00E3EB2198CD89B00AFE9EC /* RecentViewController.m in Sources */,
 				D034F3781988CAF4004DE04E /* AppDelegate.m in Sources */,
 				D0130AC619BD4E6400A5EFFC /* CommonGenericTableViewCell.m in Sources */,

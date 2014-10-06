@@ -996,8 +996,6 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
         if (generic == nil)
             continue;
         
-        if (![arrayGenerics containsObject:generic])
-            [arrayGenerics addObject:generic];
         
         NSArray *arrayEquipments = [dicGeneric objectForKey:@"equipment_array"];
         if (arrayEquipments != nil)
@@ -1009,15 +1007,21 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                     continue;
                 
                 NSString *location_type = [dicEquipment objectForKey:@"location_type"];
-                if ([location_type isEqualToString:@"IMMEDIATE VICINITY"])
+                if ([location_type isEqualToString:kLocationTypeImmediateVicinity])
                 {
                     if (![arrayVicinityEquipments containsObject:equipment])
                         [arrayVicinityEquipments addObject:equipment];
+                    
+                    if (![arrayGenerics containsObject:generic])
+                        [arrayGenerics addObject:generic];
                 }
-                else
+                else if ([location_type isEqualToString:kLocationTypeCurrentLocation])
                 {
                     if (![arrayLocationEquipments containsObject:equipment])
                         [arrayLocationEquipments addObject:equipment];
+                    
+                    if (![arrayGenerics containsObject:generic])
+                        [arrayGenerics addObject:generic];
                 }
             }
         }

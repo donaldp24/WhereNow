@@ -11,8 +11,17 @@
 #define DATETIME_FORMAT @"yyyy-MM-dd HH:mm:ss"
 #define DATE_FORMAT     @"yyyy-MM-dd"
 
-#define kTriggeredAlertChanged  @"triggeredalertchanged"
+// nearby equipment's location type
+#define kLocationTypeCurrentLocation      @"CURRENT LOCATION"
+#define kLocationTypeImmediateVicinity      @"IMMEDIATE VICINITY"
 
+// remote notification's alert type
+#define kRemoteNotificationTypeKey          @"alert_type"
+#define kRemoteNotificationTypeAlert        @"alert"
+#define kRemoteNotificationTypeWatch        @"watch"
+
+// notifications
+#define kTriggeredAlertChanged  @"triggeredalertchanged"
 #define kDataChanged        @"data changed"
 #define kLocatingChanged    @"locating changed"
 

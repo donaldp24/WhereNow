@@ -17,6 +17,8 @@
 #import "TriggeredAlertsTableViewController.h"
 #import "FoundEquipmentTableViewController.h"
 
+#import "EquipmentTabBarController.h"
+
 @interface AppDelegate () <UIAlertViewDelegate, TriggeredAlertsTableViewControllerDelegate, FoundEquipmentTableViewControllerDelegate>
 
 @property (nonatomic) BOOL bShownTriggeredAlerts;
@@ -50,7 +52,7 @@
     }
 #else
     // register push notification
-    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound)];
+    [[UIApplication sharedApplication] registerForRemoteNotificationTypes:(UIRemoteNotificationTypeBadge | UIRemoteNotificationTypeSound | UIRemoteNotificationTypeAlert)];
 #endif
     
     if (launchOptions != nil) {
@@ -58,8 +60,8 @@
         NSDictionary *notification = [launchOptions objectForKey:UIApplicationLaunchOptionsRemoteNotificationKey];
         NSLog(@"Launched from push notification : %@", notification);
         
-        NSString *alert_type = [notification objectForKey:@"alert_type"];
-        if (alert_type != nil && [alert_type isEqualToString:@"alert"])
+        NSString *alert_type = [notification objectForKey:kRemoteNotificationTypeKey];
+        if (alert_type != nil && [alert_type isEqualToString:kRemoteNotificationTypeAlert])
         {
             NSObject *obj = [notification objectForKey:@"alert_id"];
             if (obj != nil)
@@ -70,7 +72,6 @@
 
             [self performSelectorOnMainThread:@selector(showTriggeredAlerts) withObject:nil waitUntilDone:NO];
         }
-
     }
     
     return YES;
@@ -88,7 +89,10 @@
     TriggeredAlertsTableViewController *vc = [vcNav.viewControllers objectAtIndex:0];
     vc.delegate = self;
     
-    [self.window.rootViewController presentViewController:vcNav animated:YES completion:nil];
+    if ([EquipmentTabBarController sharedInstance])
+        [[EquipmentTabBarController sharedInstance] presentViewController:vcNav animated:YES completion:nil];
+    else
+        [self.window.rootViewController presentViewController:vcNav animated:YES completion:nil];
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application
@@ -123,7 +127,13 @@
     // request data
     if ([UserContext sharedUserContext].isLoggedIn)
     {
-        //[ServerManager sharedManager]
+        // get generics again
+        [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+            [[NSNotificationCenter defaultCenter] postNotificationName:kDataChanged object:nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+        } failure: ^(NSString *msg) {
+            NSLog(@"Data request failed : %@", msg);
+        }];
     }
 }
 
@@ -151,14 +161,15 @@
     
     NSLog(@"Registered for remote notifications  %@", cleanDeviceToken);
     
+    // update device token
     if ([UserContext sharedUserContext].isLoggedIn)
-        [[ServerManager sharedManager] updateDeviceToken:cleanDeviceToken userId:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
+    {
+        [[ServerManager sharedManager] updateDeviceToken:cleanDeviceToken sessionId:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
             NSLog(@"device token registered : %@", cleanDeviceToken);
         } failure:^(NSString *msg) {
             NSLog(@"device token registering failed - %@", msg);
         }];
-    
-
+    }
 #endif
 }
 
@@ -166,10 +177,11 @@
 {
     NSLog(@"didReceiveRemoteNotification ---------- \n%@", userInfo);
     
-    NSString *alert_type = [userInfo objectForKey:@"alert_type"];
+    NSString *alert_type = [userInfo objectForKey:kRemoteNotificationTypeKey];
     if (alert_type != nil &&
-        [alert_type isEqualToString:@"alert"])
+        [alert_type isEqualToString:kRemoteNotificationTypeAlert])
     {
+        // store to local
         NSObject *obj = [userInfo objectForKey:@"alert_id"];
         if (obj != nil)
         {
@@ -196,8 +208,6 @@
         }
         else {
             NSLog(@"application is not active ---");
-            
-            //[self showTriggeredAlerts];
         }
     }
     else
@@ -216,8 +226,6 @@
         }
         else {
             NSLog(@"application is not active ---");
-            
-            //[self showTriggeredAlerts];
         }
     }
 }
@@ -254,7 +262,7 @@
     NSString *token = [AppContext sharedAppContext].cleanDeviceToken;
     if (token != nil && token.length > 0)
     {
-        [[ServerManager sharedManager] resetBadgeCountWithToken:token success:^{
+        [[ServerManager sharedManager] resetBadgeCountWithToken:token sessionId:[UserContext sharedUserContext].sessionId success:^{
             NSLog(@"resetbadge success!");
         } failure:^(NSString *msg) {
             NSLog(@"reset badge failed : %@", msg);
@@ -335,7 +343,10 @@
     vc.arrayEquipments = self.arrayFoundEquipments;
     vc.delegate = self;
     
-    [self.window.rootViewController presentViewController:vcNav animated:YES completion:nil];
+    if ([EquipmentTabBarController sharedInstance])
+        [[EquipmentTabBarController sharedInstance] presentViewController:vcNav animated:YES completion:nil];
+    else
+        [self.window.rootViewController presentViewController:vcNav animated:YES completion:nil];
 }
 
 #pragma mark - FoundEquipmentTableViewControllerDelegate

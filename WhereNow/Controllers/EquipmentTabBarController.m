@@ -9,17 +9,22 @@
 #import "EquipmentTabBarController.h"
 #import "DetailBaseTableViewController.h"
 #import "BackgroundTaskManager.h"
+#import "LocatingManager.h"
 
-#import <snfsdk/snfsdk.h>
+static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
-@interface EquipmentTabBarController () <UIActionSheetDelegate, LeDeviceManagerDelegate, LeSnfDeviceDelegate>
+@interface EquipmentTabBarController () <UIActionSheetDelegate>
 {
-    LeDeviceManager *_mgr;
 }
 
 @end
 
 @implementation EquipmentTabBarController
+
++ (EquipmentTabBarController *)sharedInstance
+{
+    return _sharedEquipmentTabBarController;
+}
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
@@ -39,11 +44,19 @@
         DetailBaseTableViewController *vc = (DetailBaseTableViewController *)[[nav viewControllers] objectAtIndex:0];
         vc.delegate = self;
     }
+    
+    _sharedEquipmentTabBarController = self;
 }
 
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    _sharedEquipmentTabBarController = nil;
 }
 
 - (void)didReceiveMemoryWarning
@@ -96,11 +109,12 @@
 
 - (void)onPageDevice:(Equipment *)equipment
 {
-//    [[BackgroundTaskManager sharedManager] stopScanning];
-//    
-//    //
-//    _mgr = [[LeDeviceManager alloc] initWithSupportedDevices:@[[LeSnfDevice class]] delegate:self];
-//    [_mgr startScan];
+    // locate this equipment
+    if ([equipment.islocating boolValue])
+        return;
+    
+    [[LocatingManager sharedInstance] locatingEquipment:equipment];
+    
 }
 
 - (void)onReportForService:(Equipment *)equipment
@@ -112,98 +126,5 @@
 {
     [self dismissViewControllerAnimated:YES completion:nil];
 }
-
-#pragma mark - LeDeviceManagerdelegate
-- (void)leDeviceManager:(LeDeviceManager *)mgr didAddNewDevice:(LeDevice *)dev
-{
-    //
-}
-
-- (void)leDeviceManager:(LeDeviceManager *)mgr setValue:(id)value forDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
-{
-    //
-}
-
-- (id)leDeviceManager:(LeDeviceManager *)mgr valueForDeviceUUID:(CFUUIDRef)uuid key:(NSString *)key
-{
-    return nil;
-}
-
-- (NSArray *)retrieveStoredDeviceUUIDsForLeDeviceManager:(LeDeviceManager *)mgr
-{
-    return nil;
-}
-
-- (BOOL)leDeviceManager:(LeDeviceManager *)mgr willAddNewDeviceForPeripheral:(CBPeripheral*)peripheral advertisementData:(NSDictionary *)advData
-{
-    for (id key in [advData allKeys]) {
-        NSObject *obj = [advData objectForKey:key];
-        if (obj && [(NSString *)key isEqualToString:@"kCBAdvDataServiceUUIDs"]) {
-            NSArray *arrayServices = (NSArray *)obj;
-            for (CBUUID *uuid in arrayServices) {
-                NSLog(@"Service uuid - %@", uuid.UUIDString);
-            }
-        }
-    }
-    return YES;
-}
-
-- (Class)leDeviceManager:(LeDeviceManager *)mgr didDiscoverUnknownPeripheral:(CBPeripheral*)peripheral advertisementData:(NSDictionary *)advData RSSI:(NSNumber *)RSSI
-{
-    return nil;
-}
-
-- (void)leDeviceManager:(LeDeviceManager *)mgr didDiscoverDevice:(LeDevice *)dev advertisementData:(NSDictionary *)advData RSSI:(NSNumber *)RSSI
-{
-    // check dev is the device to that we have to connect.
-    
-    NSLog(@"dev - %@", dev.name);
-    LeSnfDevice *snfDev = (LeSnfDevice *)dev;
-    if (snfDev.state == LE_DEVICE_STATE_DISCONNECTED) {
-        NSLog(@"connecting to %@ ", dev.name);
-        snfDev.delegate = self;
-        [snfDev connect];
-    }
-    
-}
-
-
-#pragma mark - LeSnfDeviceDelegate
-/*
- called when the connection state of a device changes.
- */
-- (void)leSnfDevice:(LeSnfDevice *)dev didChangeState:(int)state
-{
-    if (state == LE_DEVICE_STATE_CONNECTED)
-    {
-        NSLog(@"device connected");
-        
-        // enable alert sound
-        [dev enableAlertSound:YES light:YES];
-    }
-    else if (state == LE_DEVICE_STATE_DISCONNECTED)
-    {
-        NSLog(@"device disconnected ");
-    }
-}
-
-/*
- called when a broadcast from the device is received.
- */
-- (void)didDiscoverLeSnfDevice:(LeSnfDevice *)dev
-{
-    NSLog(@"didDiscoverLeSnfDevice : %@", dev.name);
-}
-
-- (void)didEnableAlertForLeSnfDevice:(LeSnfDevice *)dev success:(BOOL)success
-{
-    NSLog(@"didEnableAlertForLeSnfDevice : %@ - %@", dev.name, (success)?@"success":@"failed");
-    
-    [dev disconnect];
-    [_mgr stopScan];
-    _mgr = nil;
-}
-
-
 
 @end

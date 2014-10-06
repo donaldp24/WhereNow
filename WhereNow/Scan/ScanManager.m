@@ -293,7 +293,7 @@
     if (beacon.proximity == CLProximityUnknown)
         return NO;
     if (beacon.proximity == CLProximityFar)
-        return NO;
+        return YES;
     if (beacon.proximity == CLProximityNear)
         return YES;
     if (beacon.proximity == CLProximityImmediate)
@@ -313,7 +313,7 @@
         return YES;
     }
     else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
-        return NO;
+        return YES;
     }
     else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
         return NO;

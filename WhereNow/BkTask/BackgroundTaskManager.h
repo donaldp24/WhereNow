@@ -26,7 +26,7 @@
 @property (nonatomic, strong) NSMutableArray *arrayNearmeGenerics;
 @property (nonatomic, strong) NSMutableArray *arrayVicinityEquipments;
 @property (nonatomic, strong) NSMutableArray *arrayLocationEquipments;
-@property (nonatomic, strong) NSMutableArray *arrayLocatingEquipments;
+//@property (nonatomic, strong) NSMutableArray *arrayLocatingEquipments;
 
 - (void)startScanning;
 - (void)stopScanning;
