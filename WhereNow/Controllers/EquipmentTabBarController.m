@@ -15,6 +15,7 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
 @interface EquipmentTabBarController () <UIActionSheetDelegate>
 {
+    DetailBaseTableViewController *menuSender;
 }
 
 @end
@@ -81,6 +82,7 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 #pragma mark - menu delegate
 - (void)onMenu:(id)sender
 {
+    menuSender = sender;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
@@ -115,6 +117,7 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
     
     [[LocatingManager sharedInstance] locatingEquipment:equipment];
     
+    [menuSender didPagedDevice];
 }
 
 - (void)onReportForService:(Equipment *)equipment

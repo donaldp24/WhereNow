@@ -26,6 +26,7 @@
     __weak IBOutlet UILabel *lblHomeLocation;
     __weak IBOutlet UIImageView *ivEquipment;
     __weak IBOutlet UIImageView *ivModel;
+    __weak IBOutlet UIImageView *ivTracking;
 }
 
 @end
@@ -100,6 +101,11 @@
             [ivModel layoutIfNeeded];
         });
     }];
+    
+    if ([_equipment.islocating boolValue])
+        ivTracking.hidden = NO;
+    else
+        ivTracking.hidden = YES;
 
 }
 
@@ -214,7 +220,15 @@
 - (void)onMenu:(id)sender
 {
     if (self.delegate)
-        [self.delegate onMenu:sender];
+        [self.delegate onMenu:self];
+}
+
+- (void)didPagedDevice
+{
+    if ([_equipment.islocating boolValue])
+        ivTracking.hidden = NO;
+    else
+        ivTracking.hidden = YES;
 }
 
 @end

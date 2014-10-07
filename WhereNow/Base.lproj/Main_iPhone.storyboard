@@ -781,6 +781,9 @@
                                                     <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="nearmeicon_halflocated" translatesAutoresizingMaskIntoConstraints="NO" id="waj-dJ-nBk">
+                                                    <rect key="frame" x="294" y="42" width="21" height="21"/>
+                                                </imageView>
                                                 <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Home Location" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="PJx-wY-YSu">
                                                     <rect key="frame" x="30" y="72" width="243" height="21"/>
                                                     <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
@@ -815,6 +818,7 @@
                     <connections>
                         <outlet property="ivEquipment" destination="0GP-Fk-SpM" id="dbZ-Is-qMQ"/>
                         <outlet property="ivModel" destination="1lQ-hu-csx" id="KQd-SO-Ogu"/>
+                        <outlet property="ivTracking" destination="waj-dJ-nBk" id="4Qr-sC-13K"/>
                         <outlet property="lblBarcodeNo" destination="LQa-Ku-Nli" id="Spe-YO-PeI"/>
                         <outlet property="lblCurrentLevel" destination="TeH-Uc-vcQ" id="CXF-Sv-vhv"/>
                         <outlet property="lblCurrentLocation" destination="2rO-yg-sEG" id="b09-IM-96K"/>
@@ -1449,6 +1453,7 @@
         <image name="movepercent8" width="32" height="32"/>
         <image name="movepercent9" width="32" height="32"/>
         <image name="nearmeicon" width="30" height="30"/>
+        <image name="nearmeicon_halflocated" width="30" height="30"/>
         <image name="overviewicon" width="30" height="30"/>
         <image name="searchicon" width="30" height="30"/>
     </resources>

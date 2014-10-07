@@ -11,12 +11,15 @@
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
 #import "CommonEquipmentTableViewCell.h"
+#import "PushTransitioningDelegate.h"
 
 @interface RecentEquipmentsViewController () {
     UITableViewCell *editingCell;
     NSIndexPath *editingIndexPath;
     
     UIBarButtonItem *_backButton;
+    
+    PushTransitioningDelegate *pushTransitioningDelegate;
 }
 
 @property (nonatomic, strong) IBOutlet SwipeTableView *tableView;
@@ -140,7 +143,8 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     equipTabBar.equipment = equipment;
     
     // set animation style
-    equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+    //equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+    equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
     [self presentViewController:equipTabBar animated:YES completion:nil];
     
 }

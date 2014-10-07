@@ -25,6 +25,7 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *ivStatus;
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg;
+@property (nonatomic, weak) IBOutlet UIImageView *ivTracking;
 
 @property (nonatomic, weak) IBOutlet UIButton *btnFavorites;
 @property (nonatomic, weak) IBOutlet UIButton *btnLocate;
@@ -75,9 +76,15 @@
     
     // near me icon
     if ([equipment.islocating boolValue])
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     else
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = YES;
+    }
     
     // set image
     //[[ServerManager sharedManager] setImageContent:self.ivImg urlString:equipment.equipment_file_location];
@@ -211,9 +218,15 @@
     
     // near me icon
     if ([self.equipment.islocating boolValue])
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     else
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = YES;
+    }
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentLocate:)])
         [self.delegate onEquipmentLocate:self.equipment];

@@ -370,7 +370,8 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             equipTabBar.equipment = equipment;
             
             // set animation style
-            equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+            //equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+            equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
             [self presentViewController:equipTabBar animated:YES completion:nil];
         }
     }

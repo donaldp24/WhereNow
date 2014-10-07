@@ -7,6 +7,9 @@
 //
 
 #import "UIManager.h"
+#import "PushTransitioningDelegate.h"
+
+static PushTransitioningDelegate *_pushTransitioningDelegate = nil;
 
 @implementation UIManager
 
@@ -65,6 +68,13 @@
 {
     UIBarButtonItem *backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backicon"] style:UIBarButtonItemStylePlain target:target action:action];
     return backButton;
+}
+
++ (id <UIViewControllerTransitioningDelegate>)pushTransitioingDelegate
+{
+    if (_pushTransitioningDelegate == nil)
+        _pushTransitioningDelegate = [[PushTransitioningDelegate alloc] init];
+    return _pushTransitioningDelegate;
 }
 
 @end

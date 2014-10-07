@@ -309,6 +309,24 @@
 
 + (BOOL)permissionEnabled
 {
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedAlways) {
+        return YES;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusNotDetermined) {
+        return YES;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
+        return NO;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        return NO;
+    }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorizedWhenInUse) {
+        return NO;
+    }
+    return NO;
+#else
     if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusAuthorized) {
         return YES;
     }
@@ -318,7 +336,11 @@
     else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusRestricted) {
         return NO;
     }
+    else if ([CLLocationManager authorizationStatus] == kCLAuthorizationStatusDenied) {
+        return NO;
+    }
     return NO;
+#endif
 }
 
 

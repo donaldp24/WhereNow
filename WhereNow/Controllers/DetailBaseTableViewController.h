@@ -14,4 +14,6 @@
 
 @property (nonatomic, retain) id<EquipmentDetailMenuDelegate> delegate;
 
+- (void)didPagedDevice;
+
 @end

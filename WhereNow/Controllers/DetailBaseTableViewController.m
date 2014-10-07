@@ -8,7 +8,9 @@
 
 #import "DetailBaseTableViewController.h"
 
-@interface DetailBaseTableViewController ()
+@interface DetailBaseTableViewController () <UIGestureRecognizerDelegate>
+
+@property (nonatomic, retain) UISwipeGestureRecognizer *rightGesture;
 
 @end
 
@@ -32,12 +34,33 @@
     
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
+    
+    self.rightGesture = [[UISwipeGestureRecognizer alloc] initWithTarget:self action:@selector(onSwipeRight:)];
+    self.rightGesture.direction = UISwipeGestureRecognizerDirectionRight;
+    self.rightGesture.delegate = self;
+    [self.tableView addGestureRecognizer:self.rightGesture];
 }
 
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)onSwipeRight:(id)sender
+{
+    if (self.delegate)
+        [self.delegate onBack:sender];
+}
+
+- (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer
+{
+    return YES;
+}
+
+- (void)didPagedDevice
+{
+    //
 }
 
 @end

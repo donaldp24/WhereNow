@@ -296,7 +296,7 @@ static UITableViewCell *_prototypeAlertCell = nil;
 - (void)onMenu:(id)sender
 {
     if (self.delegate)
-        [self.delegate onMenu:sender];
+        [self.delegate onMenu:self];
 }
 
 @end

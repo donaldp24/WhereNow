@@ -73,6 +73,8 @@
 		D04A38A1198F84740063554C /* SBJsonWriter.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A3894198F84740063554C /* SBJsonWriter.m */; };
 		D04A38A5198F849A0063554C /* Reachability.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A38A4198F849A0063554C /* Reachability.m */; };
 		D04BBCB3199243520002DFC5 /* ModelManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D04BBCB2199243520002DFC5 /* ModelManager.m */; };
+		D04CF20619E34C4C00F31405 /* PushTransitioningDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = D04CF20519E34C4C00F31405 /* PushTransitioningDelegate.m */; };
+		D04CF20919E34C8100F31405 /* PushAnimatedTransitioning.m in Sources */ = {isa = PBXBuildFile; fileRef = D04CF20819E34C8100F31405 /* PushAnimatedTransitioning.m */; };
 		D05397D119D5158C00D7DA32 /* Generic.m in Sources */ = {isa = PBXBuildFile; fileRef = D05397D019D5158C00D7DA32 /* Generic.m */; };
 		D0551D6D19BEAEDB0066DF53 /* CommonLocationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */; };
 		D0551D6E19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */; };
@@ -257,6 +259,10 @@
 		D04A38A4198F849A0063554C /* Reachability.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Reachability.m; sourceTree = "<group>"; };
 		D04BBCB1199243520002DFC5 /* ModelManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ModelManager.h; sourceTree = "<group>"; };
 		D04BBCB2199243520002DFC5 /* ModelManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ModelManager.m; sourceTree = "<group>"; };
+		D04CF20419E34C4C00F31405 /* PushTransitioningDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushTransitioningDelegate.h; sourceTree = "<group>"; };
+		D04CF20519E34C4C00F31405 /* PushTransitioningDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushTransitioningDelegate.m; sourceTree = "<group>"; };
+		D04CF20719E34C8100F31405 /* PushAnimatedTransitioning.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PushAnimatedTransitioning.h; sourceTree = "<group>"; };
+		D04CF20819E34C8100F31405 /* PushAnimatedTransitioning.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PushAnimatedTransitioning.m; sourceTree = "<group>"; };
 		D05397CF19D5158C00D7DA32 /* Generic.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Generic.h; sourceTree = "<group>"; };
 		D05397D019D5158C00D7DA32 /* Generic.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Generic.m; sourceTree = "<group>"; };
 		D0551D6A19BEAEDB0066DF53 /* CommonLocationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonLocationTableViewCell.h; sourceTree = "<group>"; };
@@ -657,6 +663,10 @@
 				D0A1D2B3198F88F700167093 /* UIManager.m */,
 				D02490CF19D44E5500790D7A /* EquipmentImage.h */,
 				D02490D019D44E5500790D7A /* EquipmentImage.m */,
+				D04CF20419E34C4C00F31405 /* PushTransitioningDelegate.h */,
+				D04CF20519E34C4C00F31405 /* PushTransitioningDelegate.m */,
+				D04CF20719E34C8100F31405 /* PushAnimatedTransitioning.h */,
+				D04CF20819E34C8100F31405 /* PushAnimatedTransitioning.m */,
 			);
 			path = Helper;
 			sourceTree = "<group>";
@@ -853,6 +863,7 @@
 				ORGANIZATIONNAME = nicholas;
 				TargetAttributes = {
 					D034F3631988CAF4004DE04E = {
+						DevelopmentTeam = TET4K2Z5LN;
 						SystemCapabilities = {
 							com.apple.BackgroundModes = {
 								enabled = 1;
@@ -961,6 +972,7 @@
 				D041E60A19CE59700089C363 /* TriggeredAlert.m in Sources */,
 				D04A3897198F84740063554C /* SBJsonParser.m in Sources */,
 				D0EA38E919C6CE0E006112C2 /* SDWebImageDecoder.m in Sources */,
+				D04CF20619E34C4C00F31405 /* PushTransitioningDelegate.m in Sources */,
 				D04101FD19DE473900E2E579 /* LocatingManager.m in Sources */,
 				D00E3EB2198CD89B00AFE9EC /* RecentViewController.m in Sources */,
 				D034F3781988CAF4004DE04E /* AppDelegate.m in Sources */,
@@ -980,6 +992,7 @@
 				D0BCCA911990C1EA0047D2D2 /* UIImageView+AFNetworking.m in Sources */,
 				D041E60419CE58B40089C363 /* Alert.m in Sources */,
 				D0EA38EA19C6CE0E006112C2 /* SDWebImageDownloader.m in Sources */,
+				D04CF20919E34C8100F31405 /* PushAnimatedTransitioning.m in Sources */,
 				D0BCCA8C1990C1EA0047D2D2 /* AFJSONRequestOperation.m in Sources */,
 				D0EA38F119C6CE0E006112C2 /* UIImage+WebP.m in Sources */,
 				D0C4E0E9198A3A13003C09A1 /* AccountViewController.m in Sources */,
@@ -1158,7 +1171,7 @@
 				INFOPLIST_FILE = "WhereNow/WhereNow-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "9f35b48c-87c6-4406-b1c0-80ae663d4ca8";
+				PROVISIONING_PROFILE = "a87c0f3e-d493-4ab2-b165-900220f7eb2b";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
@@ -1181,7 +1194,7 @@
 				INFOPLIST_FILE = "WhereNow/WhereNow-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				PROVISIONING_PROFILE = "f719256b-4649-4ad0-a5b8-4936a5e63b59";
+				PROVISIONING_PROFILE = "fad1fbd4-51d0-40c0-a6f0-83f7204ed23d";
 				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};

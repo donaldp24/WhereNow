@@ -23,6 +23,7 @@
 @property (nonatomic, weak) IBOutlet UILabel *lblNumberOfNearby;
 @property (nonatomic, weak) IBOutlet UILabel *lblNotes;
 @property (nonatomic, weak) IBOutlet UIImageView *ivStatus;
+@property (nonatomic, weak) IBOutlet UIImageView *ivTracking;
 
 @property (nonatomic, weak) IBOutlet UIButton *btnFavorites;
 @property (nonatomic, weak) IBOutlet UIButton *btnLocate;
@@ -76,11 +77,20 @@
     }
     
     if (nLocating == 0)
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = YES;
+    }
     else if (nUnlocating == 0)
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     else
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_halflocated"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     
     // set status image
     //[[ServerManager sharedManager] setImageContent:self.ivStatus urlString:self.generic.alert_icon];
@@ -190,11 +200,20 @@
     }
     
     if (nLocating == 0)
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = YES;
+    }
     else if (nUnlocating == 0)
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_located"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     else
+    {
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon_halflocated"] forState:UIControlStateNormal];
+        self.ivTracking.hidden = NO;
+    }
     
     if (self.delegate && [self.delegate respondsToSelector:@selector(onGenericLocate:)])
         [self.delegate onGenericLocate:self.generic];

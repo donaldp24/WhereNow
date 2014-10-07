@@ -21,20 +21,23 @@
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="status_green" translatesAutoresizingMaskIntoConstraints="NO" id="AqY-9h-jy5">
-                                <rect key="frame" x="77" y="25" width="21" height="21"/>
+                                <rect key="frame" x="77" y="37" width="21" height="21"/>
+                            </imageView>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="nearmeicon_halflocated" translatesAutoresizingMaskIntoConstraints="NO" id="j3j-5g-UzG">
+                                <rect key="frame" x="77" y="10" width="21" height="21"/>
                             </imageView>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="INVACARE - ACTION3NG" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="DtL-yE-puI">
-                                <rect key="frame" x="97" y="10" width="223" height="21"/>
+                                <rect key="frame" x="101" y="10" width="219" height="21"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="17"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Level 3 Storeroom" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Van-Ii-EcK">
-                                <rect key="frame" x="97" y="37" width="223" height="21"/>
+                                <rect key="frame" x="101" y="37" width="219" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <nil key="highlightedColor"/>
                             </label>
                             <label opaque="NO" clipsSubviews="YES" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="SN: ASED0-1123" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="9aR-9m-XMX">
-                                <rect key="frame" x="97" y="61" width="223" height="21"/>
+                                <rect key="frame" x="101" y="61" width="219" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                 <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -118,6 +121,7 @@
                 <outlet property="btnLocate" destination="csL-XN-c80" id="9kw-yw-sOp"/>
                 <outlet property="ivImg" destination="oVL-k9-xye" id="uZ0-Yb-ch4"/>
                 <outlet property="ivStatus" destination="AqY-9h-jy5" id="l8t-Lj-24d"/>
+                <outlet property="ivTracking" destination="j3j-5g-UzG" id="j1D-sU-bqM"/>
                 <outlet property="lblLocation" destination="Van-Ii-EcK" id="hwL-fn-tVW"/>
                 <outlet property="lblName" destination="DtL-yE-puI" id="hg8-O2-mG3"/>
                 <outlet property="lblSn" destination="9aR-9m-XMX" id="8bH-ZV-E2m"/>
@@ -131,6 +135,7 @@
     <resources>
         <image name="favoriteicon" width="30" height="30"/>
         <image name="nearmeicon" width="30" height="30"/>
+        <image name="nearmeicon_halflocated" width="30" height="30"/>
         <image name="status_green" width="21" height="21"/>
         <image name="trashicon" width="30" height="30"/>
     </resources>

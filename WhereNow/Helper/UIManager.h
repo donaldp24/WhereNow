@@ -21,4 +21,6 @@
 
 + (UIBarButtonItem *)defaultBackButton:(id)target action:(SEL)action;
 
++ (id <UIViewControllerTransitioningDelegate>)pushTransitioingDelegate;
+
 @end

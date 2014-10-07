@@ -118,7 +118,7 @@ static ModelManager *_sharedModelManager = nil;
 
 - (NSSortDescriptor *)sortForEquipMovements
 {
-    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"check_in_date" ascending:YES];
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"check_in_date" ascending:NO];
     return descriptor1;
 }
 
