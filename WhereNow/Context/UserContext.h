@@ -15,8 +15,13 @@
 @property (nonatomic) BOOL isLastLoggedin;
 @property (nonatomic, strong) NSString *sessionId;
 @property (nonatomic, strong) NSString *userId;
+
+// YES when user logge in, otherwise NO
 @property (nonatomic) BOOL isLoggedIn;
+
 @property (nonatomic, strong) NSString *fullName;
+@property (nonatomic, strong) NSString *tokenId;
+@property (nonatomic, strong) NSString *currentLocation;
 
 + (UserContext *)sharedUserContext;
 
@@ -27,5 +32,7 @@
 - (void)setUserId:(NSString *)userId;
 - (void)setIsLoggedIn:(BOOL)isLoggedIn;
 - (void)setFullName:(NSString *)fullName;
+- (void)setTokenId:(NSString *)tokenId;
+- (void)setCurrentLocation:(NSString *)currentLocation;
 
 @end

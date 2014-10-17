@@ -19,11 +19,22 @@
 #define kRemoteNotificationTypeKey          @"alert_type"
 #define kRemoteNotificationTypeAlert        @"alert"
 #define kRemoteNotificationTypeWatch        @"watch"
+#define kRemoteNotificationTypeForcedLogout @"forcedloggedout"
 
 // notifications
 #define kTriggeredAlertChanged  @"triggeredalertchanged"
 #define kDataChanged        @"data changed"
 #define kLocatingChanged    @"locating changed"
+#define kVicinityBeaconsChanged @"vicinity beacons changed"
+#define kFoundEquipmentsChanged @"found equipments changed"
+#define kCurrentLocationChanged @"current location changed"
+
+// keys from server
+#define kDeviceListDeviceNameKey    @"device_name"
+#define kDeviceListUserDeviceIdKey  @"user_device_id"
+#define kDeviceListDeviceTokenKey   @"device_token"
+
+#define USE_PUSHANIMATION_FOR_DETAILVIEW    0
 
 @interface Common : NSObject
 

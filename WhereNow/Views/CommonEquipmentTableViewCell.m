@@ -13,6 +13,8 @@
 #import "AppContext.h"
 #import "UserContext.h"
 #import "LocatingManager.h"
+#import "LocatingManager.h"
+#import "BackgroundTaskManager.h"
 
 #define kButtonWidth    (75.0f)
 #define kHeightForCell  (92.0f);
@@ -30,6 +32,7 @@
 @property (nonatomic, weak) IBOutlet UIButton *btnFavorites;
 @property (nonatomic, weak) IBOutlet UIButton *btnLocate;
 @property (nonatomic, weak) IBOutlet UIButton *btnDelete;
+@property (nonatomic, weak) IBOutlet UIButton *btnPage;
 
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *leftConstraintOfView;
 @property (nonatomic, weak) IBOutlet NSLayoutConstraint *leftConstraintOfBtnFavorites;
@@ -110,13 +113,34 @@
     switch (self.cellType) {
         case CommonEquipmentCellTypeSearch:
         case CommonEquipmentCellTypeRecent:
-        case CommonEquipmentCellTypeNearme:
+        
             self.leftConstraintOfBtnFavorites.constant = 0;
             self.btnFavorites.hidden = NO;
             self.leftConstraintOfBtnLocate.constant = kButtonWidth;
             self.btnLocate.hidden = NO;
             
             self.btnDelete.hidden = YES;
+            self.btnPage.hidden = YES;
+        
+            break;
+        case CommonEquipmentCellTypeNearme:
+            if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+            {
+                self.btnLocate.hidden = YES;
+                self.btnDelete.hidden = YES;
+                self.btnFavorites.hidden = YES;
+                self.btnPage.hidden = NO;
+            }
+            else
+            {
+                self.leftConstraintOfBtnFavorites.constant = 0;
+                self.btnFavorites.hidden = NO;
+                self.leftConstraintOfBtnLocate.constant = kButtonWidth;
+                self.btnLocate.hidden = NO;
+                
+                self.btnDelete.hidden = YES;
+                self.btnPage.hidden = YES;
+            }
             break;
             
         case CommonEquipmentCellTypeFavorites:
@@ -127,6 +151,8 @@
                 
                 self.leftConstraintOfBtnLocate.constant = kButtonWidth;
                 self.btnLocate.hidden = NO;
+                
+                self.btnPage.hidden = YES;
             }
             else
             {
@@ -134,6 +160,8 @@
                 
                 self.leftConstraintOfBtnLocate.constant = 0;
                 self.btnLocate.hidden = NO;
+                
+                self.btnPage.hidden = YES;
             }
             
             self.btnFavorites.hidden = YES;
@@ -166,8 +194,13 @@
         switch (self.cellType) {
             case CommonEquipmentCellTypeSearch:
             case CommonEquipmentCellTypeRecent:
-            case CommonEquipmentCellTypeNearme:
                 self.leftConstraintOfView.constant = -kButtonWidth * 2;
+                break;
+            case CommonEquipmentCellTypeNearme:
+                if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+                    self.leftConstraintOfView.constant = -kButtonWidth;
+                else
+                    self.leftConstraintOfView.constant = -kButtonWidth * 2;
                 break;
             case CommonEquipmentCellTypeFavorites:
                 if (self.generic == nil)
@@ -241,6 +274,12 @@
     if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentDelete:)])
         [self.delegate onEquipmentDelete:self.equipment];
     
+}
+
+- (IBAction)onPage:(id)sender
+{
+    if (self.delegate && [self.delegate respondsToSelector:@selector(onEquipmentPage:)])
+        [self.delegate onEquipmentPage:self.equipment];
 }
 
 #pragma mark - utility

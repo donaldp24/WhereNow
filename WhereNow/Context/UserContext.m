@@ -30,6 +30,7 @@ static UserContext *_sharedUserContext = nil;
         _userId = @"";
         _isLoggedIn = NO;
         _fullName = @"";
+        _tokenId = @"";
         
         [self load];
     }
@@ -54,12 +55,31 @@ static UserContext *_sharedUserContext = nil;
     obj = [userDefaults objectForKey:@"userid"];
     if (obj != nil)
         _userId = (NSString *)obj;
+#if 0
     obj = [userDefaults objectForKey:@"isloggedin"];
     if (obj != nil)
         _isLoggedIn = [(NSNumber*)obj boolValue];
+#else
+    _isLoggedIn = NO;
+#endif
     obj = [userDefaults objectForKey:@"fullname"];
     if (obj != nil)
         _fullName = (NSString *)obj;
+#if 0
+    obj = [userDefaults objectForKey:@"tokenid"];
+    if (obj != nil)
+        _tokenId = (NSString *)obj;
+#else
+    _tokenId = @"";
+#endif
+    
+#if 0
+    obj = [userDefaults objectForKey:@"currentlocation"];
+    if (obj != nil)
+        _currentLocation = (NSString *)obj;
+#else
+    _currentLocation = @"";
+#endif
 }
 
 - (void)save
@@ -72,6 +92,8 @@ static UserContext *_sharedUserContext = nil;
     [userDefaults setObject:self.userId forKey:@"userid"];
     [userDefaults setObject:@(self.isLoggedIn) forKey:@"isloggedin"];
     [userDefaults setObject:self.fullName forKey:@"fullname"];
+    [userDefaults setObject:self.tokenId forKey:@"tokenid"];
+    //[userDefaults setObject:self.currentLocation forKey:@"curentlocation"];
     
     [userDefaults synchronize];
 }
@@ -116,6 +138,17 @@ static UserContext *_sharedUserContext = nil;
 {
     _fullName = fullName;
     [self save];
+}
+
+- (void)setTokenId:(NSString *)tokenId
+{
+    _tokenId = tokenId;
+    [self save];
+}
+
+- (void)setCurrentLocation:(NSString *)currentLocation
+{
+    _currentLocation = currentLocation;
 }
 
 @end

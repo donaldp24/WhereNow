@@ -17,8 +17,10 @@
 		D0130AC719BD4E6400A5EFFC /* CommonGenericTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0130AC519BD4E6400A5EFFC /* CommonGenericTableViewCell.xib */; };
 		D0130ACB19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D0130AC919BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.m */; };
 		D0130ACC19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0130ACA19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib */; };
+		D01C1AD919EB679800368EE9 /* PagingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D01C1AD819EB679800368EE9 /* PagingManager.m */; };
 		D01FF09519D9423B0096247E /* FoundEquipmentTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D01FF09419D9423B0096247E /* FoundEquipmentTableViewController.m */; };
 		D02490D119D44E5500790D7A /* EquipmentImage.m in Sources */ = {isa = PBXBuildFile; fileRef = D02490D019D44E5500790D7A /* EquipmentImage.m */; };
+		D025111119E715D60076C7E8 /* Equipment.m in Sources */ = {isa = PBXBuildFile; fileRef = D025111019E715D60076C7E8 /* Equipment.m */; };
 		D029A0A91993195400F4FA28 /* ResponseParseStrategy.m in Sources */ = {isa = PBXBuildFile; fileRef = D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */; };
 		D02A8EDA19ADC1E20033A9D6 /* snfsdk.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D02A8ED919ADC1E20033A9D6 /* snfsdk.framework */; };
 		D033E12E198912FC0034EBC8 /* MASCompositeConstraint.m in Sources */ = {isa = PBXBuildFile; fileRef = D033E119198912FC0034EBC8 /* MASCompositeConstraint.m */; };
@@ -49,7 +51,7 @@
 		D039E89519DC010500474C1F /* StickerManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D039E89419DC010500474C1F /* StickerManager.m */; };
 		D039E89819DC07D100474C1F /* Sticker.m in Sources */ = {isa = PBXBuildFile; fileRef = D039E89719DC07D100474C1F /* Sticker.m */; };
 		D039E89B19DC0D0D00474C1F /* FoundEquipmentTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D039E89A19DC0D0D00474C1F /* FoundEquipmentTableViewCell.m */; };
-		D039E89E19DC10E500474C1F /* Equipment.m in Sources */ = {isa = PBXBuildFile; fileRef = D039E89D19DC10E500474C1F /* Equipment.m */; };
+		D03A097E19F0A26F00693BAC /* Crashlytics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03A097D19F0A26F00693BAC /* Crashlytics.framework */; };
 		D03AC28F19BFD85C0024BF10 /* GenericLocation.m in Sources */ = {isa = PBXBuildFile; fileRef = D03AC28E19BFD85C0024BF10 /* GenericLocation.m */; };
 		D03AC29319BFE8500024BF10 /* iTunesArtwork in Resources */ = {isa = PBXBuildFile; fileRef = D03AC29219BFE8500024BF10 /* iTunesArtwork */; };
 		D03D826519BBF98400D8CA91 /* SystemConfiguration.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D03D826419BBF98400D8CA91 /* SystemConfiguration.framework */; };
@@ -59,6 +61,7 @@
 		D041E5FE19CE51F90089C363 /* TriggeredAlertsTableViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D041E5FD19CE51F90089C363 /* TriggeredAlertsTableViewController.m */; };
 		D041E60419CE58B40089C363 /* Alert.m in Sources */ = {isa = PBXBuildFile; fileRef = D041E60319CE58B40089C363 /* Alert.m */; };
 		D041E60A19CE59700089C363 /* TriggeredAlert.m in Sources */ = {isa = PBXBuildFile; fileRef = D041E60919CE59700089C363 /* TriggeredAlert.m */; };
+		D041EB9E19EB7CD900C81B08 /* CoreBluetooth.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D041EB9D19EB7CD900C81B08 /* CoreBluetooth.framework */; };
 		D04A3896198F84740063554C /* NSObject+SBJson.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A387D198F84740063554C /* NSObject+SBJson.m */; };
 		D04A3897198F84740063554C /* SBJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A3880198F84740063554C /* SBJsonParser.m */; };
 		D04A3898198F84740063554C /* SBJsonStreamParser.m in Sources */ = {isa = PBXBuildFile; fileRef = D04A3882198F84740063554C /* SBJsonStreamParser.m */; };
@@ -78,6 +81,7 @@
 		D05397D119D5158C00D7DA32 /* Generic.m in Sources */ = {isa = PBXBuildFile; fileRef = D05397D019D5158C00D7DA32 /* Generic.m */; };
 		D0551D6D19BEAEDB0066DF53 /* CommonLocationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */; };
 		D0551D6E19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */; };
+		D06E539819EE8D30003D6471 /* DeviceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D06E539719EE8D30003D6471 /* DeviceCell.m */; };
 		D083B1331989EFC8006E006B /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */; };
 		D083B1341989EFC8006E006B /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B12E1989EFC8006E006B /* SVProgressHUD.m */; };
 		D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B1311989EFC8006E006B /* SwipeTableView.m */; };
@@ -100,8 +104,6 @@
 		D0BF690019A66ADB009573E8 /* MovementCount.m in Sources */ = {isa = PBXBuildFile; fileRef = D0BF68FF19A66ADB009573E8 /* MovementCount.m */; };
 		D0C0BCD719A3196A0016787F /* RecentEquipmentsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C0BCD619A3196A0016787F /* RecentEquipmentsViewController.m */; };
 		D0C4E0E9198A3A13003C09A1 /* AccountViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0E8198A3A13003C09A1 /* AccountViewController.m */; };
-		D0C4E0EC198A4130003C09A1 /* UserNameViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0EB198A4130003C09A1 /* UserNameViewController.m */; };
-		D0C4E0EF198A4154003C09A1 /* PasswordViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0EE198A4154003C09A1 /* PasswordViewController.m */; };
 		D0C4E0F2198A8AA5003C09A1 /* Model.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D0C4E0F0198A8AA5003C09A1 /* Model.xcdatamodeld */; };
 		D0C9CF451989E0F500221268 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C9CF3D1989E0F500221268 /* LoginViewController.m */; };
 		D0C9CF461989E0F500221268 /* MainTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = D0C9CF3F1989E0F500221268 /* MainTabBarController.m */; };
@@ -154,10 +156,14 @@
 		D0130AC819BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonEquipmentTableViewCell.h; sourceTree = "<group>"; };
 		D0130AC919BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonEquipmentTableViewCell.m; sourceTree = "<group>"; };
 		D0130ACA19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommonEquipmentTableViewCell.xib; sourceTree = "<group>"; };
+		D01C1AD719EB679800368EE9 /* PagingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PagingManager.h; sourceTree = "<group>"; };
+		D01C1AD819EB679800368EE9 /* PagingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PagingManager.m; sourceTree = "<group>"; };
 		D01FF09319D9423B0096247E /* FoundEquipmentTableViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoundEquipmentTableViewController.h; sourceTree = "<group>"; };
 		D01FF09419D9423B0096247E /* FoundEquipmentTableViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoundEquipmentTableViewController.m; sourceTree = "<group>"; };
 		D02490CF19D44E5500790D7A /* EquipmentImage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EquipmentImage.h; sourceTree = "<group>"; };
 		D02490D019D44E5500790D7A /* EquipmentImage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EquipmentImage.m; sourceTree = "<group>"; };
+		D025110F19E715D60076C7E8 /* Equipment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equipment.h; sourceTree = "<group>"; };
+		D025111019E715D60076C7E8 /* Equipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Equipment.m; sourceTree = "<group>"; };
 		D029A0A71993195400F4FA28 /* ResponseParseStrategy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ResponseParseStrategy.h; sourceTree = "<group>"; };
 		D029A0A81993195400F4FA28 /* ResponseParseStrategy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ResponseParseStrategy.m; sourceTree = "<group>"; };
 		D029A0AA199319F900F4FA28 /* ResponseParseStrategyProtocol.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ResponseParseStrategyProtocol.h; sourceTree = "<group>"; };
@@ -211,8 +217,7 @@
 		D039E89719DC07D100474C1F /* Sticker.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Sticker.m; sourceTree = "<group>"; };
 		D039E89919DC0D0D00474C1F /* FoundEquipmentTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FoundEquipmentTableViewCell.h; sourceTree = "<group>"; };
 		D039E89A19DC0D0D00474C1F /* FoundEquipmentTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FoundEquipmentTableViewCell.m; sourceTree = "<group>"; };
-		D039E89C19DC10E500474C1F /* Equipment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Equipment.h; sourceTree = "<group>"; };
-		D039E89D19DC10E500474C1F /* Equipment.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Equipment.m; sourceTree = "<group>"; };
+		D03A097D19F0A26F00693BAC /* Crashlytics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Crashlytics.framework; sourceTree = "<group>"; };
 		D03AC28D19BFD85C0024BF10 /* GenericLocation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GenericLocation.h; sourceTree = "<group>"; };
 		D03AC28E19BFD85C0024BF10 /* GenericLocation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GenericLocation.m; sourceTree = "<group>"; };
 		D03AC29219BFE8500024BF10 /* iTunesArtwork */ = {isa = PBXFileReference; lastKnownFileType = file; path = iTunesArtwork; sourceTree = "<group>"; };
@@ -230,6 +235,7 @@
 		D041E60319CE58B40089C363 /* Alert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Alert.m; sourceTree = "<group>"; };
 		D041E60819CE59700089C363 /* TriggeredAlert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TriggeredAlert.h; sourceTree = "<group>"; };
 		D041E60919CE59700089C363 /* TriggeredAlert.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TriggeredAlert.m; sourceTree = "<group>"; };
+		D041EB9D19EB7CD900C81B08 /* CoreBluetooth.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreBluetooth.framework; path = System/Library/Frameworks/CoreBluetooth.framework; sourceTree = SDKROOT; };
 		D04A387C198F84740063554C /* NSObject+SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+SBJson.h"; sourceTree = "<group>"; };
 		D04A387D198F84740063554C /* NSObject+SBJson.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+SBJson.m"; sourceTree = "<group>"; };
 		D04A387E198F84740063554C /* SBJson.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJson.h; sourceTree = "<group>"; };
@@ -268,6 +274,8 @@
 		D0551D6A19BEAEDB0066DF53 /* CommonLocationTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CommonLocationTableViewCell.h; sourceTree = "<group>"; };
 		D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CommonLocationTableViewCell.m; sourceTree = "<group>"; };
 		D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommonLocationTableViewCell.xib; sourceTree = "<group>"; };
+		D06E539619EE8D30003D6471 /* DeviceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceCell.h; sourceTree = "<group>"; };
+		D06E539719EE8D30003D6471 /* DeviceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceCell.m; sourceTree = "<group>"; };
 		D083B12B1989EFC8006E006B /* SVProgressHUD+utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+utils.h"; sourceTree = "<group>"; };
 		D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		D083B12D1989EFC8006E006B /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
@@ -316,10 +324,6 @@
 		D0C0BCD619A3196A0016787F /* RecentEquipmentsViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentEquipmentsViewController.m; sourceTree = "<group>"; };
 		D0C4E0E7198A3A13003C09A1 /* AccountViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AccountViewController.h; sourceTree = "<group>"; };
 		D0C4E0E8198A3A13003C09A1 /* AccountViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AccountViewController.m; sourceTree = "<group>"; };
-		D0C4E0EA198A4130003C09A1 /* UserNameViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UserNameViewController.h; sourceTree = "<group>"; };
-		D0C4E0EB198A4130003C09A1 /* UserNameViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UserNameViewController.m; sourceTree = "<group>"; };
-		D0C4E0ED198A4154003C09A1 /* PasswordViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PasswordViewController.h; sourceTree = "<group>"; };
-		D0C4E0EE198A4154003C09A1 /* PasswordViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PasswordViewController.m; sourceTree = "<group>"; };
 		D0C4E0F1198A8AA5003C09A1 /* Model.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = Model.xcdatamodel; sourceTree = "<group>"; };
 		D0C9CF3C1989E0F500221268 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
 		D0C9CF3D1989E0F500221268 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
@@ -369,7 +373,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D041EB9E19EB7CD900C81B08 /* CoreBluetooth.framework in Frameworks */,
 				D03D826519BBF98400D8CA91 /* SystemConfiguration.framework in Frameworks */,
+				D03A097E19F0A26F00693BAC /* Crashlytics.framework in Frameworks */,
 				D02A8EDA19ADC1E20033A9D6 /* snfsdk.framework in Frameworks */,
 				D034F3A31988D332004DE04E /* CoreLocation.framework in Frameworks */,
 				D034F36A1988CAF4004DE04E /* CoreGraphics.framework in Frameworks */,
@@ -406,8 +412,8 @@
 				D041E60919CE59700089C363 /* TriggeredAlert.m */,
 				D05397CF19D5158C00D7DA32 /* Generic.h */,
 				D05397D019D5158C00D7DA32 /* Generic.m */,
-				D039E89C19DC10E500474C1F /* Equipment.h */,
-				D039E89D19DC10E500474C1F /* Equipment.m */,
+				D025110F19E715D60076C7E8 /* Equipment.h */,
+				D025111019E715D60076C7E8 /* Equipment.m */,
 			);
 			name = ManagedObjects;
 			sourceTree = "<group>";
@@ -479,6 +485,8 @@
 		D034F3661988CAF4004DE04E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D03A097D19F0A26F00693BAC /* Crashlytics.framework */,
+				D041EB9D19EB7CD900C81B08 /* CoreBluetooth.framework */,
 				D03D826419BBF98400D8CA91 /* SystemConfiguration.framework */,
 				D02A8ED919ADC1E20033A9D6 /* snfsdk.framework */,
 				D034F3A21988D332004DE04E /* CoreLocation.framework */,
@@ -579,6 +587,8 @@
 				D0410AED1994E5A400FCF128 /* BackgroundTaskManager.m */,
 				D04101FB19DE473900E2E579 /* LocatingManager.h */,
 				D04101FC19DE473900E2E579 /* LocatingManager.m */,
+				D01C1AD719EB679800368EE9 /* PagingManager.h */,
+				D01C1AD819EB679800368EE9 /* PagingManager.m */,
 			);
 			path = BkTask;
 			sourceTree = "<group>";
@@ -739,6 +749,8 @@
 				D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */,
 				D039E89919DC0D0D00474C1F /* FoundEquipmentTableViewCell.h */,
 				D039E89A19DC0D0D00474C1F /* FoundEquipmentTableViewCell.m */,
+				D06E539619EE8D30003D6471 /* DeviceCell.h */,
+				D06E539719EE8D30003D6471 /* DeviceCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -761,10 +773,6 @@
 				D0C9CF411989E0F500221268 /* NearMeViewController.m */,
 				D0C4E0E7198A3A13003C09A1 /* AccountViewController.h */,
 				D0C4E0E8198A3A13003C09A1 /* AccountViewController.m */,
-				D0C4E0EA198A4130003C09A1 /* UserNameViewController.h */,
-				D0C4E0EB198A4130003C09A1 /* UserNameViewController.m */,
-				D0C4E0ED198A4154003C09A1 /* PasswordViewController.h */,
-				D0C4E0EE198A4154003C09A1 /* PasswordViewController.m */,
 				D0C0BCD519A3196A0016787F /* RecentEquipmentsViewController.h */,
 				D0C0BCD619A3196A0016787F /* RecentEquipmentsViewController.m */,
 				D041E5FC19CE51F90089C363 /* TriggeredAlertsTableViewController.h */,
@@ -825,6 +833,7 @@
 				D034F3601988CAF4004DE04E /* Sources */,
 				D034F3611988CAF4004DE04E /* Frameworks */,
 				D034F3621988CAF4004DE04E /* Resources */,
+				D03A097C19F0A22600693BAC /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -921,6 +930,22 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		D03A097C19F0A22600693BAC /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "./Crashlytics.framework/run e467cd6020d75f85b44de28ff41ad8839ce00efd f762b897362d8438ff42d87f9a5f45630ee0417acac088ae4123b1c79069ba45";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
 		D034F3601988CAF4004DE04E /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
@@ -956,10 +981,9 @@
 				D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */,
 				D0A1D2B5198F88F700167093 /* UIManager.m in Sources */,
 				D0C9CF481989E0F500221268 /* SearchViewController.m in Sources */,
+				D025111119E715D60076C7E8 /* Equipment.m in Sources */,
 				D033E12F198912FC0034EBC8 /* MASConstraint.m in Sources */,
-				D0C4E0EC198A4130003C09A1 /* UserNameViewController.m in Sources */,
 				D09D7F8D198BCD2700F8904B /* AppContext.m in Sources */,
-				D039E89E19DC10E500474C1F /* Equipment.m in Sources */,
 				D033E135198912FC0034EBC8 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				D04A3898198F84740063554C /* SBJsonStreamParser.m in Sources */,
 				D0BD1051198B5C3E0076800E /* UserContext.m in Sources */,
@@ -980,6 +1004,7 @@
 				D02490D119D44E5500790D7A /* EquipmentImage.m in Sources */,
 				D0A1D2A7198F87BD00167093 /* NSString+WhereNow.m in Sources */,
 				D00E3EC7198CFAF600AFE9EC /* HistoryViewController.m in Sources */,
+				D01C1AD919EB679800368EE9 /* PagingManager.m in Sources */,
 				D04A3896198F84740063554C /* NSObject+SBJson.m in Sources */,
 				D034F3741988CAF4004DE04E /* main.m in Sources */,
 				D033E130198912FC0034EBC8 /* MASConstraintMaker.m in Sources */,
@@ -1013,11 +1038,11 @@
 				D039E89519DC010500474C1F /* StickerManager.m in Sources */,
 				D0EA38E819C6CE0E006112C2 /* SDWebImageCompat.m in Sources */,
 				D033E133198912FC0034EBC8 /* MASViewConstraint.m in Sources */,
+				D06E539819EE8D30003D6471 /* DeviceCell.m in Sources */,
 				D04A389D198F84740063554C /* SBJsonStreamWriterAccumulator.m in Sources */,
 				D04A389C198F84740063554C /* SBJsonStreamWriter.m in Sources */,
 				D00E3EC1198CE63500AFE9EC /* OverviewViewController.m in Sources */,
 				D033E132198912FC0034EBC8 /* MASViewAttribute.m in Sources */,
-				D0C4E0EF198A4154003C09A1 /* PasswordViewController.m in Sources */,
 				D00E3EC4198CF5A200AFE9EC /* EquipmentTabBarController.m in Sources */,
 				D0A1D2B4198F88F700167093 /* Common.m in Sources */,
 				D0BF690019A66ADB009573E8 /* MovementCount.m in Sources */,
@@ -1161,6 +1186,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WhereNow/WhereNow-Prefix.pch";
@@ -1187,6 +1213,7 @@
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"$(PROJECT_DIR)$(LOCAL_LIBRARY_DIR)",
+					"$(PROJECT_DIR)",
 				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "WhereNow/WhereNow-Prefix.pch";

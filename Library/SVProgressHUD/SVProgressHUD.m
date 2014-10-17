@@ -176,7 +176,7 @@
         
         CGRect rtBound = [string
                              boundingRectWithSize:CGSizeMake(200, 300)
-                             options:NSStringDrawingUsesDeviceMetrics
+                             options:NSStringDrawingUsesLineFragmentOrigin /*NSStringDrawingUsesDeviceMetrics*/
                              attributes:attributes
                              context:nil];
         
@@ -480,7 +480,7 @@
         stringLabel = [[UILabel alloc] initWithFrame:CGRectZero];
 		stringLabel.textColor = [UIColor whiteColor];
 		stringLabel.backgroundColor = [UIColor clearColor];
-		stringLabel.adjustsFontSizeToFitWidth = YES;
+		//stringLabel.adjustsFontSizeToFitWidth = YES;
 		stringLabel.textAlignment = NSTextAlignmentCenter;
 		stringLabel.baselineAdjustment = UIBaselineAdjustmentAlignCenters;
 		stringLabel.font = [UIFont boldSystemFontOfSize:16];

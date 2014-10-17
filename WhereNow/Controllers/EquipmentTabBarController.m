@@ -10,6 +10,7 @@
 #import "DetailBaseTableViewController.h"
 #import "BackgroundTaskManager.h"
 #import "LocatingManager.h"
+#import "PagingManager.h"
 
 static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
@@ -82,13 +83,28 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 #pragma mark - menu delegate
 - (void)onMenu:(id)sender
 {
+    NSString *title;
+    if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+    {
+        title = @"Alert Device";
+    }
+    else
+    {
+        if ([self.equipment.islocating boolValue])
+        {
+            title = @"Cancel Device Page";
+        }
+        else
+            title = @"Page Device";
+    }
+    
     menuSender = sender;
     UIActionSheet *actionSheet = [[UIActionSheet alloc] initWithTitle:nil
                                                              delegate:self
                                                     cancelButtonTitle:@"Cancel"
                                                destructiveButtonTitle:nil
                                                     otherButtonTitles:
-                                  @"Page Device",
+                                  title,
                                   @"Report for Service",
                                   nil];
     //    [actionSheet setTintColor:[UIColor darkGrayColor]];
@@ -111,13 +127,25 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
 - (void)onPageDevice:(Equipment *)equipment
 {
-    // locate this equipment
-    if ([equipment.islocating boolValue])
+    if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:equipment])
+    {
+        // start paging
+        [[PagingManager sharedInstance] startPaging:equipment];
         return;
-    
-    [[LocatingManager sharedInstance] locatingEquipment:equipment];
-    
-    [menuSender didPagedDevice];
+    }
+    else
+    {
+        if ([self.equipment.islocating boolValue])
+        {
+            [[LocatingManager sharedInstance] cancelLocatingEquipment:equipment];
+            [menuSender didPagedDevice];
+        }
+        else
+        {
+            [[LocatingManager sharedInstance] locatingEquipment:equipment];
+            [menuSender didPagedDevice];
+        }
+    }
 }
 
 - (void)onReportForService:(Equipment *)equipment

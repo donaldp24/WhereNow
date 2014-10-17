@@ -27,6 +27,7 @@ typedef enum {
 - (void)onEquipmentDelete:(Equipment *)equipment;
 - (void)onEquipmentFavorite:(Equipment *)equipment;
 - (void)onEquipmentLocate:(Equipment *)equipment;
+- (void)onEquipmentPage:(Equipment *)equipment;
 
 @end
 

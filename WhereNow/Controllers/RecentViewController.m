@@ -370,9 +370,15 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             equipTabBar.equipment = equipment;
             
             // set animation style
+#if USE_PUSHANIMATION_FOR_DETAILVIEW
             //equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
             equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
             [self presentViewController:equipTabBar animated:YES completion:nil];
+#else
+            equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+            //equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
+            [self presentViewController:equipTabBar animated:YES completion:nil];
+#endif
         }
     }
     else

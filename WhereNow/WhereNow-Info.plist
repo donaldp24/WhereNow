@@ -24,6 +24,8 @@
 	<string>1.0</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Please tap "Allow" to use this app</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>bluetooth-central</string>

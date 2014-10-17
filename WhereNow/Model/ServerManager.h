@@ -11,7 +11,6 @@
 #import "ResponseParseStrategyProtocol.h"
 
 #define HOST_URL    @"http://dev.scmedical.com.au/"
-//#define SERVICE_URL @"http://dev.scmedical.com.au/mobile/index.php/api/v1/scmd/"
 #define API_URL     @"http://dev.scmedical.com.au/mobile/index.php/"
 
 
@@ -26,6 +25,8 @@
 #define kMethodForCancelEquipmentWatch  @"cancelequipmentwatch"
 #define kMethodForForgotPasswordV2   @"forgotpassword"
 #define kMethodForForgotUsernameV2   @"forgotusername"
+#define kMethodForDeviceList         @"getregistereddevice"
+#define kMethodForCheckDeviceRemoved    @"isdeviceremoved"
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -49,15 +50,20 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
  */
 - (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
-- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
+- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId deviceName:(NSString *)deviceName success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
 
-- (void)userLogout:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
+- (void)userLogout:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId isRemote:(BOOL)isRemote success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
 
 - (void)resetBadgeCountWithToken:(NSString *)token sessionId:(NSString *)sessionId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)createEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)getRegisteredDeviceList:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSArray *arrayDevices))success failure:(void (^)(NSString *))failure;
+
+- (void)checkDeviceRemoved:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure;
+
 
 /**
  *

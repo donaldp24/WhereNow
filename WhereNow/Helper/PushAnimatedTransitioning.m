@@ -10,31 +10,60 @@
 
 static NSTimeInterval const DEAnimatedTransitionDuration = 0.3f;
 
+@interface UIViewController (transitioningcontext)
+
+- (UIView *)viewForTransitionContext:(id<UIViewControllerContextTransitioning>)transitionContext;
+
+@end
+
+@implementation UIViewController (transitioningcontext)
+
+- (UIView *)viewForTransitionContext:(id<UIViewControllerContextTransitioning>)transitionContext
+{
+#if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
+    if ([transitionContext respondsToSelector:@selector(viewForKey:)]) {
+        NSString *key = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey] == self ? UITransitionContextFromViewKey : UITransitionContextToViewKey;
+        return [transitionContext viewForKey:key];
+    } else {
+        return self.view;
+    }
+#else
+    return self.view;
+#endif
+}
+
+@end
+
 @implementation PushAnimatedTransitioning
 
 - (void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext
 {
+    UIView *toView;
+    UIView *fromView;
     UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
     UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    fromView = [fromViewController viewForTransitionContext:transitionContext];
+    toView = [toViewController viewForTransitionContext:transitionContext];
+
     UIView *container = [transitionContext containerView];
     
     if (self.reverse) {
-        [container insertSubview:toViewController.view belowSubview:fromViewController.view];
-        toViewController.view.transform = CGAffineTransformMakeTranslation(-fromViewController.view.frame.size.width, 0);
+        [container insertSubview:toView belowSubview:fromView];
+        toView.transform = CGAffineTransformMakeTranslation(-fromView.frame.size.width, 0);
     }
     else {
-        toViewController.view.transform = CGAffineTransformMakeTranslation(fromViewController.view.frame.size.width, 0);
-        [container addSubview:toViewController.view];
+        toView.transform = CGAffineTransformMakeTranslation(fromView.frame.size.width, 0);
+        [container addSubview:toView];
     }
     
     [UIView animateKeyframesWithDuration:DEAnimatedTransitionDuration delay:0 options:0 animations:^{
         if (self.reverse) {
-            fromViewController.view.transform = CGAffineTransformMakeTranslation(fromViewController.view.frame.size.width, 0);
-            toViewController.view.transform = CGAffineTransformIdentity;
+            fromView.transform = CGAffineTransformMakeTranslation(fromView.frame.size.width, 0);
+            toView.transform = CGAffineTransformIdentity;
         }
         else {
-            toViewController.view.transform = CGAffineTransformIdentity;
-            fromViewController.view.transform = CGAffineTransformMakeTranslation(-fromViewController.view.frame.size.width/3, 0);
+            toView.transform = CGAffineTransformIdentity;
+            fromView.transform = CGAffineTransformMakeTranslation(-fromView.frame.size.width/3, 0);
         }
     } completion:^(BOOL finished) {
         [transitionContext completeTransition:finished];
@@ -45,5 +74,7 @@ static NSTimeInterval const DEAnimatedTransitionDuration = 0.3f;
 {
     return DEAnimatedTransitionDuration;
 }
+
+
 
 @end

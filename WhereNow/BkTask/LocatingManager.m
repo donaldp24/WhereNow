@@ -29,6 +29,7 @@ static LocatingManager *_sharedLocatingManager = nil;
 {
     self = [super init];
     self.arrayLocatingEquipments = [[ModelManager sharedManager] retrieveLocatingEquipments];
+    self.arrayFoundTrackingEquipments = [[NSMutableArray alloc] init];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLocatingChanged:) name:kLocatingChanged object:nil];
     return self;
 }
@@ -146,7 +147,7 @@ static LocatingManager *_sharedLocatingManager = nil;
 
 - (void)checkLocatingBeacons:(NSMutableArray *)arrayBeacons
 {
-    NSMutableArray *arrayFoundEquipments = [[NSMutableArray alloc] init];
+    NSMutableArray *foundEquipments = [[NSMutableArray alloc] init];
     // check beacons for locating equipments
     for (CLBeacon *beacon in arrayBeacons) {
         for (Equipment *equipment in self.arrayLocatingEquipments) {
@@ -154,18 +155,18 @@ static LocatingManager *_sharedLocatingManager = nil;
                 [beacon.major intValue] == [equipment.major intValue] &&
                 [beacon.minor intValue] == [equipment.minor intValue])
             {
-                if (![arrayFoundEquipments containsObject:equipment])
-                    [arrayFoundEquipments addObject:equipment];
+                if (![foundEquipments containsObject:equipment])
+                    [foundEquipments addObject:equipment];
             }
         }
     }
     
     // found beacons
-    if (arrayFoundEquipments.count > 0)
+    if (foundEquipments.count > 0)
     {
         // locating off
         NSMutableArray *arrayEquipmentIds = [[NSMutableArray alloc] init];
-        for (Equipment *equipment in arrayFoundEquipments) {
+        for (Equipment *equipment in foundEquipments) {
             equipment.islocating = @(NO);
             [arrayEquipmentIds addObject:equipment.equipment_id];
         }
@@ -173,7 +174,15 @@ static LocatingManager *_sharedLocatingManager = nil;
         [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
         
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
-        [appDelegate foundEquipments:arrayFoundEquipments];
+        [appDelegate foundEquipments:foundEquipments];
+        
+        // add found equipment to self.arrayFoundTrackingEquipments
+        for (Equipment *equipment in foundEquipments) {
+            if (![self.arrayFoundTrackingEquipments containsObject:equipment])
+                [self.arrayFoundTrackingEquipments addObject:equipment];
+        }
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kFoundEquipmentsChanged object:nil];
         
         // cancel watching
         NSString *utoken = [AppContext sharedAppContext].cleanDeviceToken;

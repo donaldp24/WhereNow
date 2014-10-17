@@ -106,7 +106,17 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
             }
             
             NSDictionary *responseDic = [responseStr JSONValue];
-            NSLog(@"Request Successful, response '%@'", responseStr);
+            if (responseStr == nil)
+            {
+                NSLog(@"Request successful, response string is nil");
+            }
+            else
+            {
+                if (responseStr.length >= 3000)
+                    NSLog(@"Request Successful, response '%@'", [responseStr substringToIndex:3000]);
+                else
+                    NSLog(@"Request Successful, response '%@'", responseStr);
+            }
             handler(responseStr, responseDic, nil);
         }
         
@@ -189,16 +199,6 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
                 else
                 {
                     success(sessionId, userId, fullname);
-                    
-                    // update token
-                    if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
-                    {
-                        [self updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId success:^(NSString *tokenId) {
-                            NSLog(@"Register device token success!");
-                        } failure:^(NSString * msg) {
-                            NSLog(@"Register device token failed : %@", msg);
-                        }];
-                    }
                 }
             }
         }
@@ -274,7 +274,11 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         [dicBeacon setObject:[beacon.proximityUUID UUIDString] forKey:@"uuid"];
         [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.major intValue]] forKey:@"major"];
         [dicBeacon setObject:[NSString stringWithFormat:@"%d", [beacon.minor intValue]] forKey:@"minor"];
+//        if ([beacon.minor integerValue] == 51)
+//        {
         [beaconsJsonArray addObject:dicBeacon];
+//        break;
+//        }
     }
     
     if (arrayBeacons.count <= 0)
@@ -291,7 +295,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     NSData *serializedData = [NSJSONSerialization dataWithJSONObject:beaconsJsonArray options:0 error:nil];
     NSString *strJsonScanned = [[NSString alloc] initWithBytes:[serializedData bytes] length:[serializedData length] encoding:NSUTF8StringEncoding];
     
-    NSDictionary *params = @{@"uid":userId, @"scanned":strJsonScanned};
+    NSDictionary *params = @{@"uid":userId, @"scanned":strJsonScanned, @"requesttype":@"locationdetail"};
     
     NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
     
@@ -330,12 +334,12 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
-- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
+- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId deviceName:(NSString *)deviceName success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
 {
     
     DEF_SERVERMANAGER
     
-    NSDictionary *params = @{@"uid":userId, @"utoken":deviceToken};
+    NSDictionary *params = @{@"uid":userId, @"utoken":deviceToken, @"dname":deviceName};
     
     NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, kMethodForRegisterToken];
     
@@ -362,18 +366,25 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         else
         {
             //NSString *userId = [response objectForKey:@"UID"];
-            NSString *tokenId = [response objectForKey:@"tokenID"];
+            NSString *tokenId = [response objectForKey:@"tid"];
             success(tokenId);
         }
     }];
 }
 
-- (void)userLogout:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
+- (void)userLogout:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId isRemote:(BOOL)isRemote success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
 {
     
     DEF_SERVERMANAGER
     
-    NSDictionary *params = @{@"uid":userId};
+    NSDictionary *params;
+    if (!isRemote)
+        params = @{@"uid":userId,
+                   @"tid":tokenId};
+    else
+        params = @{@"uid":userId,
+                   @"tid":tokenId,
+                   @"remote":@"Y"};
     
     NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, kMethodForLogout];
     
@@ -400,7 +411,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         else
         {
             //NSString *userId = [response objectForKey:@"UID"];
-            NSString *tokenId = [response objectForKey:@"tokenID"];
+            //NSString *tokenId = [response objectForKey:@"tokenID"];
             success(tokenId);
         }
     }];
@@ -515,6 +526,81 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         else
         {
             success();
+        }
+    }];
+}
+
+- (void)getRegisteredDeviceList:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSArray *))success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"uid":userId};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, kMethodForDeviceList];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            NSArray *arrayDevices = (NSArray *)response;
+            success(arrayDevices);
+        }
+    }];
+}
+
+- (void)checkDeviceRemoved:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId success:(void (^)(BOOL))success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"uid":userId, @"tid":tokenId};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, kMethodForCheckDeviceRemoved];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            NSString *strActive = [response objectForKey:@"active"];
+            if ([strActive isEqualToString:@"t"])
+                success(NO);
+            else
+                success(YES);
         }
     }];
 }

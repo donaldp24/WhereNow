@@ -31,7 +31,10 @@
 - (void)startScanning;
 - (void)stopScanning;
 
+// immediate vicinity beacons
 - (NSMutableArray *)nearmeBeacons;
+
+- (void)setConsumeScanning:(BOOL)consume;
 
 - (void)requestLocationInfo:(NSMutableArray *)arrayBeacons complete:(void(^)())complete;
 

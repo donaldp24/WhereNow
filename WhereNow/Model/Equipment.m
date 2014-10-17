@@ -2,7 +2,7 @@
 //  Equipment.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 01/10/14.
+//  Created by Xiaoxue Han on 10/10/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -43,7 +43,7 @@
 @dynamic model_name_no;
 @dynamic recenttime;
 @dynamic serial_no;
-@dynamic uuid;
 @dynamic sticknfind_id;
+@dynamic uuid;
 
 @end

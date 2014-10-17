@@ -13,6 +13,7 @@
 #import "ServerManager.h"
 #import "ModelManager.h"
 #import "BackgroundTaskManager.h"
+#import "AppContext.h"
 
 #define verticalGap 3.0
 #define ktDefaultLoginTimeInterval 20.0
@@ -161,6 +162,7 @@ enum  {
         
         // login
         SHOW_PROGRESS(@"Please Wait");
+        NSString *deviceName = [self getDeviceName];
         [[ServerManager sharedManager] loginUserV2WithUserName:[UserContext sharedUserContext].userName pwd:[UserContext sharedUserContext].password success:^(NSString *sessionId, NSString *userId, NSString *fullname)
          {
              [SVProgressHUD dismiss];
@@ -178,6 +180,17 @@ enum  {
              [[BackgroundTaskManager sharedManager] startScanning];
              
              [self performSegueWithIdentifier:@"goMain" sender:self];
+             
+             // update token
+             if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
+             {
+                 [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId) {
+                     NSLog(@"Register device token success! token id = %@", tokenId);
+                     [UserContext sharedUserContext].tokenId = tokenId;
+                 } failure:^(NSString * msg) {
+                     NSLog(@"Register device token failed : %@", msg);
+                 }];
+             }
          } failure:^(NSString *msg) {
              HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
          }];
@@ -481,6 +494,7 @@ enum  {
         [self showAlertMessage:nInput];
     } else {
         SHOW_PROGRESS(@"Please Wait");
+        NSString *deviceName = [self getDeviceName];
         [[ServerManager sharedManager] loginUserV2WithUserName:_inputUserName pwd:_inputUserPassword success:^(NSString *sessionId, NSString *userId, NSString *fullname)
         {
             [SVProgressHUD dismiss];
@@ -524,6 +538,18 @@ enum  {
             [[BackgroundTaskManager sharedManager] startScanning];
             
             [self performSegueWithIdentifier:@"goMain" sender:self];
+            
+            // update token
+            if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
+            {
+                [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId) {
+                    NSLog(@"Register device token success! token id = %@", tokenId);
+                    [UserContext sharedUserContext].tokenId = tokenId;
+                } failure:^(NSString * msg) {
+                    NSLog(@"Register device token failed : %@", msg);
+                }];
+            }
+            
         } failure:^(NSString *msg) {
             HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"%@", msg]));
         }];
@@ -853,6 +879,14 @@ enum  {
         [self.view layoutIfNeeded];
     }];
     
+}
+
+#pragma mark - device name utility
+
+- (NSString *)getDeviceName
+{
+    NSString *deviceName = [[UIDevice currentDevice] name];
+    return deviceName;
 }
 
 @end

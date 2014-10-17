@@ -259,17 +259,40 @@ static UITableViewCell *_prototypeHistoryCell = nil;
                 min = moves[i];
         }
         
-        for (int i = 0; i < 7; i ++) {
-            UIImageView *ivProgress = (UIImageView *)[cell viewWithTag:(100 + i)];
+        // get weekday
+        NSCalendar *gregorian = [[NSCalendar alloc] initWithCalendarIdentifier:NSGregorianCalendar];
+        NSDate *date = [NSDate date];
+        NSDateComponents *comps = [gregorian components:NSWeekdayCalendarUnit fromDate:date];
+        int weekday = (int)[comps weekday];
+        if (weekday >= 2)
+            weekday = weekday - 1 - 1;
+        else
+            weekday = weekday - 1 - 1 + 7;
+        
+        NSMutableArray *arrayWeekdays = [[NSMutableArray alloc] initWithObjects:@"Mon", @"Tue", @"Wed", @"Thu", @"Fri", @"Sat", @"Sun", nil];
+        
+        int indexForUI = 6; // right hand side
+        int indexForVal = weekday;
+        for (int i = 0; i < 7; i++) {
+            UIImageView *ivProgress = (UIImageView *)[cell viewWithTag:(100 + indexForUI)];
+            UILabel *labelWeekday = (UILabel *)[cell viewWithTag:(200 + indexForUI)];
+            
             if (max == 0)
                 ivProgress.image = images[0];
             else
             {
-                int index = (int)(((CGFloat)moves[i] / (CGFloat)max) * 10);
-                if (index == 0 && moves[i] > 0)
+                int index = (int)(((CGFloat)moves[indexForVal] / (CGFloat)max) * 10);
+                if (index == 0 && moves[indexForVal] > 0)
                     index = 1;
                 ivProgress.image = images[index];
             }
+            
+            labelWeekday.text = arrayWeekdays[indexForVal];
+            
+            indexForUI--;
+            indexForVal--;
+            if (indexForVal < 0)
+                indexForVal = 6;
         }
     }
     else

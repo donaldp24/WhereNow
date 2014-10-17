@@ -17,8 +17,9 @@
 #import "UserContext.h"
 #import "CommonGenericTableViewCell.h"
 #import "CommonEquipmentTableViewCell.h"
+#import "PagingManager.h"
 
-@interface NearMeViewController () <SwipeTableViewDelegate> {
+@interface NearMeViewController () <SwipeTableViewDelegate, CommonEquipmentTableViewCellDelegate> {
     NSManagedObjectContext *_managedObjectContext;
     int editingSection;
     UITableViewCell *editingCell;
@@ -117,6 +118,7 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChanged:) name:kBackgroundUpdateLocationInfoNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFoundEquipmentsChanged:) name:kFoundEquipmentsChanged object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -158,6 +160,14 @@
     
     _firstLoad = NO;
     
+    [[BackgroundTaskManager sharedManager] setConsumeScanning:YES];
+}
+
+- (void)viewWillDisappear:(BOOL)animated
+{
+    [super viewWillDisappear:animated];
+    
+    [[BackgroundTaskManager sharedManager] setConsumeScanning:NO];
 }
 
 #pragma mark - actions
@@ -292,6 +302,7 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         {
             cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
         }
+        cell.delegate = self;
         [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:CommonEquipmentCellTypeNearme];
         
         if (editingIndexPath != nil && editingIndexPath.row == indexPath.row && editingSection == indexPath.section)
@@ -357,9 +368,15 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         equipTabBar.equipment = equipment;
         
         // set animation style
+#if USE_PUSHANIMATION_FOR_DETAILVIEW
         //equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
         equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
         [self presentViewController:equipTabBar animated:YES completion:nil];
+#else
+        equipTabBar.modalTransitionStyle = [UIManager detailModalTransitionStyle];
+        //equipTabBar.transitioningDelegate = [UIManager pushTransitioingDelegate];
+        [self presentViewController:equipTabBar animated:YES completion:nil];
+#endif
     }
     
 }
@@ -459,8 +476,6 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     if (arrayBeacons.count == 0)
     {
         [self.refresh endRefreshing];
-        //CLBeacon *beacon = [[CLBeacon alloc] init];
-        //beacon.proximityUUID = [[NSUUID alloc] initWithUUIDString:@""];
     }
 #endif
     [[BackgroundTaskManager sharedManager] requestLocationInfo:arrayBeacons complete:^() {
@@ -480,6 +495,17 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 }
 
 - (void) onChanged:(id)sender
+{
+    if (_firstLoad)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self loadDataWithGeneric:self.selectedGenerics];
+        [self.tableView reloadData];
+    });
+}
+
+- (void)onFoundEquipmentsChanged:(id)sender
 {
     if (_firstLoad)
         return;
@@ -526,5 +552,9 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 }
 
 
-
+#pragma mark - CommonEquipmentTableViewCellDelegate
+- (void)onEquipmentPage:(Equipment *)equipment
+{
+    [[PagingManager sharedInstance] startPaging:equipment];
+}
 @end

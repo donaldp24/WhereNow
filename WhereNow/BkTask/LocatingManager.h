@@ -13,6 +13,7 @@
 @interface LocatingManager : NSObject
 
 @property (nonatomic, retain) NSMutableArray *arrayLocatingEquipments;
+@property (nonatomic, retain) NSMutableArray *arrayFoundTrackingEquipments;
 
 + (LocatingManager *)sharedInstance;
 - (void)locatingEquipment:(Equipment *)equipment;

@@ -21,7 +21,10 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
 @protocol ScanManagerDelegate <NSObject>
 
 @required
+// called when not same beacons found
 - (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons;
+
+// called in beacon ranging callback
 - (void)didBeaconsFound:(NSMutableArray *)arrayBeacons;
 
 @end
@@ -49,6 +52,8 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
 - (void)changeMode:(ScanMode)scanMode;
 
 - (BOOL)isStarted;
+
+
 
 + (BOOL)locationServiceEnabled;
 

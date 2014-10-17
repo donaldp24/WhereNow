@@ -10,6 +10,8 @@
 #import "ServerManager.h"
 #import "UserContext.h"
 #import "ScanManager.h"
+#import "BackgroundTaskManager.h"
+#import "LocatingManager.h"
 
 @interface MainTabBarController ()
 
@@ -64,6 +66,9 @@
                                               otherButtonTitles:nil];
         [alert show];
     }
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onVicinityBeaconsChanged:) name:kVicinityBeaconsChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFoundEquipmentsChanged:) name:kFoundEquipmentsChanged object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -86,6 +91,39 @@
 - (void)viewWillAppear:(BOOL)animated
 {
     [super viewWillAppear:animated];
+}
+
+- (void)setBadgeOnNearMe:(NSString *)badgeValue
+{
+    [[[self.tabBar items] objectAtIndex:3] setBadgeValue:badgeValue];
+}
+
+- (void)onVicinityBeaconsChanged:(id)sender
+{
+    [self onFoundEquipmentsChanged:sender];
+}
+
+- (void)onFoundEquipmentsChanged:(id)sender
+{
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        if ([BackgroundTaskManager sharedManager].arrayVicinityEquipments.count == 0)
+            [self setBadgeOnNearMe:nil];
+        else if ([LocatingManager sharedInstance].arrayFoundTrackingEquipments.count == 0)
+            [self setBadgeOnNearMe:nil];
+        else
+        {
+            int count = 0;
+            for (CLBeacon *foundBeacon in [BackgroundTaskManager sharedManager].arrayVicinityEquipments) {
+                if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:foundBeacon])
+                    count ++;
+            }
+            
+            if (count == 0)
+                [self setBadgeOnNearMe:nil];
+            else
+                [self setBadgeOnNearMe:[NSString stringWithFormat:@"%d", count]];
+        }
+    });
 }
 
 @end

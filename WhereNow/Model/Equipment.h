@@ -2,7 +2,7 @@
 //  Equipment.h
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 01/10/14.
+//  Created by Xiaoxue Han on 10/10/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -44,7 +44,7 @@
 @property (nonatomic, retain) NSString * model_name_no;
 @property (nonatomic, retain) NSDate * recenttime;
 @property (nonatomic, retain) NSString * serial_no;
-@property (nonatomic, retain) NSString * uuid;
 @property (nonatomic, retain) NSNumber * sticknfind_id;
+@property (nonatomic, retain) NSString * uuid;
 
 @end

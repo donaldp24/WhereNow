@@ -18,6 +18,7 @@
 #import "FoundEquipmentTableViewController.h"
 
 #import "EquipmentTabBarController.h"
+#import <Crashlytics/Crashlytics.h>
 
 @interface AppDelegate () <UIAlertViewDelegate, TriggeredAlertsTableViewControllerDelegate, FoundEquipmentTableViewControllerDelegate>
 
@@ -34,6 +35,10 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    
+    // crashlytics
+    [Crashlytics startWithAPIKey:@"e467cd6020d75f85b44de28ff41ad8839ce00efd"];
+    
     // Override point for customization after application launch.
     [[ModelManager sharedManager] initModelManager];
     [ServerManager sharedManager].parser = [ResponseParseStrategy sharedParseStrategy];
@@ -122,7 +127,7 @@
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
     
-    //[UIApplication sharedApplication].applicationIconBadgeNumber = 0;
+    [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
     // request data
     if ([UserContext sharedUserContext].isLoggedIn)
@@ -133,6 +138,18 @@
             [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
         } failure: ^(NSString *msg) {
             NSLog(@"Data request failed : %@", msg);
+        }];
+        
+        // get device activate state
+        [[ServerManager sharedManager] checkDeviceRemoved:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId tokenId:[UserContext sharedUserContext].tokenId success:^(BOOL removed) {
+            if (removed)
+            {
+                dispatch_async(dispatch_get_main_queue(), ^() {
+                    [self logout];
+                });
+            }
+        } failure:^(NSString *msg) {
+            NSLog(@"checkDeviceRemove on didBecomeActive failed : %@", msg);
         }];
     }
 }
@@ -164,8 +181,9 @@
     // update device token
     if ([UserContext sharedUserContext].isLoggedIn)
     {
-        [[ServerManager sharedManager] updateDeviceToken:cleanDeviceToken sessionId:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^(NSString *tokenId) {
+        [[ServerManager sharedManager] updateDeviceToken:cleanDeviceToken sessionId:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId deviceName:[[UIDevice currentDevice] name] success:^(NSString *tokenId) {
             NSLog(@"device token registered : %@", cleanDeviceToken);
+            [UserContext sharedUserContext].tokenId = tokenId;
         } failure:^(NSString *msg) {
             NSLog(@"device token registering failed - %@", msg);
         }];
@@ -173,13 +191,19 @@
 #endif
 }
 
-- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo
+- (void)application:(UIApplication *)application didReceiveRemoteNotification:(NSDictionary *)userInfo fetchCompletionHandler:(void (^)(UIBackgroundFetchResult))completionHandler
 {
     NSLog(@"didReceiveRemoteNotification ---------- \n%@", userInfo);
     
     NSString *alert_type = [userInfo objectForKey:kRemoteNotificationTypeKey];
-    if (alert_type != nil &&
-        [alert_type isEqualToString:kRemoteNotificationTypeAlert])
+    if (alert_type == nil)
+    {
+        completionHandler(UIBackgroundFetchResultFailed);
+        return;
+    }
+    
+    
+    if ([alert_type isEqualToString:kRemoteNotificationTypeAlert])
     {
         // store to local
         NSObject *obj = [userInfo objectForKey:@"alert_id"];
@@ -191,6 +215,9 @@
         
         
         if (application.applicationState == UIApplicationStateActive) {
+            
+            completionHandler(UIBackgroundFetchResultNewData);
+            
             // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
             if (!self.bShownTriggeredAlerts)
             {
@@ -208,11 +235,15 @@
         }
         else {
             NSLog(@"application is not active ---");
+            completionHandler(UIBackgroundFetchResultNewData);
         }
     }
-    else
+    else if ([alert_type isEqualToString:kRemoteNotificationTypeWatch])
     {
         if (application.applicationState == UIApplicationStateActive) {
+            
+            completionHandler(UIBackgroundFetchResultNewData);
+            
             if (self.alertViewElse)
                 [self.alertViewElse dismissWithClickedButtonIndex:0 animated:NO];
             
@@ -226,7 +257,17 @@
         }
         else {
             NSLog(@"application is not active ---");
+            completionHandler(UIBackgroundFetchResultNewData);
         }
+    }
+    else if ([alert_type isEqualToString:kRemoteNotificationTypeForcedLogout])
+    {
+        [self logout];
+        completionHandler(UIBackgroundFetchResultNewData);
+    }
+    else
+    {
+        completionHandler(UIBackgroundFetchResultFailed);
     }
 }
 
@@ -289,6 +330,7 @@
     
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
         // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
+        /*
         if (!self.bShownFoundEquipment)
         {
             UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
@@ -298,7 +340,7 @@
                                                       otherButtonTitles:nil];
             self.alertViewFoundEquipments = alertView;
             [alertView show];
-        }
+        }*/
     }
     else {
         NSLog(@"application is not active ---");
@@ -324,7 +366,7 @@
                                                            delegate:self
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
-        self.alertViewFoundEquipments = alertView;
+        //self.alertViewFoundEquipments = alertView;
         [alertView show];
     }
 
@@ -356,7 +398,26 @@
     self.bShownFoundEquipment = NO;
 }
 
-
+#pragma mark - logout
+- (void)logout
+{
+    // call api
+    [[ServerManager sharedManager] userLogout:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId tokenId:[UserContext sharedUserContext].tokenId isRemote:NO success:^(NSString *tokenId) {
+        //
+    } failure:^(NSString * msg) {
+        //
+    }];
+    
+    // save status
+    [UserContext sharedUserContext].isLoggedIn = NO;
+    [UserContext sharedUserContext].isLastLoggedin = NO;
+    
+    // stop scanning
+    [[BackgroundTaskManager sharedManager] stopScanning];
+    
+    UINavigationController *nav = (UINavigationController *)self.window.rootViewController;
+    [nav popToRootViewControllerAnimated:YES];
+}
 
 
 @end

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="5056" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="6245" systemVersion="13F34" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6238"/>
     </dependencies>
     <objects>
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
@@ -52,6 +52,20 @@
                     <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="XZ1-qG-n0J">
                         <rect key="frame" x="320" y="0.0" width="225" height="91"/>
                         <subviews>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="IF4-5h-xd4" userLabel="btnPage">
+                                <rect key="frame" x="0.0" y="0.0" width="75" height="91"/>
+                                <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="91" id="lIH-Q4-faj"/>
+                                    <constraint firstAttribute="width" constant="75" id="w7o-4K-WyG"/>
+                                </constraints>
+                                <state key="normal" image="icon_signal">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="onPage:" destination="KGk-i7-Jjw" eventType="touchUpInside" id="qJA-B9-vs0"/>
+                                </connections>
+                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="3hF-5a-2de" userLabel="btnFavorites">
                                 <rect key="frame" x="48" y="0.0" width="75" height="91"/>
                                 <color key="backgroundColor" red="0.25977530500000001" green="0.7288552989" blue="0.30808676829999998" alpha="1" colorSpace="calibratedRGB"/>
@@ -99,8 +113,10 @@
                         <constraints>
                             <constraint firstItem="3hF-5a-2de" firstAttribute="top" secondItem="XZ1-qG-n0J" secondAttribute="top" id="DZS-Fp-gFb"/>
                             <constraint firstItem="csL-XN-c80" firstAttribute="leading" secondItem="XZ1-qG-n0J" secondAttribute="leading" constant="123" id="EKt-mD-Fwp"/>
+                            <constraint firstItem="IF4-5h-xd4" firstAttribute="top" secondItem="XZ1-qG-n0J" secondAttribute="top" id="Pzb-V6-emh"/>
                             <constraint firstItem="onq-vY-XBs" firstAttribute="top" secondItem="XZ1-qG-n0J" secondAttribute="top" id="Raq-6Q-IBc"/>
                             <constraint firstAttribute="height" constant="91" id="UZ1-20-P1z"/>
+                            <constraint firstItem="IF4-5h-xd4" firstAttribute="leading" secondItem="XZ1-qG-n0J" secondAttribute="leading" id="Yhu-xu-sfW"/>
                             <constraint firstItem="3hF-5a-2de" firstAttribute="leading" secondItem="XZ1-qG-n0J" secondAttribute="leading" constant="48" id="Yw0-PN-rUu"/>
                             <constraint firstItem="csL-XN-c80" firstAttribute="top" secondItem="XZ1-qG-n0J" secondAttribute="top" id="bjY-Pd-D1r"/>
                             <constraint firstAttribute="width" constant="225" id="dwb-uW-eEg"/>
@@ -119,6 +135,7 @@
                 <outlet property="btnDelete" destination="onq-vY-XBs" id="lGU-fU-GuV"/>
                 <outlet property="btnFavorites" destination="3hF-5a-2de" id="thq-jc-Pg4"/>
                 <outlet property="btnLocate" destination="csL-XN-c80" id="9kw-yw-sOp"/>
+                <outlet property="btnPage" destination="IF4-5h-xd4" id="oBu-vQ-rqW"/>
                 <outlet property="ivImg" destination="oVL-k9-xye" id="uZ0-Yb-ch4"/>
                 <outlet property="ivStatus" destination="AqY-9h-jy5" id="l8t-Lj-24d"/>
                 <outlet property="ivTracking" destination="j3j-5g-UzG" id="j1D-sU-bqM"/>
@@ -134,9 +151,15 @@
     </objects>
     <resources>
         <image name="favoriteicon" width="30" height="30"/>
+        <image name="icon_signal" width="30" height="30"/>
         <image name="nearmeicon" width="30" height="30"/>
         <image name="nearmeicon_halflocated" width="30" height="30"/>
         <image name="status_green" width="21" height="21"/>
         <image name="trashicon" width="30" height="30"/>
     </resources>
+    <simulatedMetricsContainer key="defaultSimulatedMetrics">
+        <simulatedStatusBarMetrics key="statusBar"/>
+        <simulatedOrientationMetrics key="orientation"/>
+        <simulatedScreenMetrics key="destination" type="retina4"/>
+    </simulatedMetricsContainer>
 </document>

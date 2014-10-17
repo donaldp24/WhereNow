@@ -997,16 +997,16 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             continue;
         
         
-        NSArray *arrayEquipments = [dicGeneric objectForKey:@"equipment_array"];
-        if (arrayEquipments != nil)
+        NSArray *arrayLocations = [dicGeneric objectForKey:@"location_array"];
+        if (arrayLocations != nil)
         {
-            for (NSDictionary *dicEquipment in arrayEquipments) {
-                int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
+            for (NSDictionary *dicLocation in arrayLocations) {
+                int equipment_id = [[dicLocation objectForKey:@"equipment_id"] intValue];
                 Equipment *equipment = [self equipmentWithEquipmentId:equipment_id equipments:arrayExistEquipments];
                 if (equipment == nil)
                     continue;
                 
-                NSString *location_type = [dicEquipment objectForKey:@"location_type"];
+                NSString *location_type = [dicLocation objectForKey:@"location_type"];
                 if ([location_type isEqualToString:kLocationTypeImmediateVicinity])
                 {
                     if (![arrayVicinityEquipments containsObject:equipment])
