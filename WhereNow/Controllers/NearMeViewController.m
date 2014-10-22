@@ -345,6 +345,9 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
             
             [self loadDataWithGeneric:self.selectedGenerics];
             
+            editingCell = nil;
+            editingIndexPath = nil;
+            editingSection = 0;
             
             //[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSRangeFromString(@"0-1")] withRowAnimation:UITableViewRowAnimationLeft];
             //[UIView animateWithDuration:1.0 animations:^() {
@@ -490,6 +493,10 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
             // call end refreshing when get response
             [self.refresh endRefreshing];
             
+            editingSection = 0;
+            editingIndexPath = nil;
+            editingCell = nil;
+            
             [self.tableView reloadData];
         }];
         
@@ -503,6 +510,11 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^() {
         [self loadDataWithGeneric:self.selectedGenerics];
+        
+        editingCell = nil;
+        editingIndexPath = nil;
+        editingSection = 0;
+        
         [self.tableView reloadData];
     });
 }
@@ -514,6 +526,11 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     
     dispatch_async(dispatch_get_main_queue(), ^() {
         [self loadDataWithGeneric:self.selectedGenerics];
+        
+        editingCell = nil;
+        editingIndexPath = nil;
+        editingSection = 0;
+        
         [self.tableView reloadData];
     });
 }

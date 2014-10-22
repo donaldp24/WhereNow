@@ -163,6 +163,8 @@ static LocatingManager *_sharedLocatingManager = nil;
         }
     }
     
+    NSLog(@"checkLocatingBeacons in LocatingManager : foundEquipments :%@", foundEquipments);
+    
     // found beacons
     if (foundEquipments.count > 0)
     {

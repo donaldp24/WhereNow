@@ -45,6 +45,10 @@
     
     // have to start scanning after logged in
     //[[BackgroundTaskManager sharedManager] startScanning];
+    if ([UIApplication sharedApplication].backgroundRefreshStatus)
+        NSLog(@"backgroundRefreshStatus : YES");
+    else
+        NSLog(@"backgroundRefreshStatus : NO");
     
 #if __IPHONE_OS_VERSION_MAX_ALLOWED >= 80000
     if ([[UIApplication sharedApplication] respondsToSelector:@selector(registerUserNotificationSettings:)]) {
@@ -221,8 +225,8 @@
             // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
             if (!self.bShownTriggeredAlerts)
             {
-                //if (self.alertViewFoundEquipments != nil)
-                //    [self.alertViewFoundEquipments dismissWithClickedButtonIndex:0 animated:YES];
+                if (self.alertViewFoundEquipments != nil)
+                    [self.alertViewFoundEquipments dismissWithClickedButtonIndex:0 animated:YES];
                 
                 UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
                                                                     message:[NSString stringWithFormat:@"%@",[[userInfo objectForKey:@"aps"] objectForKey:@"alert"]]
@@ -285,7 +289,10 @@
     if (alertView == self.alertViewTriggeredAlerts)
         [self showTriggeredAlerts];
     else if (alertView == self.alertViewFoundEquipments)
-        [self showFoundEquipments];
+    {
+        //[self showFoundEquipments];
+        self.bShownFoundEquipment = NO;
+    }
     else if (alertView == self.alertViewElse)
         self.alertViewElse = nil;
 }
@@ -314,6 +321,7 @@
 #pragma mark - found equipments
 - (void)foundEquipments:(NSMutableArray *)arrayFoundEquipments
 {
+    NSLog(@"foundEquipments : %@", arrayFoundEquipments);
     if (arrayFoundEquipments.count == 0)
         return;
     
@@ -339,7 +347,7 @@
                                                                delegate:self
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles:nil];
-            //self.alertViewFoundEquipments = alertView;
+            self.alertViewFoundEquipments = alertView;
             self.bShownFoundEquipment = YES;
             [alertView show];
         }
@@ -368,7 +376,7 @@
                                                            delegate:self
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
-        //self.alertViewFoundEquipments = alertView;
+        self.alertViewFoundEquipments = alertView;
         self.bShownFoundEquipment = YES;
         [alertView show];
     }

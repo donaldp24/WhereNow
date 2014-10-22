@@ -18,6 +18,7 @@
 #import "CommonGenericTableViewCell.h"
 #import "CommonEquipmentTableViewCell.h"
 #import "CommonLocationTableViewCell.h"
+#import "BackgroundNotifications.h"
 
 #define GENERICS_INDEX      0
 #define EQUIPMENT_INDEX     1
@@ -117,6 +118,8 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kDataChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kBackgroundUpdateLocationInfoNotification object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kFoundEquipmentsChanged object:nil];
     
     // get data from server
     //[self requestData];
