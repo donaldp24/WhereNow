@@ -318,12 +318,15 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             }
             else
             {
+    
                 CommonLocationTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
                 if (cell == nil)
                 {
                     cell = [[CommonLocationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
                 }
-                [cell bind:[_expandingLocationArray objectAtIndex:indexPath.row - editingIndexPath.row - 1]];
+                NSLog(@"cellforrowatindexpath - count : %d", (int)arrayData.count);
+                if (_expandingLocationArray.count > indexPath.row - editingIndexPath.row - 1)
+                    [cell bind:[_expandingLocationArray objectAtIndex:indexPath.row - editingIndexPath.row - 1]];
                 return cell;
             }
         }
@@ -334,12 +337,15 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             {
                 cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
             }
-            [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:CommonEquipmentCellTypeSearch];
-            if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
+            if (arrayData.count > indexPath.row)
             {
-                editingIndexPath = indexPath;
-                editingCell = cell;
-                [cell setEditor:YES animate:NO];
+                [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGenerics type:CommonEquipmentCellTypeSearch];
+                if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
+                {
+                    editingIndexPath = indexPath;
+                    editingCell = cell;
+                    [cell setEditor:YES animate:NO];
+                }
             }
             return cell;
         }
@@ -368,6 +374,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    dispatch_async(dispatch_get_main_queue(), ^() {
     NSArray *arrayData = [self dataForTable:tableView];
     if (tableView == self.tableView)
     {
@@ -378,7 +385,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
                 self.selectedGenerics = [arrayData objectAtIndex:indexPath.row];
                 _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGenerics withBeacon:YES];
                 
-                [UIView animateWithDuration:0.3 animations:^{
+                //[UIView animateWithDuration:0.3 animations:^{
                     
                     [self.segment setSelectedSegmentIndex:1];
 
@@ -386,9 +393,11 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
                     _isSearching = NO;
                     self.customSearchBar.text = @"";
                     [self.customSearchBar resignFirstResponder];
-                    
-                    [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
-                }];
+                
+                    NSLog(@"didSelectRowAtIndexPath : %d, count : %d", (int)indexPath.row, (int)_equipmentArray.count);
+                    //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
+                [self.tableView reloadData];
+                //}];
                 
                 // save selected generic to recent list
                 [[ModelManager sharedManager] addRecentGeneric:self.selectedGenerics];
@@ -396,6 +405,8 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
         }
         else
         {
+            if (arrayData.count <= indexPath.row)
+                return;
             Equipment *equipment = [arrayData objectAtIndex:indexPath.row];
             
             // save selected equipment to recent list
@@ -418,6 +429,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 #endif
         }
     }
+    });
 }
 
 
@@ -633,7 +645,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
     }
     
-    
+    NSLog(@"reload data in onsegmentindexchanged - %d", (int)self.segment.selectedSegmentIndex);
     [self.tableView reloadData];
 }
 
@@ -702,34 +714,15 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
     [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
         
         // main thread
-        [[NSOperationQueue mainQueue] addOperationWithBlock:^(){
+        dispatch_async(dispatch_get_main_queue(), ^() {
             
-            // reload data
-            [self loadData];
-            
-            self.selectedGenerics = nil;
-            if (editingCell)
-                [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
-            
-            editingIndexPath = nil;
-            editingCell = nil;
-            
-            [_expandingLocationArray removeAllObjects];
-            
-            if (_isSearching)
-            {
-                if (self.segment.selectedSegmentIndex == 0)
-                    [self updateFilteredContentOfGenericsForName:_customSearchBar.text];
-                else
-                    [self updateFilteredContentOfEquipmentForName:_customSearchBar.text];
-            }
-            
-            [self.tableView reloadData];
+            NSLog(@"reload data for request data");
+            [self reloadData];
             
             // stop refresh
             if ([self.refresh isRefreshing])
                 [self.refresh endRefreshing];
-        }];
+        });
     } failure:^(NSString *failureMsg) {
         // stop refresh
         if ([self.refresh isRefreshing])
@@ -769,6 +762,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 - (void)onDataChanged:(id)sender
 {
     dispatch_async(dispatch_get_main_queue(), ^() {
+        NSLog(@"reload ata on data changed ");
         [self reloadData];
     });
 }

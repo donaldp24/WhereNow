@@ -325,22 +325,24 @@
     }
     
     NSString *msg = [NSString stringWithFormat:@"You are near by equipment %@!", equipmentNames];
+    NSLog(@"notification locally : %@", msg);
     
     self.arrayFoundEquipments = [[NSMutableArray alloc] initWithArray:arrayFoundEquipments];
     
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
         // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
-        /*
+        
         if (!self.bShownFoundEquipment)
         {
-            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+            UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Found Equipments"
                                                                 message:msg
                                                                delegate:self
                                                       cancelButtonTitle:@"OK"
                                                       otherButtonTitles:nil];
-            self.alertViewFoundEquipments = alertView;
+            //self.alertViewFoundEquipments = alertView;
+            self.bShownFoundEquipment = YES;
             [alertView show];
-        }*/
+        }
     }
     else {
         NSLog(@"application is not active ---");
@@ -361,12 +363,13 @@
     // Nothing to do if applicationState is Inactive, the iOS already displayed an alert view.
     if (!self.bShownFoundEquipment)
     {
-        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:nil
+        UIAlertView *alertView = [[UIAlertView alloc] initWithTitle:@"Found Equipments"
                                                             message:notification.alertBody
                                                            delegate:self
                                                   cancelButtonTitle:@"OK"
                                                   otherButtonTitles:nil];
         //self.alertViewFoundEquipments = alertView;
+        self.bShownFoundEquipment = YES;
         [alertView show];
     }
 

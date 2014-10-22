@@ -147,6 +147,8 @@ static LocatingManager *_sharedLocatingManager = nil;
 
 - (void)checkLocatingBeacons:(NSMutableArray *)arrayBeacons
 {
+    NSLog(@"checkLocatingBeacons in LocatingManager");
+    
     NSMutableArray *foundEquipments = [[NSMutableArray alloc] init];
     // check beacons for locating equipments
     for (CLBeacon *beacon in arrayBeacons) {

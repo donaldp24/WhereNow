@@ -347,9 +347,9 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
             
             
             //[self.tableView reloadSections:[NSIndexSet indexSetWithIndexesInRange:NSRangeFromString(@"0-1")] withRowAnimation:UITableViewRowAnimationLeft];
-            [UIView animateWithDuration:1.0 animations:^() {
+            //[UIView animateWithDuration:1.0 animations:^() {
                 [self.tableView reloadData];
-            }];
+            //}];
             
             // save selected generic to recent list
             [[ModelManager sharedManager] addRecentGeneric:self.selectedGenerics];
@@ -358,6 +358,8 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     else
     {
         Equipment *equipment = nil;
+        if (arrayData.count <= indexPath.row)
+            return;
         equipment = [arrayData objectAtIndex:indexPath.row];
 
         // save selected equipment to recent list

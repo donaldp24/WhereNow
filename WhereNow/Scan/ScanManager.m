@@ -13,7 +13,7 @@
 #define kScanFor10SecsPerMin        0
 #define kScanForEveryCertainSecs     1
 #define kScanPeriodOnce             10
-#define kScanTimout                 20
+#define kScanTimout                 10
 
 @interface ScannedBeacon : NSObject
 
@@ -113,6 +113,7 @@
 #endif
     
     self.locationManager.delegate = self;
+    self.locationManager.pausesLocationUpdatesAutomatically = NO;
     [self initRegion];
     
     self.isStarted = YES;
@@ -194,12 +195,14 @@
         }
         else
         {
+#if 0
             if (currTime - scanEndedTime >= kScanPeriodOnce * 1000)
             {
                 scanEndedTime = currTime;
                 
                 [self compareBeaconsAndDelegate];
             }
+#endif
         }
     }
     else if (self.scanMode == ScanModeNearme)
@@ -327,6 +330,7 @@
     self.beaconRegion = [[CLBeaconRegion alloc] initWithProximityUUID:uuid
                                                            identifier:@"com.app.BeaconRegion"];
 #endif
+    self.beaconRegion.notifyEntryStateOnDisplay = YES;
     if (![CLLocationManager isMonitoringAvailableForClass:[CLBeaconRegion class]])
     {
         NSLog(@"error : cannot monitoring for class : clbeaconregion");
@@ -368,6 +372,8 @@
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
+    NSLog(@"didRangeBeacons : %@", beacons);
+    
     if (self.scanMode == ScanModeNormal)
     {
         if (scanningMethod == kScanFor10SecsPerMin)
@@ -405,6 +411,23 @@
                     [self.scannedBeacons addObject:beacon];
             }
         }
+        
+        // check time
+        //if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
+  
+        NSLog(@"get curr time");
+            long currTime = [self getCurrentMilliTime];
+            if (currTime - lastDelegateTime > kScanPeriodOnce * 1000)
+            {
+                NSLog(@"compare and delegate");
+                [self compareBeaconsAndDelegate];
+                lastDelegateTime = [self getCurrentMilliTime];
+            }
+        //}
+        //else {
+        //    [self compareBeaconsAndDelegate];
+        //}
+        
     }
     else if (self.scanMode == ScanModeNearme)
     {

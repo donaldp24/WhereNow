@@ -106,6 +106,7 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
 
 - (void)checkLocatingBeacons:(NSMutableArray *)arrayBeacons
 {
+    NSLog(@"checkLocatingBeacons in BackgroundTaskManager");
     dispatch_async(dispatch_get_main_queue(), ^() {
         [[LocatingManager sharedInstance] checkLocatingBeacons:arrayBeacons];
     });

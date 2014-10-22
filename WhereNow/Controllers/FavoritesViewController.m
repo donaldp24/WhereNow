@@ -284,7 +284,8 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             {
                 cell = [[CommonLocationTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
             }
-            [cell bind:[_expandingLocationArray objectAtIndex:indexPath.row - editingIndexPath.row - 1]];
+            if (_expandingLocationArray.count > indexPath.row - editingIndexPath.row - 1)
+                [cell bind:[_expandingLocationArray objectAtIndex:indexPath.row - editingIndexPath.row - 1]];
             return cell;
         }
     }
@@ -295,14 +296,17 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
         {
             cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
         }
-        [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGeneric type:CommonEquipmentCellTypeFavorites];
-        cell.delegate = self;
-        
-        if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
+        if (arrayData.count > indexPath.row)
         {
-            editingIndexPath = indexPath;
-            editingCell = cell;
-            [cell setEditor:YES animate:NO];
+            [cell bind:[arrayData objectAtIndex:indexPath.row] generic:self.selectedGeneric type:CommonEquipmentCellTypeFavorites];
+            cell.delegate = self;
+            
+            if (editingIndexPath != nil && editingIndexPath.row == indexPath.row)
+            {
+                editingIndexPath = indexPath;
+                editingCell = cell;
+                [cell setEditor:YES animate:NO];
+            }
         }
         return cell;
     }
@@ -331,6 +335,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 #pragma mark - tableview delegate
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    //dispatch_async(dispatch_get_main_queue(), ^() {
     NSArray *arrayData = [self dataForTableView:tableView];
     
     if (self.segment.selectedSegmentIndex == 0)
@@ -341,13 +346,13 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
             // set equipmentArray
             _equipmentArray = [[ModelManager sharedManager] equipmentsForGeneric:self.selectedGeneric withBeacon:YES];
             
-            [UIView animateWithDuration:0.3 animations:^{
+            //[UIView animateWithDuration:0.3 animations:^{
                 
                 [self.segment setSelectedSegmentIndex:1];
 
                 //[self.segment sendActionsForControlEvents:UIControlEventValueChanged];
                 [self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
-            }];
+            //}];
             
             // save selected generic to recent list
             [[ModelManager sharedManager] addRecentGeneric:self.selectedGeneric];
@@ -360,6 +365,8 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
     else
     {
         Equipment *equipment = nil;
+        if (arrayData.count <= indexPath.row)
+            return;
         equipment = [arrayData objectAtIndex:indexPath.row];
         
         // save selected equipment to recent list
@@ -380,7 +387,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
         [self presentViewController:equipTabBar animated:YES completion:nil];
 #endif
     }
-
+    //});
 }
 
 #pragma mark - swipe table view delegate
