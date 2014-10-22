@@ -44,8 +44,6 @@
 // sticknfind
 @property (nonatomic, retain) LeDeviceManager *snfDeviceManager;
 
-@property (nonatomic, retain) NSOperationQueue *queue;
-
 @end
 
 @implementation ScanManager
@@ -81,9 +79,6 @@
     
     scanningMethod = kScanForEveryCertainSecs;
     self.scanMode = ScanModeNormal;
-    
-    self.queue = [[NSOperationQueue alloc] init];
-    self.queue.maxConcurrentOperationCount = 1;
 }
 
 #pragma mark - public functions
@@ -275,6 +270,16 @@
     
     NSLog(@"didRangeBeacons : %@", beacons);
     
+    if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive)
+    {
+        //
+    }
+    else
+    {
+        // expand time
+        
+    }
+    
     // when change
     for (CLBeacon *beacon in beacons) {
         int beaconMajor = [beacon.major intValue];
@@ -333,7 +338,7 @@
     }
     else if (self.scanMode == ScanModeNearme)
     {
-        [self.queue addOperationWithBlock:^() {
+        //[self.queue addOperationWithBlock:^() {
             long currTime = [self getCurrentMilliTime];
             
             // remove timed out beacons --------------------
@@ -402,7 +407,7 @@
                     lastDelegateTime = [self getCurrentMilliTime];
                 }
             }
-        }];
+        //}];
     }
 
 }
