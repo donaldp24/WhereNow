@@ -13,6 +13,7 @@
 #import "ServerManager.h"
 #import "ResponseParseStrategy.h"
 #import "BackgroundTaskManager.h"
+#import "AdvertisingManager.h"
 
 #import "TriggeredAlertsTableViewController.h"
 #import "FoundEquipmentTableViewController.h"
@@ -45,6 +46,7 @@
     
     // have to start scanning after logged in
     //[[BackgroundTaskManager sharedManager] startScanning];
+    
     if ([UIApplication sharedApplication].backgroundRefreshStatus)
         NSLog(@"backgroundRefreshStatus : YES");
     else
@@ -130,6 +132,8 @@
 - (void)applicationDidBecomeActive:(UIApplication *)application
 {
     // Restart any tasks that were paused (or not yet started) while the application was inactive. If the application was previously in the background, optionally refresh the user interface.
+    
+    [[UIApplication sharedApplication] cancelAllLocalNotifications];
     
     [UIApplication sharedApplication].applicationIconBadgeNumber = 0;
     
@@ -268,6 +272,17 @@
     {
         [self logout];
         completionHandler(UIBackgroundFetchResultNewData);
+    }
+    else if ([alert_type isEqualToString:kRemoteNotificationLocation])
+    {
+        NSObject *obj = [userInfo objectForKey:@"location_name"];
+        if (obj != nil) {
+            NSString *locationName = (NSString *)obj;
+
+            // changed current location
+            [UserContext sharedUserContext].currentLocation = locationName;
+            [[NSNotificationCenter defaultCenter] postNotificationName:kCurrentLocationChanged object:nil];
+        }
     }
     else
     {
@@ -425,6 +440,9 @@
     
     // stop scanning
     [[BackgroundTaskManager sharedManager] stopScanning];
+    
+    // stop advertising
+    [[AdvertisingManager sharedInstance] stop];
     
     UINavigationController *nav = (UINavigationController *)self.window.rootViewController;
     [nav popToRootViewControllerAnimated:YES];

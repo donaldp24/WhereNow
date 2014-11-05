@@ -11,8 +11,8 @@
 #import <snfsdk/snfsdk.h>
 
 #define kScanForEveryCertainSecs     1
-#define kScanPeriodOnce             10
-#define kScanTimout                 10
+#define kScanPeriodOnce             13
+#define kScanTimout                 13
 
 @interface ScannedBeacon : NSObject
 
@@ -239,7 +239,7 @@
     }
     
     [self.locationManager startMonitoringForRegion:self.beaconRegion];
-    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
+    //[self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
     
     NSLog(@"init region");
 }
@@ -261,7 +261,7 @@
 }
 
 - (void)locationManager:(CLLocationManager *)manager didStartMonitoringForRegion:(CLRegion *)region {
-    //[self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
+    [self.locationManager startRangingBeaconsInRegion:self.beaconRegion];
     NSLog(@"didStartMonitoringForRegion -- ");
 }
 
@@ -277,7 +277,6 @@
     else
     {
         // expand time
-        
     }
     
     // when change
@@ -397,7 +396,7 @@
             }
             else
             {
-                if (self.delegate && currTime - lastDelegateTime > 6 * 1000)
+                if (self.delegate && currTime - lastDelegateTime > 10 * 1000)
                 {
                     NSMutableArray *arrayBeacons = [[NSMutableArray alloc] init];
                     for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {

@@ -84,7 +84,7 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 - (void)onMenu:(id)sender
 {
     NSString *title;
-    if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+    if ([[BackgroundTaskManager sharedManager].arrayVicinityEquipments containsObject:self.equipment])
     {
         title = @"Alert Device";
     }
@@ -127,7 +127,7 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
 - (void)onPageDevice:(Equipment *)equipment
 {
-    if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:equipment])
+    if ([[BackgroundTaskManager sharedManager].arrayVicinityEquipments containsObject:equipment])
     {
         // start paging
         [[PagingManager sharedInstance] startPaging:equipment];

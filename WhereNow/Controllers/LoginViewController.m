@@ -13,6 +13,7 @@
 #import "ServerManager.h"
 #import "ModelManager.h"
 #import "BackgroundTaskManager.h"
+#import "AdvertisingManager.h"
 #import "AppContext.h"
 
 #define verticalGap 3.0
@@ -178,6 +179,9 @@ enum  {
              
              // start scanning
              [[BackgroundTaskManager sharedManager] startScanning];
+             
+             // start advertising
+             [[AdvertisingManager sharedInstance] start];
              
              [self performSegueWithIdentifier:@"goMain" sender:self];
              
@@ -537,6 +541,9 @@ enum  {
             // start scanning
             [[BackgroundTaskManager sharedManager] startScanning];
             
+            // start advertising
+            [[AdvertisingManager sharedInstance] start];
+            
             [self performSegueWithIdentifier:@"goMain" sender:self];
             
             // update token
@@ -720,15 +727,9 @@ enum  {
         make.top.equalTo(@(logoUpperPos));
     }];
     _bottomLeftButtonRightConstraint.offset( -8 + (_bottomLeftButton.bounds.size.width / 2.0) );
-    /*
-     [_bottomLeftButton mas_makeConstraints:^(MASConstraintMaker *make) {
-     make.right.equalTo(@0.0);
-     }];
-     */
     
     _loginGroupTopConstraint.offset(textFieldsUpperPos);
-    
-    
+
     [UIView animateWithDuration:0.3 animations:^{
         _passwordTextField.alpha = 0;
         _usernameTextField.alpha = 0;
@@ -776,15 +777,13 @@ enum  {
         }];
         
     }
-    
 }
 
 - (void)exitForgotPassword:(id)sender {
     [_bottomLeftButton removeTarget:self action:@selector(exitForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [_bottomRightButton removeTarget:self action:@selector(exitForgotPassword:) forControlEvents:UIControlEventTouchUpInside];
     [_submitButton removeTarget:self action:@selector(resetPassword) forControlEvents:UIControlEventTouchUpInside];
-    
-    
+
 //    [_logo mas_updateConstraints:^(MASConstraintMaker *make) {
 //        make.top.equalTo(@(logoLowerPos));
 //    }];
@@ -794,7 +793,6 @@ enum  {
 //    _loginGroupTopConstraint.offset(textFieldsLowerPos);
     
     [self prepareForEnteringLoginState];
-    
     
     [UIView animateWithDuration:0.3 animations:^{
         _passwordTextField.alpha = 1.0;

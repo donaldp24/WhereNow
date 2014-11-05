@@ -82,6 +82,8 @@
 		D0551D6D19BEAEDB0066DF53 /* CommonLocationTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D0551D6B19BEAEDB0066DF53 /* CommonLocationTableViewCell.m */; };
 		D0551D6E19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */; };
 		D06E539819EE8D30003D6471 /* DeviceCell.m in Sources */ = {isa = PBXBuildFile; fileRef = D06E539719EE8D30003D6471 /* DeviceCell.m */; };
+		D08153071A05E76D00F9D8F4 /* AudioToolbox.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D08153061A05E76D00F9D8F4 /* AudioToolbox.framework */; };
+		D0827D7C1A04035E00987843 /* AdvertisingManager.m in Sources */ = {isa = PBXBuildFile; fileRef = D0827D7B1A04035E00987843 /* AdvertisingManager.m */; };
 		D083B1331989EFC8006E006B /* SVProgressHUD.bundle in Resources */ = {isa = PBXBuildFile; fileRef = D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */; };
 		D083B1341989EFC8006E006B /* SVProgressHUD.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B12E1989EFC8006E006B /* SVProgressHUD.m */; };
 		D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */ = {isa = PBXBuildFile; fileRef = D083B1311989EFC8006E006B /* SwipeTableView.m */; };
@@ -276,6 +278,9 @@
 		D0551D6C19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = CommonLocationTableViewCell.xib; sourceTree = "<group>"; };
 		D06E539619EE8D30003D6471 /* DeviceCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = DeviceCell.h; sourceTree = "<group>"; };
 		D06E539719EE8D30003D6471 /* DeviceCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = DeviceCell.m; sourceTree = "<group>"; };
+		D08153061A05E76D00F9D8F4 /* AudioToolbox.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AudioToolbox.framework; path = System/Library/Frameworks/AudioToolbox.framework; sourceTree = SDKROOT; };
+		D0827D7A1A04035E00987843 /* AdvertisingManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AdvertisingManager.h; sourceTree = "<group>"; };
+		D0827D7B1A04035E00987843 /* AdvertisingManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AdvertisingManager.m; sourceTree = "<group>"; };
 		D083B12B1989EFC8006E006B /* SVProgressHUD+utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "SVProgressHUD+utils.h"; sourceTree = "<group>"; };
 		D083B12C1989EFC8006E006B /* SVProgressHUD.bundle */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.plug-in"; path = SVProgressHUD.bundle; sourceTree = "<group>"; };
 		D083B12D1989EFC8006E006B /* SVProgressHUD.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SVProgressHUD.h; sourceTree = "<group>"; };
@@ -373,6 +378,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D08153071A05E76D00F9D8F4 /* AudioToolbox.framework in Frameworks */,
 				D041EB9E19EB7CD900C81B08 /* CoreBluetooth.framework in Frameworks */,
 				D03D826519BBF98400D8CA91 /* SystemConfiguration.framework in Frameworks */,
 				D03A097E19F0A26F00693BAC /* Crashlytics.framework in Frameworks */,
@@ -485,6 +491,7 @@
 		D034F3661988CAF4004DE04E /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				D08153061A05E76D00F9D8F4 /* AudioToolbox.framework */,
 				D03A097D19F0A26F00693BAC /* Crashlytics.framework */,
 				D041EB9D19EB7CD900C81B08 /* CoreBluetooth.framework */,
 				D03D826419BBF98400D8CA91 /* SystemConfiguration.framework */,
@@ -589,6 +596,8 @@
 				D04101FC19DE473900E2E579 /* LocatingManager.m */,
 				D01C1AD719EB679800368EE9 /* PagingManager.h */,
 				D01C1AD819EB679800368EE9 /* PagingManager.m */,
+				D0827D7A1A04035E00987843 /* AdvertisingManager.h */,
+				D0827D7B1A04035E00987843 /* AdvertisingManager.m */,
 			);
 			path = BkTask;
 			sourceTree = "<group>";
@@ -958,6 +967,7 @@
 				D033E134198912FC0034EBC8 /* NSArray+MASAdditions.m in Sources */,
 				D03AC28F19BFD85C0024BF10 /* GenericLocation.m in Sources */,
 				D0C0BCD719A3196A0016787F /* RecentEquipmentsViewController.m in Sources */,
+				D0827D7C1A04035E00987843 /* AdvertisingManager.m in Sources */,
 				D04A389E198F84740063554C /* SBJsonStreamWriterState.m in Sources */,
 				D0C4E0F2198A8AA5003C09A1 /* Model.xcdatamodeld in Sources */,
 				D039E89819DC07D100474C1F /* Sticker.m in Sources */,

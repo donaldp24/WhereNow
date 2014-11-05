@@ -18,15 +18,9 @@
 @property (nonatomic, retain) ScanManager *scanManager;
 @property (nonatomic, retain) StickerManager *stickBeaconManager;
 
-/**
- * locateArray
- */
-@property (nonatomic, strong) NSMutableArray *locateArray;
-
 @property (nonatomic, strong) NSMutableArray *arrayNearmeGenerics;
 @property (nonatomic, strong) NSMutableArray *arrayVicinityEquipments;
 @property (nonatomic, strong) NSMutableArray *arrayLocationEquipments;
-//@property (nonatomic, strong) NSMutableArray *arrayLocatingEquipments;
 
 - (void)startScanning;
 - (void)stopScanning;
@@ -37,6 +31,7 @@
 - (void)setConsumeScanning:(BOOL)consume;
 
 - (void)requestLocationInfo:(NSMutableArray *)arrayBeacons complete:(void(^)())complete;
+- (NSArray *)getVicinityEquipments;
 
 - (void)changeToStickBeaconMode;
 - (void)cancelStickBeaconMode;

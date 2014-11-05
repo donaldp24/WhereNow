@@ -124,7 +124,7 @@
         
             break;
         case CommonEquipmentCellTypeNearme:
-            if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+            if ([[BackgroundTaskManager sharedManager].arrayVicinityEquipments containsObject:self.equipment])
             {
                 self.btnLocate.hidden = YES;
                 self.btnDelete.hidden = YES;
@@ -197,7 +197,7 @@
                 self.leftConstraintOfView.constant = -kButtonWidth * 2;
                 break;
             case CommonEquipmentCellTypeNearme:
-                if ([[LocatingManager sharedInstance].arrayFoundTrackingEquipments containsObject:self.equipment])
+                if ([[BackgroundTaskManager sharedManager].arrayVicinityEquipments containsObject:self.equipment])
                     self.leftConstraintOfView.constant = -kButtonWidth;
                 else
                     self.leftConstraintOfView.constant = -kButtonWidth * 2;

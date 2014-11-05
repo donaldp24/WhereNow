@@ -30,7 +30,6 @@ static LocatingManager *_sharedLocatingManager = nil;
     self = [super init];
     self.arrayLocatingEquipments = [[ModelManager sharedManager] retrieveLocatingEquipments];
     self.arrayFoundTrackingEquipments = [[NSMutableArray alloc] init];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onLocatingChanged:) name:kLocatingChanged object:nil];
     return self;
 }
 
@@ -45,7 +44,8 @@ static LocatingManager *_sharedLocatingManager = nil;
     }];
     
     [[ModelManager sharedManager] saveContext];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+    [self onLocatingChanged:nil];
+    
 }
 
 - (void)cancelLocatingEquipment:(Equipment *)equipment
@@ -59,7 +59,7 @@ static LocatingManager *_sharedLocatingManager = nil;
     }];
     
     [[ModelManager sharedManager] saveContext];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+    [self onLocatingChanged:nil];
 }
 
 - (void)onLocatingGeneric:(Generic *)generic
@@ -132,7 +132,7 @@ static LocatingManager *_sharedLocatingManager = nil;
     }
     
     [[ModelManager sharedManager] saveContext];
-    [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+    [self onLocatingChanged:nil];
 }
 
 - (void)locatingGeneric:(Generic *)generic
@@ -173,9 +173,10 @@ static LocatingManager *_sharedLocatingManager = nil;
         for (Equipment *equipment in foundEquipments) {
             equipment.islocating = @(NO);
             [arrayEquipmentIds addObject:equipment.equipment_id];
+            [self.arrayLocatingEquipments removeObject:equipment];
         }
         [[ModelManager sharedManager] saveContext];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
+        [self onLocatingChanged:nil];
         
         AppDelegate *appDelegate = (AppDelegate *)[UIApplication sharedApplication].delegate;
         [appDelegate foundEquipments:foundEquipments];
@@ -203,6 +204,8 @@ static LocatingManager *_sharedLocatingManager = nil;
     dispatch_async(dispatch_get_main_queue(), ^() {
         // reload locating equipments
         self.arrayLocatingEquipments = [[ModelManager sharedManager] retrieveLocatingEquipments];
+        
+        [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
     });
 }
 

@@ -10,6 +10,7 @@
 #define WhereNow_BackgroundNotifications_h
 
 #define kBackgroundUpdateLocationInfoNotification       @"updateLocationInfo"
+#define kBackgroundScannedBeaconChanged                 @"scanned beacon changed"
 
 
 #endif

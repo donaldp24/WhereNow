@@ -13,6 +13,7 @@
 #import "AppDelegate.h"
 #import "AppContext.h"
 #import "LocatingManager.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 #define kPeriodOfStickBeaconMode        60 * 3
 
@@ -87,9 +88,7 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
 - (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons
 {
     self.arrayVicinityBeacons = arrayBeacons;
-    NSLog(@"didVicinityBeaconsFound : %@", self.arrayVicinityEquipments);
-    if (self.arrayVicinityEquipments.count == 0)
-        self.arrayVicinityEquipments = self.arrayVicinityEquipments;
+    NSLog(@"didVicinityBeaconsFound : %@", self.arrayVicinityBeacons);
     
     [self requestLocationInfo:self.arrayVicinityBeacons complete:^() {
         // post notification
@@ -97,6 +96,23 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
     }];
     
     [self checkLocatingBeacons:self.arrayVicinityBeacons];
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        // audio service play
+        AudioServicesPlaySystemSound(1315);
+        AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+        
+        self.arrayVicinityEquipments = [[NSMutableArray alloc] initWithArray:[self getVicinityEquipmentsWithBeacons:self.arrayVicinityBeacons]];
+        
+        // notification vicinity beacons changed
+        [[NSNotificationCenter defaultCenter] postNotificationName:kBackgroundScannedBeaconChanged object:nil];
+    });
+}
+
+- (NSArray *)getVicinityEquipments
+{
+    NSMutableArray *arrayEquipments = [[NSMutableArray alloc] initWithArray:[self getVicinityEquipmentsWithBeacons:self.arrayVicinityBeacons]];
+    return arrayEquipments;
 }
 
 - (void)didBeaconsFound:(NSMutableArray *)arrayBeacons
@@ -134,7 +150,6 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
                     {
                         // changed current location
                         [UserContext sharedUserContext].currentLocation = equipment.current_location;
-                        
                         [[NSNotificationCenter defaultCenter] postNotificationName:kCurrentLocationChanged object:nil];
                     }
                 }
@@ -177,6 +192,30 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
     dispatch_async(dispatch_get_main_queue(), ^() {
         [self cancelStickBeaconMode];
     });
+}
+
+#pragma utilities
+- (NSArray *)getVicinityEquipmentsWithBeacons:(NSArray *)beacons
+{
+    NSMutableArray *arrayEquipments = [[NSMutableArray alloc] init];
+    NSArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+    for (CLBeacon *beacon in beacons) {
+        // find equipment with uuid/major/minor
+        NSString *uuid = beacon.proximityUUID.UUIDString;
+        int major = [beacon.major intValue];
+        int minor = [beacon.minor intValue];
+        for (Equipment *equipment in arrayExistEquipments) {
+            if ([equipment.uuid isEqualToString:uuid] &&
+                [equipment.major intValue] == major &&
+                [equipment.minor intValue] == minor)
+            {
+                if (![arrayEquipments containsObject:equipment])
+                    [arrayEquipments addObject:equipment];
+                break;
+            }
+        }
+    }
+    return arrayEquipments;
 }
 
 @end

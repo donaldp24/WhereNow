@@ -20,6 +20,7 @@
 #define kRemoteNotificationTypeAlert        @"alert"
 #define kRemoteNotificationTypeWatch        @"watch"
 #define kRemoteNotificationTypeForcedLogout @"forcedloggedout"
+#define kRemoteNotificationLocation         @"locationtracked"
 
 // notifications
 #define kTriggeredAlertChanged  @"triggeredalertchanged"
