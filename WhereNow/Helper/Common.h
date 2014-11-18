@@ -21,14 +21,24 @@
 #define kRemoteNotificationTypeWatch        @"watch"
 #define kRemoteNotificationTypeForcedLogout @"forcedloggedout"
 #define kRemoteNotificationLocation         @"locationtracked"
+#define kRemoteNotificationEquipmentTracked @"equipmenttracked"
 
 // notifications
-#define kTriggeredAlertChanged  @"triggeredalertchanged"
-#define kDataChanged        @"data changed"
-#define kLocatingChanged    @"locating changed"
-#define kVicinityBeaconsChanged @"vicinity beacons changed"
-#define kFoundEquipmentsChanged @"found equipments changed"
-#define kCurrentLocationChanged @"current location changed"
+#define kTriggeredAlertChanged      @"triggeredalertchanged"
+
+#define kLocatingArrayChanged       @"locating array changed"
+#define kVicinityBeaconsChanged     @"vicinity beacons changed"
+#define kFoundEquipmentsChanged     @"found equipments changed"
+#define kCurrentLocationChanged     @"current location changed"
+
+
+#define kGenericsChanged                @"generics changed"
+#define kEquipmentsForGenericChanged    @"equipmentsforgeneric changed"
+#define kLocationsForGenericChanged     @"locationsforgeneric changed"
+#define kMovementsForEquipmentChanged   @"movementsforequipment changed"
+
+#define kBackgroundUpdateLocationInfoNotification       @"updateLocationInfo"
+#define kBackgroundScannedBeaconChanged                 @"scanned beacon changed"
 
 // keys from server
 #define kDeviceListDeviceNameKey    @"device_name"

@@ -62,29 +62,8 @@
     
     UIBarButtonItem *_menuButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"menuicon"] style:UIBarButtonItemStylePlain target:self action:@selector(onMenu:)];
     self.navigationItem.rightBarButtonItem = _menuButton;
-    
-    EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
-    _equipment = tabbarController.equipment;
-    if (_equipment != nil)
-    {
-        self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", _equipment.manufacturer_name, _equipment.model_name_no];
-        
-        lblManufacturer.text = _equipment.manufacturer_name;
-        lblModel.text = _equipment.model_name_no;
-        lblSerialNo.text =_equipment.serial_no;
-        lblBarcodeNo.text = _equipment.barcode_no;
-        if (_equipment.current_location_parent_name != nil && _equipment.current_location_parent_name.length > 0)
-            lblCurrentLevel.text = _equipment.current_location_parent_name;
-        else
-            lblCurrentLevel.text = @"";
-        lblCurrentLocation.text = _equipment.current_location;
-        
-        if (_equipment.home_location_parent_name != nil && _equipment.home_location_parent_name.length > 0)
-            lblHomeLevel.text = _equipment.home_location_parent_name;
-        else
-            lblHomeLevel.text = @"";
-        lblHomeLocation.text = _equipment.home_location;
-    }
+
+    [self loadData];
     
     // set image
     //[[ServerManager sharedManager] setImageContent:ivEquipment urlString:_equipment.equipment_file_location];
@@ -107,6 +86,32 @@
     else
         ivTracking.hidden = YES;
 
+}
+
+- (void)loadData
+{
+    EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
+    _equipment = [[ModelManager sharedManager] equipmentById:[tabbarController.equipment.equipment_id intValue]];
+    if (_equipment != nil)
+    {
+        self.navigationItem.title = [ModelManager getEquipmentName:_equipment];
+        
+        lblManufacturer.text = _equipment.manufacturer_name;
+        lblModel.text = _equipment.model_name_no;
+        lblSerialNo.text =_equipment.serial_no;
+        lblBarcodeNo.text = _equipment.barcode_no;
+        if (_equipment.current_location_parent_name != nil && _equipment.current_location_parent_name.length > 0)
+            lblCurrentLevel.text = _equipment.current_location_parent_name;
+        else
+            lblCurrentLevel.text = @"";
+        lblCurrentLocation.text = _equipment.current_location;
+        
+        if (_equipment.home_location_parent_name != nil && _equipment.home_location_parent_name.length > 0)
+            lblHomeLevel.text = _equipment.home_location_parent_name;
+        else
+            lblHomeLevel.text = @"";
+        lblHomeLocation.text = _equipment.home_location;
+    }
 }
 
 - (void)didReceiveMemoryWarning
@@ -229,6 +234,20 @@
         ivTracking.hidden = NO;
     else
         ivTracking.hidden = YES;
+}
+
+- (void)onMovementDataChanged:(NSNotification *)note
+{
+    NSLog(@"overview - onmovmentdatachanged");
+    if ([note.object intValue] != [_equipment.equipment_id intValue])
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self loadData];
+        
+        NSLog(@"data - loaded : location name : %@", _equipment.current_location);
+    });
+    
 }
 
 @end

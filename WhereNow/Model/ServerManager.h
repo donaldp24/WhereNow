@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "ServiceErrorCodes.h"
 #import "ResponseParseStrategyProtocol.h"
+#import "Equipment.h"
 
 #define HOST_URL    @"http://dev.scmedical.com.au/"
 #define API_URL     @"http://dev.scmedical.com.au/mobile/index.php/"
@@ -48,7 +49,7 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
  * get generics list
  *
  */
-- (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+//- (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId deviceName:(NSString *)deviceName success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure;
 
@@ -71,6 +72,16 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
  *   request location information with beacons scaned by the phone
  */
 - (void)getCurrLocationV2:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void(^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))success failure:(void (^)(NSString *))failure;
+
+- (void)getCurrLocationWithLocationId:(NSString *)locationId sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void(^)(NSMutableArray *arrayEquipments))success failure:(void (^)(NSString *))failure;
+
+- (void)getMovementsForEquipment:(Equipment *)equipment sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void(^)())success failure:(void (^)(NSString *))failure;
+
+- (void)getLocationsForGeneric:(int)generic_id sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
+
+- (void)getEquipmentsForGeneric:(int)generic_id sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)forgotUsernameWithEmail:(NSString *)email success:(void(^)())success failure:(void (^)(NSString *))failure;
 - (void)forgotPasswordWithEmail:(NSString *)email success:(void(^)())success failure:(void (^)(NSString *))failure;

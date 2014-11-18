@@ -14,6 +14,7 @@
 #import "ResponseParseStrategy.h"
 #import "BackgroundTaskManager.h"
 #import "AdvertisingManager.h"
+#import "ServerManagerHelper.h"
 
 #import "TriggeredAlertsTableViewController.h"
 #import "FoundEquipmentTableViewController.h"
@@ -118,7 +119,7 @@
     // If your application supports background execution, this method is called instead of applicationWillTerminate: when the user quits.
     
     // save contex
-    [[ModelManager sharedManager] saveContext];
+    // [[ModelManager sharedManager] saveContext];
     
     // cancel stick beacon mode
     [[BackgroundTaskManager sharedManager] cancelStickBeaconMode];
@@ -141,12 +142,7 @@
     if ([UserContext sharedUserContext].isLoggedIn)
     {
         // get generics again
-        [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
-            [[NSNotificationCenter defaultCenter] postNotificationName:kDataChanged object:nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
-        } failure: ^(NSString *msg) {
-            NSLog(@"Data request failed : %@", msg);
-        }];
+        [[ServerManagerHelper sharedInstance] getGenerics];
         
         // get device activate state
         [[ServerManager sharedManager] checkDeviceRemoved:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId tokenId:[UserContext sharedUserContext].tokenId success:^(BOOL removed) {
@@ -167,7 +163,7 @@
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     
     // save context
-    [[ModelManager sharedManager] saveContext];
+    // [[ModelManager sharedManager] saveContext];
 }
 
 #pragma mark - APNS
@@ -211,6 +207,7 @@
     }
     
     
+    // alert
     if ([alert_type isEqualToString:kRemoteNotificationTypeAlert])
     {
         // store to local
@@ -248,6 +245,7 @@
     }
     else if ([alert_type isEqualToString:kRemoteNotificationTypeWatch])
     {
+        // watch
         if (application.applicationState == UIApplicationStateActive) {
             
             completionHandler(UIBackgroundFetchResultNewData);
@@ -275,13 +273,74 @@
     }
     else if ([alert_type isEqualToString:kRemoteNotificationLocation])
     {
-        NSObject *obj = [userInfo objectForKey:@"location_name"];
+        // current location changed -----------------
+        /*
+         {
+             "alert_type" = locationtracked;
+             aps =     {
+                alert = "You have entered Delivery, open app to locate device";
+                badge = 1;
+                "content-available" = 1;
+                sound = default;
+             };
+             "location_id" = 73;
+             "location_name" = Delivery;
+         }
+         */
+        NSObject *obj = [userInfo objectForKey:@"location_id"];
         if (obj != nil) {
+            NSString *locationId = (NSString *)obj;
+            
+            obj = [userInfo objectForKey:@"location_name"];
             NSString *locationName = (NSString *)obj;
 
             // changed current location
             [UserContext sharedUserContext].currentLocation = locationName;
+            [UserContext sharedUserContext].currentLocationId = locationId;
+            [AppContext sharedAppContext].locationId = locationId;
+
             [[NSNotificationCenter defaultCenter] postNotificationName:kCurrentLocationChanged object:nil];
+            
+            // rerequest with nearme request
+            NSMutableArray *arrayBeacons = [[BackgroundTaskManager sharedManager] nearmeBeacons];
+            [[BackgroundTaskManager sharedManager] requestLocationInfo:arrayBeacons complete:^() {
+                completionHandler(UIBackgroundFetchResultNewData);
+            }];
+        }
+        else {
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+    }
+    else if ([alert_type isEqualToString:kRemoteNotificationEquipmentTracked])
+    {
+        // equipment moved
+        NSObject *obj = [userInfo objectForKey:@"location_id"];
+        NSString *obj1 = [userInfo objectForKey:@"equipment_id"];
+        if (obj == nil || obj1 == nil || [obj isEqual:[NSNull null]] || [obj1 isEqual:[NSNull null]]) {
+            NSLog(@"ignoring this message");
+            // ignore this message
+            completionHandler(UIBackgroundFetchResultNoData);
+        }
+        else {
+            NSString *locationId = (NSString *)obj;
+            int equipmentId = [(NSNumber *)obj1 intValue];
+            // get equipment
+            Equipment *equipment = [[ModelManager sharedManager] equipmentById:equipmentId];
+            if (equipment == nil) {
+                // ignore this message
+                completionHandler(UIBackgroundFetchResultNoData);
+            }
+            else {
+                // request movements for equipment
+                [[ServerManager sharedManager] getMovementsForEquipment:equipment sessionId:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^{
+                    [[NSNotificationCenter defaultCenter] postNotificationName:kMovementsForEquipmentChanged object:equipment.equipment_id];
+                    completionHandler(UIBackgroundFetchResultNewData);
+                } failure:^(NSString *msg) {
+                    NSLog(@"movements for equipment failed : %@", msg);
+                    completionHandler(UIBackgroundFetchResultFailed);
+                }];
+
+            }
         }
     }
     else

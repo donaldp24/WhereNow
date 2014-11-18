@@ -11,6 +11,7 @@
 @interface AppContext : NSObject
 
 @property (nonatomic, retain) NSString *cleanDeviceToken;
+@property (nonatomic, retain) NSString *locationId;
 
 + (AppContext *)sharedAppContext;
 

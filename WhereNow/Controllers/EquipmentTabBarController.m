@@ -11,6 +11,8 @@
 #import "BackgroundTaskManager.h"
 #import "LocatingManager.h"
 #import "PagingManager.h"
+#import "ServerManager.h"
+#import "UserContext.h"
 
 static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 
@@ -156,6 +158,11 @@ static EquipmentTabBarController *_sharedEquipmentTabBarController = nil;
 - (void)onBack:(id)sender
 {
     [self dismissViewControllerAnimated:YES completion:nil];
+}
+
+- (void)onMovementDataChanged:(NSNotification *)note
+{
+    
 }
 
 @end

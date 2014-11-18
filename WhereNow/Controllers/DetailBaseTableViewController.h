@@ -12,8 +12,10 @@
 
 @interface DetailBaseTableViewController : UITableViewController
 
-@property (nonatomic, retain) id<EquipmentDetailMenuDelegate> delegate;
+@property (nonatomic, weak) id<EquipmentDetailMenuDelegate> delegate;
 
 - (void)didPagedDevice;
+
+- (void)onMovementDataChanged:(NSNotification *)note;
 
 @end

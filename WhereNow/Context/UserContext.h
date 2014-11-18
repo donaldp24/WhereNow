@@ -22,6 +22,7 @@
 @property (nonatomic, strong) NSString *fullName;
 @property (nonatomic, strong) NSString *tokenId;
 @property (nonatomic, strong) NSString *currentLocation;
+@property (nonatomic, strong) NSString *currentLocationId;
 
 + (UserContext *)sharedUserContext;
 
@@ -34,5 +35,6 @@
 - (void)setFullName:(NSString *)fullName;
 - (void)setTokenId:(NSString *)tokenId;
 - (void)setCurrentLocation:(NSString *)currentLocation;
+- (void)setCurrentLocationId:(NSString *)currentLocationId;
 
 @end

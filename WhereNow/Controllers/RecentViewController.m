@@ -28,6 +28,7 @@
 }
 
 @property (nonatomic, weak) IBOutlet SwipeTableView *tableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) NSMutableArray *recentGenericsArray;
 @property (nonatomic, strong) NSMutableArray *recentEquipmentArray;
@@ -109,11 +110,7 @@
 {
     [super viewDidLoad];
     // Do any additional setup after loading the view.
-    
-    // set empty view to footer view
-    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tableView.tableFooterView = v;
-    
+        
     self.tableView.swipeDelegate = self;
     [self.tableView initControls];
     
@@ -134,7 +131,10 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kDataChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kGenericsChanged object:nil];
+    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kEquipmentsForGenericChanged object:nil];
+    
+    [self.indicator stopAnimating];
 }
 
 - (void)didReceiveMemoryWarning
@@ -559,6 +559,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
 {
     dispatch_async(dispatch_get_main_queue(), ^() {
         [self reloadData];
+        [self.indicator stopAnimating];
     });
 }
 
@@ -578,6 +579,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
     _expandingLocationArray = [[NSMutableArray alloc] init];
     
     [self.tableView reloadData];
+    [self.indicator stopAnimating];
 }
 
 #pragma mark - swipetableview swipe delegate

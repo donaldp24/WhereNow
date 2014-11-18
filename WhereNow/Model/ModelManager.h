@@ -78,4 +78,6 @@
 
 - (NSMutableArray *)retrieveLocatingEquipments;
 
++ (NSString *)getEquipmentName:(Equipment *)equipment;
+
 @end

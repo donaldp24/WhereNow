@@ -61,7 +61,7 @@
     self.generic = generic;
     self.cellType = cellType;
     
-    self.lblName.text = [NSString stringWithFormat:@"%@-%@", equipment.manufacturer_name, equipment.model_name_no] ;
+    self.lblName.text = [ModelManager getEquipmentName:equipment];
     
     // location name = parent location name + current location name
     if (![equipment.current_location_parent_name isEqualToString:@""])
@@ -88,6 +88,9 @@
         [self.btnLocate setImage:[UIImage imageNamed:@"nearmeicon"] forState:UIControlStateNormal];
         self.ivTracking.hidden = YES;
     }
+    
+    if (equipment == nil || equipment.current_location == nil || equipment.serial_no == nil)
+        equipment = equipment;
     
     // set image
     //[[ServerManager sharedManager] setImageContent:self.ivImg urlString:equipment.equipment_file_location];

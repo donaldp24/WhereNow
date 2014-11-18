@@ -12,6 +12,7 @@
 #import "ScanManager.h"
 #import "BackgroundTaskManager.h"
 #import "LocatingManager.h"
+#import "ServerManagerHelper.h"
 
 @interface MainTabBarController ()
 
@@ -35,18 +36,16 @@
     
     self.navigationController.navigationBarHidden = YES;
     
-    [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
-        [[NSNotificationCenter defaultCenter] postNotificationName:kDataChanged object:nil];
-        [[NSNotificationCenter defaultCenter] postNotificationName:kLocatingChanged object:nil];
-    } failure: ^(NSString *msg) {
-        NSLog(@"Data request failed : %@", msg);
-    }];
+    // request generics again
+    [[ServerManagerHelper sharedInstance] refreshWholeEquipments];
     
-    if([ScanManager locationServiceEnabled]){
+    
+    // check location service enabled
+    if ([ScanManager locationServiceEnabled]) {
         
         NSLog(@"Location Services Enabled");
         
-        if(![ScanManager permissionEnabled]){
+        if(![ScanManager permissionEnabled]) {
             UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"App Permission Denied"
                                                message:@"To re-enable, please go to Settings and turn on Location Service for this app."
                                               delegate:nil

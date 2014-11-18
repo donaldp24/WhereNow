@@ -31,6 +31,8 @@ static UserContext *_sharedUserContext = nil;
         _isLoggedIn = NO;
         _fullName = @"";
         _tokenId = @"";
+        _currentLocation = @"";
+        _currentLocationId = @"";
         
         [self load];
     }
@@ -77,8 +79,13 @@ static UserContext *_sharedUserContext = nil;
     obj = [userDefaults objectForKey:@"currentlocation"];
     if (obj != nil)
         _currentLocation = (NSString *)obj;
+    
+    obj = [userDefaults objectForKey:@"currentlocationid"];
+    if (obj != nil)
+        _currentLocationId = (NSString *)obj;
 #else
     _currentLocation = @"";
+    _currentLocationId = @"";
 #endif
 }
 
@@ -94,6 +101,7 @@ static UserContext *_sharedUserContext = nil;
     [userDefaults setObject:self.fullName forKey:@"fullname"];
     [userDefaults setObject:self.tokenId forKey:@"tokenid"];
     //[userDefaults setObject:self.currentLocation forKey:@"curentlocation"];
+    //[userDefaults setObject:self.currentLocationId forKey:@"currentlocationid"];
     
     [userDefaults synchronize];
 }
@@ -149,6 +157,11 @@ static UserContext *_sharedUserContext = nil;
 - (void)setCurrentLocation:(NSString *)currentLocation
 {
     _currentLocation = currentLocation;
+}
+
+- (void)setCurrentLocationId:(NSString *)currentLocationId
+{
+    _currentLocationId = currentLocationId;
 }
 
 @end

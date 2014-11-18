@@ -19,7 +19,7 @@
 
 @interface TriggeredAlertsTableViewController : UITableViewController
 
-@property (nonatomic, retain) id<TriggeredAlertsTableViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<TriggeredAlertsTableViewControllerDelegate> delegate;
 
 @end
 

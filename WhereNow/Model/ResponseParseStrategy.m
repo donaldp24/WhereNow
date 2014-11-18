@@ -80,6 +80,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(time_limit, dicMovement, @"time_limit", 0);
             GET_SAFE_STRING(direction, dicMovement, @"direction", @"");
             GET_SAFE_INT(stay_minutes, dicMovement, @"stay_minutes", 0);
+            GET_SAFE_STRING(parent_location_name, dicMovement, @"parent_location_name", @"");
             
             
             EquipMovement *existMovement = nil;
@@ -113,6 +114,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existMovement.stay_minutes = @(stay_minutes);
                 existMovement.time_limit = @(time_limit);
                 existMovement.direction = direction;
+                existMovement.parent_location_name = parent_location_name;
                 
                 
                 [arrayNewMovements addObject:existMovement];
@@ -133,6 +135,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 movement.stay_minutes = @(stay_minutes);
                 movement.time_limit = @(time_limit);
                 movement.direction = direction;
+                movement.parent_location_name = parent_location_name;
                 
                 [arrayNewMovements addObject:movement];
             }
@@ -353,7 +356,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     return YES;
 }
 
-- (BOOL)parseLoations:(NSArray *)arrayLocations withGeneric:(Generic *)generic
+- (BOOL)parseLocations:(NSArray *)arrayLocations withGeneric:(Generic *)generic
 {
     @autoreleasepool {
         NSArray *arrayExistLocations = nil;
@@ -420,6 +423,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_INT(major, dicLocation, @"Major", 0);
             GET_SAFE_INT(minor, dicLocation, @"Minor", 0);
             GET_SAFE_STRING(status_message, dicLocation, @"status_message", @"");
+            GET_SAFE_INT(ble_parent_location_id, dicLocation, @"ble_parent_location_id", 0);
+            GET_SAFE_STRING(parent_location_name, dicLocation, @"parent_location_name", @"");
 
             
             NSMutableArray *arrayHierarchy = [dicLocation objectForKey:@"location_hierarchy"];
@@ -458,6 +463,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existLocation.uuid = uuid;
                 existLocation.major = @(major);
                 existLocation.minor = @(minor);
+                existLocation.ble_parent_location_id = @(ble_parent_location_id);
+                existLocation.parent_location_name = parent_location_name;
                 
                 [arrayNewLocations addObject:existLocation];
                 
@@ -480,6 +487,8 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 location.uuid = uuid;
                 location.major = @(major);
                 location.minor = @(minor);
+                location.ble_parent_location_id = @(ble_parent_location_id);
+                location.parent_location_name = parent_location_name;
                 
                 [arrayNewLocations addObject:location];
                 
@@ -582,10 +591,13 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
             GET_SAFE_STRING(barcode_no, dicEquipment, @"barcode_no", @"");
             GET_SAFE_INT(current_location_id, dicEquipment, @"current_location_id", 0);
             GET_SAFE_STRING(current_location, dicEquipment, @"current_location", @"");
-            GET_SAFE_STRING(manufacurer_name, dicEquipment, @"manufacturer_name", @"");
+            GET_SAFE_STRING(manufacturer_name, dicEquipment, @"manufacturer_name", @"");
             GET_SAFE_STRING(model_name_no, dicEquipment, @"model_name_no", @"");
             GET_SAFE_INT(home_location_id, dicEquipment, @"home_location_id", 0);
             GET_SAFE_STRING(home_location, dicEquipment, @"home_location", @"");
+            
+            if (equipment_id == 12838)
+                equipment_id = equipment_id;
 
             
             NSArray *movement_array = [dicEquipment objectForKey:@"movement_array"];
@@ -658,7 +670,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 existEquipment.barcode_no = barcode_no;
                 existEquipment.current_location_id = [NSNumber numberWithInt:current_location_id];
                 existEquipment.current_location = current_location;
-                existEquipment.manufacturer_name = manufacurer_name;
+                existEquipment.manufacturer_name = manufacturer_name;
                 existEquipment.model_name_no = model_name_no;
                 existEquipment.home_location_id = [NSNumber numberWithInt:home_location_id];
                 existEquipment.home_location = home_location;
@@ -705,12 +717,17 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
 
                 
                 [arrayNewEquipments addObject:existEquipment];
-                
-                [self parseMovements:movement_array withEquipment:existEquipment];
+#if 0
+                if (movement_array)
+                    [self parseMovements:movement_array withEquipment:existEquipment];
+#endif
                 
                 [self parseAlertsWithCurrentAlerts:current_alert timeAlerts:time_alert entryAlerts:entry_alert exitAlerts:exit_alert withEquipment:existEquipment];
                 
-                [self parseMovementCount:movement_count withEquipment:existEquipment];
+#if 0
+                if (movement_count)
+                    [self parseMovementCount:movement_count withEquipment:existEquipment];
+#endif
             }
             else
             {
@@ -724,7 +741,7 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 equipment.barcode_no = barcode_no;
                 equipment.current_location_id = [NSNumber numberWithInt:current_location_id];
                 equipment.current_location = current_location;
-                equipment.manufacturer_name = manufacurer_name;
+                equipment.manufacturer_name = manufacturer_name;
                 equipment.model_name_no = model_name_no;
                 equipment.home_location_id = [NSNumber numberWithInt:home_location_id];
                 equipment.home_location = home_location;
@@ -767,14 +784,19 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 
                 [arrayNewEquipments addObject:equipment];
                 
+#if 0
                 if (movement_array)
                     [self parseMovements:movement_array withEquipment:existEquipment];
                 else
                     [self parseMovements:[[NSMutableArray alloc] init] withEquipment:existEquipment];
+#endif
                 
                 [self parseAlertsWithCurrentAlerts:current_alert timeAlerts:time_alert entryAlerts:entry_alert exitAlerts:exit_alert withEquipment:equipment];
-                
-                [self parseMovementCount:movement_count withEquipment:equipment];
+      
+#if 0
+                if (movement_count)
+                    [self parseMovementCount:movement_count withEquipment:equipment];
+#endif
             }
         }
         
@@ -861,121 +883,36 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
                 [arrayNewGenerics addObject:newGeneric];
             }
 
-            
+#if 0
             NSArray *locationArray = (NSArray *)[dicGeneric objectForKey:@"location_array"];
             NSArray *equipmentArray = (NSArray *)[dicGeneric objectForKey:@"equipment_array"];
 
             // locations for generic
             if (locationArray)
-                [self parseLoations:locationArray withGeneric:existGeneric];
+                [self parseLocations:locationArray withGeneric:existGeneric];
             else
-                [self parseLoations:[[NSMutableArray alloc] init] withGeneric:existGeneric];
+                [self parseLocations:[[NSMutableArray alloc] init] withGeneric:existGeneric];
            
             // equipments for generic
             if (equipmentArray)
                 [self parseEquipments:equipmentArray withGeneric:existGeneric];
             else
                 [self parseEquipments:[[NSMutableArray alloc] init] withGeneric:existGeneric];
+#endif
+            
+        } // end for
+        
+        // delete objects
+        for (Generic *existGeneric in arrayExistGenerics) {
+            if (![arrayNewGenerics containsObject:existGeneric])
+            {
+                [[ModelManager sharedManager].managedObjectContext deleteObject:existGeneric];
+            }
         }
     }
     
     [[ModelManager sharedManager] saveContext];
     
-    return bRet;
-}
-
-- (BOOL)parseEquipmentResponse:(NSDictionary *)dicResult
-{
-    BOOL bRet = YES;
-    @autoreleasepool {
-        // parse dic result
-        NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:NO];
-        NSMutableArray *arrayNewEquipments = [[NSMutableArray alloc] init];
-        
-        NSArray *arrayResult = (NSArray *)dicResult;
-        for (NSDictionary *dicEquipment in arrayResult) {
-            /*
-             [generic_id] => 323
-             [generic_name] => PC UNIT
-             [equipment_id] => 2696
-             [serial_no] => 12858495
-             [barcode_no] => 232I56
-             [manufacturer_name] => HEALTHSTREAM
-             [model_name_no] => 8015 SERIES
-             [model_id] => 1378
-             */
-            GET_SAFE_INT(generic_id, dicEquipment, @"generic_id", 0);
-            GET_SAFE_STRING(generic_name, dicEquipment, @"generic_name", @"");
-            GET_SAFE_INT(equipment_id, dicEquipment, @"equipment_id", 0);
-            GET_SAFE_STRING(serial_no, dicEquipment, @"serial_no", @"");
-            GET_SAFE_STRING(barcode_no, dicEquipment, @"barcode_no", @"");
-            GET_SAFE_STRING(manufacturer_name, dicEquipment, @"manufacturer_name", @"");
-            GET_SAFE_STRING(model_name_no, dicEquipment, @"model_name_no", @"");
-            GET_SAFE_STRING(model_id, dicEquipment, @"model_id", @"");
-            
-            // is exist
-            Equipment *existEquipment = nil;
-            for (Equipment *equipment in arrayExistEquipments) {
-                if ([equipment.equipment_id intValue] == equipment_id)
-                {
-                    existEquipment = equipment;
-                    break;
-                }
-            }
-            
-            if (existEquipment)
-            {
-                existEquipment.generic_id = @(generic_id);
-                existEquipment.generic_name = generic_name;
-                existEquipment.equipment_id = @(equipment_id);
-                existEquipment.serial_no = serial_no;
-                existEquipment.barcode_no = barcode_no;
-                existEquipment.manufacturer_name = manufacturer_name;
-                existEquipment.model_name_no = model_name_no;
-                existEquipment.model_id = model_id;
-                
-                [arrayNewEquipments addObject:existEquipment];
-            }
-            else
-            {
-                Equipment *equipment = [NSEntityDescription
-                                        insertNewObjectForEntityForName:@"Equipment"
-                                        inManagedObjectContext:[ModelManager sharedManager].managedObjectContext];
-                equipment.generic_id = @(generic_id);
-                equipment.generic_name = generic_name;
-                equipment.equipment_id = @(equipment_id);
-                equipment.serial_no = serial_no;
-                equipment.barcode_no = barcode_no;
-                equipment.manufacturer_name = manufacturer_name;
-                equipment.model_name_no = model_name_no;
-                equipment.model_id = model_id;
-                
-                equipment.current_location_id = @(0);
-                equipment.current_location = @"";
-                equipment.home_location_id = @(0);
-                equipment.home_location = @"";
-                
-                equipment.has_beacon = @(NO);
-                
-                equipment.equipment_file_location = @"";
-                equipment.model_file_location = @"";
-                equipment.equipment_file_location_local = @"";
-                equipment.model_file_location_local = @"";
-                
-                [arrayNewEquipments addObject:equipment];
-            }
-        }
-        
-        
-        // if there is equipment in old array but in new array, delete object in old array
-        for (Equipment *existEquipment in arrayExistEquipments) {
-            if (![arrayNewEquipments containsObject:existEquipment])
-            {
-                // delete object
-                [[ModelManager sharedManager].managedObjectContext deleteObject:existEquipment];
-            }
-        }
-    }
     return bRet;
 }
 
@@ -1030,6 +967,162 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     complete(arrayGenerics, arrayVicinityEquipments, arrayLocationEquipments);
     return YES;
 }
+
+- (BOOL)parseCurrentLocationEquipmentsResponse:(NSDictionary *)dicResult complete:(void (^)(NSMutableArray *))complete failure:(void (^)())failure
+{
+    NSMutableArray *arrayGenerics = [[NSMutableArray alloc] init];
+    NSMutableArray *arrayLocationEquipments = [[NSMutableArray alloc] init];
+    
+    NSMutableArray *arrayExistGenerics = [[ModelManager sharedManager] retrieveGenerics];
+    NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+    
+    NSArray *arrayResult = (NSArray *)dicResult;
+    for (NSDictionary *dicGeneric in arrayResult) {
+        int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
+        
+        Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
+        if (generic == nil)
+            continue;
+        
+        
+        NSArray *arrayLocations = [dicGeneric objectForKey:@"equipment_array"];
+        if (arrayLocations != nil)
+        {
+            for (NSDictionary *dicLocation in arrayLocations) {
+                int equipment_id = [[dicLocation objectForKey:@"equipment_id"] intValue];
+                Equipment *equipment = [self equipmentWithEquipmentId:equipment_id equipments:arrayExistEquipments];
+                if (equipment == nil)
+                    continue;
+                
+                if (![arrayLocationEquipments containsObject:equipment])
+                    [arrayLocationEquipments addObject:equipment];
+                    
+                if (![arrayGenerics containsObject:generic])
+                    [arrayGenerics addObject:generic];
+                
+            }
+        }
+    }
+    
+    complete(arrayLocationEquipments);
+    return YES;
+}
+
+- (BOOL)parseMovementDetailResponse:(NSDictionary *)dicResult
+{
+    if (dicResult == nil)
+        return NO;
+    
+    BOOL bRet = YES;
+    
+    NSMutableArray *arrayExistGenerics = [[ModelManager sharedManager] retrieveGenerics];
+    NSMutableArray *arrayExistEquipments = [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+    
+    NSArray *arrayResult = (NSArray *)dicResult;
+    for (NSDictionary *dicGeneric in arrayResult) {
+        int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
+        Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
+        if (generic == nil)
+            continue;
+        
+        NSArray *arrayEquipments = [dicGeneric objectForKey:@"equipment_array"];
+        if (arrayEquipments != nil) {
+            for (NSDictionary *dicEquipment in arrayEquipments) {
+                int equipment_id = [[dicEquipment objectForKey:@"equipment_id"] intValue];
+                Equipment *equipment = [self equipmentWithEquipmentId:equipment_id equipments:arrayExistEquipments];
+                if (equipment == nil)
+                    continue;
+                
+                GET_SAFE_INT(current_location_id, dicEquipment, @"current_location_id", 0);
+                GET_SAFE_STRING(current_location, dicEquipment, @"current_location", @"");
+                GET_SAFE_INT(current_location_parent_id, dicEquipment, @"current_location_parent_id", 0);
+                GET_SAFE_STRING(current_location_parent_name, dicEquipment, @"current_location_parent_name", @"");
+                equipment.current_location_id = @(current_location_id);
+                equipment.current_location = current_location;
+                equipment.current_location_parent_id = @(current_location_parent_id);
+                equipment.current_location_parent_name = current_location_parent_name;
+                
+                
+                NSArray *movementArray = [dicEquipment objectForKey:@"movement_array"];
+                if (movementArray == nil)
+                    movementArray = movementArray;
+                
+                if (![self parseMovements:movementArray withEquipment:equipment]) {
+                    bRet = NO;
+                    break;
+                }
+                
+                NSArray *movementCount = [dicEquipment objectForKey:@"movement_count"];
+                if (![self parseMovementCount:movementCount withEquipment:equipment]) {
+                    bRet = NO;
+                    break;
+                }
+            }
+            if (bRet == NO)
+                break;
+        }
+    }
+    [[ModelManager sharedManager] saveContext];
+    return bRet;
+}
+
+- (BOOL)parseGenericDetailResponse:(NSDictionary *)dicResult
+{
+    return [self parseGenericResponse:dicResult];
+}
+
+- (BOOL)parseEquipmentDetailResponse:(NSDictionary *)dicResult
+{
+    if (dicResult == nil)
+        return NO;
+    
+    BOOL bRet = YES;
+    
+    NSMutableArray *arrayExistGenerics = [[ModelManager sharedManager] retrieveGenerics];
+    
+    NSArray *arrayResult = (NSArray *)dicResult;
+    for (NSDictionary *dicGeneric in arrayResult) {
+        int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
+        if (generic_id == 240)
+            generic_id = generic_id;
+        Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
+        if (generic == nil)
+            continue;
+        NSArray *arrayEquipments = [dicGeneric objectForKey:@"equipment_array"];
+        if (![self parseEquipments:arrayEquipments withGeneric:generic]) {
+            bRet = NO;
+            break;
+        }
+    }
+    [[ModelManager sharedManager] saveContext];
+    return bRet;
+}
+
+- (BOOL)parseLocationDetailResponse:(NSDictionary *)dicResult {
+    if (dicResult == nil)
+        return NO;
+    
+    BOOL bRet = YES;
+    
+    NSMutableArray *arrayExistGenerics = [[ModelManager sharedManager] retrieveGenerics];
+    
+    NSArray *arrayResult = (NSArray *)dicResult;
+    for (NSDictionary *dicGeneric in arrayResult) {
+        int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
+        Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
+        if (generic == nil)
+            continue;
+        NSArray *arrayLocations = [dicGeneric objectForKey:@"location_array"];
+        if (![self parseLocations:arrayLocations withGeneric:generic]) {
+            bRet = NO;
+            break;
+        }
+    }
+    [[ModelManager sharedManager] saveContext];
+    return bRet;
+}
+
+
 
 - (Generic *)genericWithGenericId:(int)generic_id generics:(NSMutableArray *)arrayGenerics
 {

@@ -22,7 +22,7 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
 
 @required
 // called when not same beacons found
-- (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons;
+- (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons hasNewBeacon:(BOOL)hasNewBeacon;
 
 // called in beacon ranging callback
 - (void)didBeaconsFound:(NSMutableArray *)arrayBeacons;
@@ -34,7 +34,7 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
 /**
  * 
  */
-@property (nonatomic, strong) id<ScanManagerDelegate> delegate;
+@property (nonatomic, weak) id<ScanManagerDelegate> delegate;
 @property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;

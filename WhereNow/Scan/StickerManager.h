@@ -23,7 +23,7 @@
 
 @property (nonatomic, retain) LeDeviceManager *manager;
 @property (nonatomic, retain) NSMutableArray *arrayStickers;
-@property (nonatomic, retain) id<StickerManagerDelegate> delegate;
+@property (nonatomic, weak) id<StickerManagerDelegate> delegate;
 
 + (StickerManager *)sharedManager;
 - (void)startDiscover;

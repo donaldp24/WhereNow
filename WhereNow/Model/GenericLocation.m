@@ -2,7 +2,7 @@
 //  GenericLocation.m
 //  WhereNow
 //
-//  Created by Xiaoxue Han on 10/09/14.
+//  Created by Xiaoxue Han on 14/11/14.
 //  Copyright (c) 2014 nicholas. All rights reserved.
 //
 
@@ -19,9 +19,11 @@
 @dynamic major;
 @dynamic minimum_level;
 @dynamic minor;
-@dynamic status_message;
 @dynamic optimal_level;
+@dynamic status_message;
 @dynamic uuid;
 @dynamic warning_level;
+@dynamic ble_parent_location_id;
+@dynamic parent_location_name;
 
 @end

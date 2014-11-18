@@ -206,6 +206,11 @@ enum  {
         if (![[UserContext sharedUserContext].userName isEqualToString:@""])
             self.usernameTextField.text = [UserContext sharedUserContext].userName;
     }
+    
+#ifdef DEBUG
+    self.usernameTextField.text = @"testuser50";
+    self.passwordTextField.text = @"testuser1!";
+#endif
 
 }
 

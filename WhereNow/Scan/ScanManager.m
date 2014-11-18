@@ -159,10 +159,27 @@
 {
     // compare previous vicinity beacons
     BOOL isEqual =  YES;
+    BOOL hasNewBeacon = NO;
     if (self.prevScannedBeacons.count != self.currScannedBeacons.count)
     {
         // not equal
         isEqual = NO;
+        
+        // check has new beacon
+        for (ScannedBeacon *currScannedBeacon in self.currScannedBeacons) {
+            BOOL isExist = NO;
+            for (ScannedBeacon *scannedBeacon in self.prevScannedBeacons) {
+                if ([currScannedBeacon.beacon.major intValue] == [scannedBeacon.beacon.major intValue]
+                    && [currScannedBeacon.beacon.minor intValue] == [scannedBeacon.beacon.minor intValue])
+                {
+                    isExist = YES;
+                }
+            }
+            if (!isExist) {
+                hasNewBeacon = YES;
+                break;
+            }
+        }
     }
     else
     {
@@ -180,6 +197,7 @@
             if (isExist == NO)
             {
                 isEqual = NO;
+                hasNewBeacon = YES;
                 break;
             }
         }
@@ -193,13 +211,13 @@
         self.currScannedBeacons = [[NSMutableArray alloc] init];
         
         // delegates
-        if (self.delegate && [self.delegate respondsToSelector:@selector(didVicinityBeaconsFound:)])
+        if (self.delegate && [self.delegate respondsToSelector:@selector(didVicinityBeaconsFound:hasNewBeacon:)])
         {
             NSMutableArray *arrayBeacons = [[NSMutableArray alloc] init];
             for (ScannedBeacon *scannedBeacon in self.prevScannedBeacons) {
                 [arrayBeacons addObject:scannedBeacon.beacon];
             }
-            [self.delegate didVicinityBeaconsFound:arrayBeacons];
+            [self.delegate didVicinityBeaconsFound:arrayBeacons hasNewBeacon:hasNewBeacon];
         }
     }
     else
@@ -337,76 +355,95 @@
     }
     else if (self.scanMode == ScanModeNearme)
     {
-        //[self.queue addOperationWithBlock:^() {
-            long currTime = [self getCurrentMilliTime];
+        long currTime = [self getCurrentMilliTime];
+        
+        // remove timed out beacons --------------------
+        NSMutableArray *removeBeacons = [[NSMutableArray alloc] init];
+        for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {
+            if (currTime - scannedBeacon.lastScannedTime > kScanTimout * 1000)
+            {
+                [removeBeacons addObject:scannedBeacon];
+            }
+        }
+        
+        for (ScannedBeacon *scannedBeacon in removeBeacons) {
+            [self.currScannedBeacons removeObject:scannedBeacon];
+        }
+    
+    
+        // compare two arrays
+        BOOL isEqual = YES;
+        BOOL hasNewBeacon = NO;
+        
+        if (self.prevScannedBeacons.count != self.currScannedBeacons.count)
+        {
+            isEqual = NO;
             
-            // remove timed out beacons --------------------
-            NSMutableArray *removeBeacons = [[NSMutableArray alloc] init];
-            for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {
-                if (currTime - scannedBeacon.lastScannedTime > kScanTimout * 1000)
-                {
-                    [removeBeacons addObject:scannedBeacon];
+            // check has new beacon
+            for (ScannedBeacon *currScannedBeacon in self.currScannedBeacons) {
+                BOOL isExist = NO;
+                for (ScannedBeacon *scannedBeacon in self.prevScannedBeacons) {
+                    if ([currScannedBeacon.beacon.major intValue] == [scannedBeacon.beacon.major intValue]
+                        && [currScannedBeacon.beacon.minor intValue] == [scannedBeacon.beacon.minor intValue])
+                    {
+                        isExist = YES;
+                    }
+                }
+                if (!isExist) {
+                    hasNewBeacon = YES;
+                    break;
                 }
             }
-            
-            for (ScannedBeacon *scannedBeacon in removeBeacons) {
-                [self.currScannedBeacons removeObject:scannedBeacon];
-            }
-            
-            // compare two arrays
-            BOOL isEqual = YES;
-            if (self.prevScannedBeacons.count != self.currScannedBeacons.count)
-            {
-                isEqual = NO;
-            }
-            else
-            {
-                for (ScannedBeacon *scannedBeacon in self.prevScannedBeacons) {
-                    BOOL isExist = NO;
-                    for (ScannedBeacon *currScannedBeacon in self.currScannedBeacons) {
-                        if ([currScannedBeacon.beacon.major intValue] == [scannedBeacon.beacon.major intValue]
-                            && [currScannedBeacon.beacon.minor intValue] == [scannedBeacon.beacon.minor intValue])
-                        {
-                            isExist = YES;
-                            break;
-                        }
-                    }
-                    
-                    if (isExist == NO)
+
+        }
+        else
+        {
+            for (ScannedBeacon *scannedBeacon in self.prevScannedBeacons) {
+                BOOL isExist = NO;
+                for (ScannedBeacon *currScannedBeacon in self.currScannedBeacons) {
+                    if ([currScannedBeacon.beacon.major intValue] == [scannedBeacon.beacon.major intValue]
+                        && [currScannedBeacon.beacon.minor intValue] == [scannedBeacon.beacon.minor intValue])
                     {
-                        isEqual = NO;
+                        isExist = YES;
                         break;
                     }
                 }
+                
+                if (isExist == NO)
+                {
+                    isEqual = NO;
+                    hasNewBeacon = YES;
+                    break;
+                }
+            }
+        }
+        
+        if (!isEqual)
+        {
+            self.prevScannedBeacons = [self.currScannedBeacons copy];
+            NSMutableArray *vicinityBeacons = [[NSMutableArray alloc] init];
+            for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {
+                [vicinityBeacons addObject:scannedBeacon.beacon];
             }
             
-            if (!isEqual)
+            //if (self.delegate && currTime - lastDelegateTime > 10 * 1000)
             {
-                self.prevScannedBeacons = [self.currScannedBeacons copy];
-                NSMutableArray *vicinityBeacons = [[NSMutableArray alloc] init];
+                [self.delegate didVicinityBeaconsFound:vicinityBeacons hasNewBeacon:hasNewBeacon];
+                lastDelegateTime = [self getCurrentMilliTime];
+            }
+        }
+        else
+        {
+            if (self.delegate && currTime - lastDelegateTime > 10 * 1000)
+            {
+                NSMutableArray *arrayBeacons = [[NSMutableArray alloc] init];
                 for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {
-                    [vicinityBeacons addObject:scannedBeacon.beacon];
+                    [arrayBeacons addObject:scannedBeacon.beacon];
                 }
-                
-                //if (self.delegate && currTime - lastDelegateTime > 10 * 1000)
-                {
-                    [self.delegate didVicinityBeaconsFound:vicinityBeacons];
-                    lastDelegateTime = [self getCurrentMilliTime];
-                }
+                [self.delegate didBeaconsFound:arrayBeacons];
+                lastDelegateTime = [self getCurrentMilliTime];
             }
-            else
-            {
-                if (self.delegate && currTime - lastDelegateTime > 10 * 1000)
-                {
-                    NSMutableArray *arrayBeacons = [[NSMutableArray alloc] init];
-                    for (ScannedBeacon *scannedBeacon in self.currScannedBeacons) {
-                        [arrayBeacons addObject:scannedBeacon.beacon];
-                    }
-                    [self.delegate didBeaconsFound:arrayBeacons];
-                    lastDelegateTime = [self getCurrentMilliTime];
-                }
-            }
-        //}];
+        }
     }
 
 }

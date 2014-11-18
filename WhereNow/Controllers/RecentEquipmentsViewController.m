@@ -11,6 +11,7 @@
 #import "EquipmentTabBarController.h"
 #import "UIManager.h"
 #import "CommonEquipmentTableViewCell.h"
+#import "ServerManagerHelper.h"
 
 @interface RecentEquipmentsViewController () {
     UITableViewCell *editingCell;
@@ -19,7 +20,8 @@
     UIBarButtonItem *_backButton;
 }
 
-@property (nonatomic, strong) IBOutlet SwipeTableView *tableView;
+@property (nonatomic, weak) IBOutlet SwipeTableView *tableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) NSMutableArray *arrayEquipments;
 
@@ -53,10 +55,6 @@
     _backButton = [[UIBarButtonItem alloc] initWithImage:[UIImage imageNamed:@"backicon"] style:UIBarButtonItemStylePlain target:self action:@selector(onBack:)];
     self.navigationItem.leftBarButtonItem = _backButton;
     
-    // set empty view to footer view
-    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tableView.tableFooterView = v;
-    
     self.tableView.swipeDelegate = self;
     [self.tableView initControls];
     
@@ -67,6 +65,10 @@
     }
     
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onEquipmentsChanged:) name:kEquipmentsForGenericChanged object:nil];
+    
+    [[ServerManagerHelper sharedInstance] getEquipmentsForGeneric:self.generic];
 
 }
 
@@ -237,6 +239,21 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
 - (void)onSwipeLeft:(UITableView *)tableView indexPath:(NSIndexPath *)indexPath
 {
     //
+}
+
+- (void)onEquipmentsChanged:(NSNotification *)note {
+    
+    NSNumber *generic_id = (NSNumber *)note.object;
+    if (generic_id == nil)
+        return;
+    if (generic_id.intValue != self.generic.generic_id.intValue)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self.tableView reloadData];
+        
+        [self.indicator stopAnimating];
+    });
 }
 
 

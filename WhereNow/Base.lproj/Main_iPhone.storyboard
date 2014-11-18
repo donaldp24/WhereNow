@@ -38,6 +38,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="92" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="vuB-AE-BDw" customClass="SwipeTableView">
                                 <rect key="frame" x="0.0" y="113" width="320" height="406"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="2ga-h3-PTE">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="JPa-sg-Wgc">
+                                            <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="locationcell" rowHeight="64" id="bUi-L0-iD6" customClass="LocationTableViewCell">
                                         <rect key="frame" x="0.0" y="22" width="320" height="64"/>
@@ -91,6 +101,7 @@
                     </view>
                     <navigationItem key="navigationItem" title="Favourites" id="DGL-Py-bP2"/>
                     <connections>
+                        <outlet property="indicator" destination="JPa-sg-Wgc" id="Gm2-ih-wMx"/>
                         <outlet property="segment" destination="aZ7-Bm-BQH" id="psH-l5-hah"/>
                         <outlet property="tableView" destination="vuB-AE-BDw" id="idb-cn-LWF"/>
                     </connections>
@@ -169,6 +180,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="92" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="yTu-dN-bQg" customClass="SwipeTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="01z-RE-djm">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="CUI-Pa-icl">
+                                            <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="locationcell" rowHeight="64" id="3y0-kT-rkY" customClass="RecentLocationTableViewCell">
                                         <rect key="frame" x="0.0" y="86" width="320" height="64"/>
@@ -221,6 +242,7 @@
                     <tabBarItem key="tabBarItem" systemItem="recents" id="9Rb-w1-1Qf"/>
                     <navigationItem key="navigationItem" title="Recents" id="SNe-IA-tzv"/>
                     <connections>
+                        <outlet property="indicator" destination="CUI-Pa-icl" id="BPR-5B-qoW"/>
                         <outlet property="tableView" destination="yTu-dN-bQg" id="HXC-kV-NmJ"/>
                         <segue destination="1np-R5-QtC" kind="push" identifier="toEquipments" id="9uu-yt-GAO"/>
                     </connections>
@@ -244,6 +266,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="100" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="cec-ap-RGf" customClass="SwipeTableView">
                                 <rect key="frame" x="0.0" y="0.0" width="320" height="519"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="bpn-hI-HlU">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Tc4-Qf-jtf">
+                                            <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <connections>
                                     <outlet property="dataSource" destination="1np-R5-QtC" id="R8d-15-Wq2"/>
                                     <outlet property="delegate" destination="1np-R5-QtC" id="XDx-iG-hwk"/>
@@ -260,6 +292,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="SnJ-fS-Nhv"/>
                     <connections>
+                        <outlet property="indicator" destination="Tc4-Qf-jtf" id="BWo-yt-aWs"/>
                         <outlet property="tableView" destination="cec-ap-RGf" id="6BW-JY-XYZ"/>
                     </connections>
                 </viewController>
@@ -337,6 +370,16 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="92" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="0vo-EP-PZf" customClass="SwipeTableView">
                                 <rect key="frame" x="0.0" y="113" width="320" height="404"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="NDs-1c-sSR">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="dPT-DX-btw">
+                                            <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="locationcell" rowHeight="64" id="1Hx-dz-6LL" customClass="SearchLocationTableViewCell">
                                         <rect key="frame" x="0.0" y="22" width="320" height="64"/>
@@ -391,6 +434,7 @@
                     </view>
                     <navigationItem key="navigationItem" id="UTh-D0-LCN"/>
                     <connections>
+                        <outlet property="indicator" destination="dPT-DX-btw" id="U65-qB-RNS"/>
                         <outlet property="segment" destination="wGH-1N-Aav" id="Zhe-cw-kC1"/>
                         <outlet property="tableView" destination="0vo-EP-PZf" id="COG-qI-UJY"/>
                     </connections>
@@ -423,6 +467,16 @@
                                 </imageView>
                             </subviews>
                             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        </view>
+                        <view key="tableFooterView" contentMode="scaleToFill" id="Tri-nw-e3B">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                            <subviews>
+                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" hidesWhenStopped="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="Hnq-en-Nh6">
+                                    <rect key="frame" x="150" y="12" width="20" height="20"/>
+                                </activityIndicatorView>
+                            </subviews>
+                            <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         </view>
                         <prototypes>
                             <tableViewCell contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="movementscell" rowHeight="71" id="SN1-xB-sOo">
@@ -532,6 +586,7 @@
                     </tableView>
                     <navigationItem key="navigationItem" title="History" id="6MO-se-grP"/>
                     <connections>
+                        <outlet property="indicator" destination="Hnq-en-Nh6" id="f25-HT-dMv"/>
                         <outlet property="ivImg1" destination="7g7-qd-PJw" id="5Dd-Tp-7dG"/>
                         <outlet property="ivImg2" destination="0Mt-Sh-SIK" id="dMK-hh-Z8d"/>
                         <outlet property="tableView" destination="U3u-qG-bsJ" id="q7A-MN-HCn"/>
@@ -1119,6 +1174,11 @@
                             <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="92" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="1Bt-G3-omC" customClass="SwipeTableView">
                                 <rect key="frame" x="0.0" y="64" width="320" height="455"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="Agm-Hd-A4d">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <connections>
                                     <outlet property="dataSource" destination="ELa-ux-TUO" id="Ai1-Cp-ln8"/>
                                     <outlet property="delegate" destination="ELa-ux-TUO" id="3nS-wk-8rR"/>
@@ -1267,7 +1327,7 @@
                                     <subviews>
                                         <button opaque="NO" tag="101" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GOg-jV-Un3">
                                             <rect key="frame" x="251" y="-1" width="69" height="47"/>
-                                            <state key="normal" image="icon_remove">
+                                            <state key="normal" image="trashicon">
                                                 <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                             </state>
                                             <connections>
@@ -1310,7 +1370,6 @@
         <image name="background" width="320" height="480"/>
         <image name="favoriteicon" width="30" height="30"/>
         <image name="historyicon" width="30" height="30"/>
-        <image name="icon_remove" width="32" height="32"/>
         <image name="logouticon" width="30" height="30"/>
         <image name="movepercent10" width="32" height="32"/>
         <image name="movepercent4" width="32" height="32"/>
@@ -1323,6 +1382,7 @@
         <image name="nearmeicon_halflocated" width="30" height="30"/>
         <image name="overviewicon" width="30" height="30"/>
         <image name="searchicon" width="30" height="30"/>
+        <image name="trashicon" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar"/>

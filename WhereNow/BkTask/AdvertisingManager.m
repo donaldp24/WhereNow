@@ -9,6 +9,8 @@
 #import "AdvertisingManager.h"
 #import <CoreBluetooth/CoreBluetooth.h>
 
+#define ADVERTISING     0
+
 static AdvertisingManager *_sharedAdvertisingManager = nil;
 
 @interface AdvertisingManager() <CBPeripheralManagerDelegate>
@@ -40,7 +42,9 @@ static AdvertisingManager *_sharedAdvertisingManager = nil;
 - (id)init
 {
     self = [super init];
+#if ADVERTISING
     [self initBluetooth];
+#endif
     return self;
 }
 
@@ -65,14 +69,18 @@ static AdvertisingManager *_sharedAdvertisingManager = nil;
 
 - (void)start
 {
+#if ADVERTISING
     isStopped = NO;
     [self startAdvertising];
+#endif
 }
 
 - (void)stop
 {
+#if ADVERTISING
     isStopped = YES;
     [self.peripheralManager stopAdvertising];
+#endif
 }
 
 - (void)startAdvertising
@@ -111,7 +119,9 @@ static AdvertisingManager *_sharedAdvertisingManager = nil;
 }
 
 - (void)peripheralManagerDidUpdateState:(CBPeripheralManager *)peripheral {
+#if ADVERTISING
     [self startAdvertising];
+#endif
 }
 
 - (void)peripheralManagerDidStartAdvertising:(CBPeripheralManager *)peripheral error:(NSError *)error

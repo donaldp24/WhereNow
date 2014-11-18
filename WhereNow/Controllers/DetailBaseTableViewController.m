@@ -39,6 +39,8 @@
     self.rightGesture.direction = UISwipeGestureRecognizerDirectionRight;
     self.rightGesture.delegate = self;
     [self.tableView addGestureRecognizer:self.rightGesture];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onMovementDataChanged:) name:kMovementsForEquipmentChanged object:nil];
 }
 
 - (void)didReceiveMemoryWarning
@@ -61,6 +63,11 @@
 - (void)didPagedDevice
 {
     //
+}
+
+- (void)onMovementDataChanged:(NSNotification *)note
+{
+    
 }
 
 @end

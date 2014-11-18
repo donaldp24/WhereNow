@@ -20,6 +20,6 @@
 @interface DeviceCell : UITableViewCell
 
 @property (nonatomic, retain) NSDictionary *deviceInfo;
-@property (nonatomic, retain) id<DeviceCellDelegate> delegate;
+@property (nonatomic, weak) id<DeviceCellDelegate> delegate;
 
 @end

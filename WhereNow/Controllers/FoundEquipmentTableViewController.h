@@ -20,6 +20,6 @@
 @interface FoundEquipmentTableViewController : UITableViewController
 
 @property (nonatomic, retain) NSMutableArray *arrayEquipments;
-@property (nonatomic, retain) id<FoundEquipmentTableViewControllerDelegate> delegate;
+@property (nonatomic, weak) id<FoundEquipmentTableViewControllerDelegate> delegate;
 
 @end

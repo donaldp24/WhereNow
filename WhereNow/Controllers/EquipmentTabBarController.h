@@ -23,7 +23,7 @@ UITabBarControllerDelegate,
 EquipmentDetailMenuDelegate
 >
 
-@property (nonatomic, strong) Equipment *equipment;
+@property (nonatomic, retain) Equipment *equipment;
 
 + (EquipmentTabBarController *)sharedInstance;
 

@@ -12,6 +12,7 @@
 #import "ModelManager.h"
 #import "ServerManager.h"
 #import "EquipmentImage.h"
+#import "ServerManagerHelper.h"
 
 @interface HistoryViewController ()
 {
@@ -28,7 +29,8 @@
 
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg1;
 @property (nonatomic, weak) IBOutlet UIImageView *ivImg2;
-@property (strong, nonatomic) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UITableView *tableView;
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicator;
 
 
 
@@ -69,8 +71,52 @@
     _equipment = tabbarController.equipment;
     if (_equipment != nil)
     {
-        self.navigationItem.title = [NSString stringWithFormat:@"%@-%@", _equipment.manufacturer_name, _equipment.model_name_no];
+        self.navigationItem.title = [ModelManager getEquipmentName:_equipment];
         
+    }
+    
+    [self loadData];
+    
+    // set images
+    //[[ServerManager sharedManager] setImageContent:self.ivImg1 urlString:_equipment.equipment_file_location];
+    [EquipmentImage setModelImageOfEquipment:_equipment toImageView:self.ivImg1 completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [self.ivImg1 layoutIfNeeded];
+        });
+    }];
+    
+    //[[ServerManager sharedManager] setImageContent:self.ivImg2 urlString:_equipment.model_file_location];
+    [EquipmentImage setManufacturerImageOfEquipment:_equipment toImageView:self.ivImg2 completed:^(UIImage *image) {
+        dispatch_async(dispatch_get_main_queue(), ^(){
+            [self.ivImg2 layoutIfNeeded];
+        });
+    }];
+    
+   
+    // init percent image array
+    images[0] = [UIImage imageNamed:@"movepercent0"];
+    images[1] = [UIImage imageNamed:@"movepercent1"];
+    images[2] = [UIImage imageNamed:@"movepercent2"];
+    images[3] = [UIImage imageNamed:@"movepercent3"];
+    images[4] = [UIImage imageNamed:@"movepercent4"];
+    images[5] = [UIImage imageNamed:@"movepercent5"];
+    images[6] = [UIImage imageNamed:@"movepercent6"];
+    images[7] = [UIImage imageNamed:@"movepercent7"];
+    images[8] = [UIImage imageNamed:@"movepercent8"];
+    images[9] = [UIImage imageNamed:@"movepercent9"];
+    images[10] = [UIImage imageNamed:@"movepercent10"];
+    
+    // request movement
+    [[ServerManagerHelper sharedInstance] getMovementsForEquipment:_equipment];
+}
+
+- (void)loadData
+{
+    EquipmentTabBarController *tabbarController = (EquipmentTabBarController *)self.tabBarController;
+    _equipment = [[ModelManager sharedManager] equipmentById:[tabbarController.equipment.equipment_id intValue]];
+    
+    if (_equipment != nil)
+    {
         self.arrayMovements = [[ModelManager sharedManager] equipmovementsForEquipment:_equipment];
         
         self.groupedMovements = [[NSMutableDictionary alloc] init];
@@ -100,39 +146,6 @@
         self.movementCount = [arrayMovementCount objectAtIndex:0];
     else
         self.movementCount = nil;
-    
-    // set images
-    //[[ServerManager sharedManager] setImageContent:self.ivImg1 urlString:_equipment.equipment_file_location];
-    [EquipmentImage setModelImageOfEquipment:_equipment toImageView:self.ivImg1 completed:^(UIImage *image) {
-        dispatch_async(dispatch_get_main_queue(), ^(){
-            [self.ivImg1 layoutIfNeeded];
-        });
-    }];
-    
-    //[[ServerManager sharedManager] setImageContent:self.ivImg2 urlString:_equipment.model_file_location];
-    [EquipmentImage setManufacturerImageOfEquipment:_equipment toImageView:self.ivImg2 completed:^(UIImage *image) {
-        dispatch_async(dispatch_get_main_queue(), ^(){
-            [self.ivImg2 layoutIfNeeded];
-        });
-    }];
-    
-    // set empty view to footer view
-    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tableView.tableFooterView = v;
-    
-    // init percent image array
-    images[0] = [UIImage imageNamed:@"movepercent0"];
-    images[1] = [UIImage imageNamed:@"movepercent1"];
-    images[2] = [UIImage imageNamed:@"movepercent2"];
-    images[3] = [UIImage imageNamed:@"movepercent3"];
-    images[4] = [UIImage imageNamed:@"movepercent4"];
-    images[5] = [UIImage imageNamed:@"movepercent5"];
-    images[6] = [UIImage imageNamed:@"movepercent6"];
-    images[7] = [UIImage imageNamed:@"movepercent7"];
-    images[8] = [UIImage imageNamed:@"movepercent8"];
-    images[9] = [UIImage imageNamed:@"movepercent9"];
-    images[10] = [UIImage imageNamed:@"movepercent10"];
-    
 }
 
 - (void)didReceiveMemoryWarning
@@ -386,5 +399,18 @@ static UITableViewCell *_prototypeHistoryCell = nil;
     
 }
 
+- (void)onMovementDataChanged:(NSNotification *)note {
+    NSLog(@"historyview - onMovementDataChanged");
+    if ([note.object intValue] != [_equipment.equipment_id intValue])
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        [self loadData];
+        
+        [self.tableView reloadData];
+        
+        [self.indicator stopAnimating];
+    });
+}
 
 @end

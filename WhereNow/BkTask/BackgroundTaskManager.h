@@ -8,7 +8,6 @@
 
 #import <Foundation/Foundation.h>
 #import "ScanManager.h"
-#import "BackgroundNotifications.h"
 #import "StickerManager.h"
 
 @interface BackgroundTaskManager : NSObject <ScanManagerDelegate>

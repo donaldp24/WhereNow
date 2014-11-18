@@ -18,6 +18,7 @@
 #import "CommonGenericTableViewCell.h"
 #import "CommonEquipmentTableViewCell.h"
 #import "PagingManager.h"
+#import <AudioToolbox/AudioToolbox.h>
 
 @interface NearMeViewController () <SwipeTableViewDelegate, CommonEquipmentTableViewCellDelegate> {
     NSManagedObjectContext *_managedObjectContext;
@@ -25,6 +26,7 @@
     UITableViewCell *editingCell;
     NSIndexPath *editingIndexPath;
     BOOL _firstLoad;
+    BOOL _isShowing;
 }
 
 @property (nonatomic, weak) IBOutlet SwipeTableView *tableView;
@@ -88,6 +90,9 @@
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChanged:) name:kBackgroundUpdateLocationInfoNotification object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onScannedBeaconChanged:) name:kBackgroundScannedBeaconChanged object:nil];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onFoundEquipmentsChanged:) name:kFoundEquipmentsChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onChanged:) name:kEquipmentsForGenericChanged object:nil];
+    
+    _isShowing = NO;
 }
 
 - (void)didReceiveMemoryWarning
@@ -123,20 +128,23 @@
         editingIndexPath = nil;
         
         //[_expandingLocationArray removeAllObjects];
+        [self loadData];
         
         [self.tableView reloadData];
     }
     
     _firstLoad = NO;
+    _isShowing = YES;
     
-    [[BackgroundTaskManager sharedManager] setConsumeScanning:YES];
+    //[[BackgroundTaskManager sharedManager] setConsumeScanning:YES];
 }
 
 - (void)viewWillDisappear:(BOOL)animated
 {
     [super viewWillDisappear:animated];
     
-    [[BackgroundTaskManager sharedManager] setConsumeScanning:NO];
+    _isShowing = NO;
+    //[[BackgroundTaskManager sharedManager] setConsumeScanning:NO];
 }
 
 
@@ -227,6 +235,9 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         cell = [[CommonEquipmentTableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     }
     cell.delegate = self;
+    Equipment *equipment = [arrayData objectAtIndex:indexPath.row];
+    if (equipment == nil || equipment.serial_no == nil)
+        equipment = equipment;
     [cell bind:[arrayData objectAtIndex:indexPath.row] generic:nil type:CommonEquipmentCellTypeNearme];
     
     if (editingIndexPath != nil && editingIndexPath.row == indexPath.row && editingSection == indexPath.section)
@@ -398,15 +409,28 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
     });
 }
 
-- (void)onScannedBeaconChanged:(id)sender
+- (void)onScannedBeaconChanged:(NSNotification *)sender
 {
     // get beacons from
     dispatch_async(dispatch_get_main_queue(), ^() {
 
+        if (_isShowing) {
+            if ([sender.object isEqual:@(YES)])
+            {
+                // audio service play
+                //AudioServicesPlaySystemSound(1315);
+                AudioServicesPlaySystemSound(1054);
+                //AudioServicesPlaySystemSound(kSystemSoundID_Vibrate);
+            }
+        }
+        
         // refresh table
-        self.nearmeVicinityEquipments = [BackgroundTaskManager sharedManager].arrayVicinityEquipments;
+        self.nearmeVicinityEquipments = [[NSMutableArray alloc] initWithArray:[BackgroundTaskManager sharedManager].arrayVicinityEquipments];
         
         [self.tableView reloadData];
+        
+        if ([self.refresh isRefreshing])
+            [self.refresh endRefreshing];
     });
 }
 

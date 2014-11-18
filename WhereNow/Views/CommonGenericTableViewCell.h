@@ -33,7 +33,7 @@ typedef enum {
 @property (assign, nonatomic) BOOL editor;
 @property (nonatomic) CommonGenericsCellType cellType;
 
-@property (nonatomic, retain) id<CommonGenericTableViewCellDelegate> delegate;
+@property (nonatomic, weak) id<CommonGenericTableViewCellDelegate> delegate;
 
 - (void)bind:(Generic *)generic type:(CommonGenericsCellType)cellType;
 - (void)setEditor:(BOOL)editor;

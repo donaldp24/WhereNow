@@ -18,7 +18,7 @@
 #import "CommonGenericTableViewCell.h"
 #import "CommonEquipmentTableViewCell.h"
 #import "CommonLocationTableViewCell.h"
-#import "BackgroundNotifications.h"
+#import "ServerManagerHelper.h"
 
 #define GENERICS_INDEX      0
 #define EQUIPMENT_INDEX     1
@@ -32,8 +32,10 @@
     NSMutableArray *_expandingLocationArray;
 }
 
-@property (nonatomic, strong) IBOutlet SwipeTableView *tableView;
-@property (nonatomic, strong) IBOutlet UISegmentedControl *segment;
+@property (nonatomic, weak) IBOutlet SwipeTableView *tableView;
+@property (nonatomic, weak) IBOutlet UISegmentedControl *segment;
+
+@property (nonatomic, weak) IBOutlet UIActivityIndicatorView *indicator;
 
 @property (nonatomic, strong) NSMutableArray *genericsArray;
 @property (nonatomic, strong) NSMutableArray *equipmentArray;
@@ -85,10 +87,6 @@
     
     // load data
     [self loadData];
-    
-    // set empty view to footer view
-    UIView *v = [[UIView alloc] initWithFrame:CGRectZero];
-    self.tableView.tableFooterView = v;
 
     self.tableView.swipeDelegate = self;
     [self.tableView initControls];
@@ -108,7 +106,6 @@
     [self.navigationItem setTitleView:searchBar];
     
     UIRefreshControl *refresh = [UIRefreshControl new];
-    //refresh.tintColor = [UIColor whiteColor];
     [refresh addTarget:self action:@selector(refreshPulled) forControlEvents:UIControlEventValueChanged];
     [self.tableView addSubview:refresh];
     self.refresh = refresh;
@@ -117,12 +114,10 @@
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonEquipmentTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonEquipmentTableViewCellIdentifier];
     [self.tableView registerNib:[UINib nibWithNibName:@"CommonLocationTableViewCell" bundle:nil] forCellReuseIdentifier:kDefaultCommonLocationTableViewCellIdentifier];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kDataChanged object:nil];
-    //[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kBackgroundUpdateLocationInfoNotification object:nil];
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onDataChanged:) name:kFoundEquipmentsChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onGenericsChanged:) name:kGenericsChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onEquipmentsChanged:) name:kEquipmentsForGenericChanged object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onEquipmentsChanged:) name:kFoundEquipmentsChanged object:nil];
     
-    // get data from server
-    //[self requestData];
 }
 
 - (void)didReceiveMemoryWarning
@@ -399,11 +394,22 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
                 
                     NSLog(@"didSelectRowAtIndexPath : %d, count : %d", (int)indexPath.row, (int)_equipmentArray.count);
                     //[self.tableView reloadSections:[NSIndexSet indexSetWithIndex:0] withRowAnimation:UITableViewRowAnimationLeft];
-                [self.tableView reloadData];
+                
+                    [self.tableView reloadData];
+                
+                if (_equipmentArray.count > 0)
+                    [self.tableView scrollToRowAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UITableViewScrollPositionTop animated:NO];
                 //}];
                 
                 // save selected generic to recent list
                 [[ModelManager sharedManager] addRecentGeneric:self.selectedGenerics];
+                
+                // get equipments for generic
+                [[ServerManagerHelper sharedInstance] getEquipmentsForGeneric:self.selectedGenerics];
+                
+                // show indicator
+                self.indicator.hidden = NO;
+                [self.indicator startAnimating];
             }
         }
         else
@@ -714,59 +720,93 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
  */
 - (void) requestData
 {
-    [[ServerManager sharedManager] getGenericsV2:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
-        
-        // main thread
-        dispatch_async(dispatch_get_main_queue(), ^() {
+    if (self.segment.selectedSegmentIndex == 0) {
+        [[ServerManager sharedManager] getGenerics:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
             
-            NSLog(@"reload data for request data");
-            [self reloadData];
-            
+            // main thread
+            dispatch_async(dispatch_get_main_queue(), ^() {
+                
+                NSLog(@"reload data for request data");
+                [self reloadData];
+                
+                // stop refresh
+                if ([self.refresh isRefreshing])
+                    [self.refresh endRefreshing];
+            });
+        } failure:^(NSString *failureMsg) {
             // stop refresh
             if ([self.refresh isRefreshing])
                 [self.refresh endRefreshing];
-        });
-    } failure:^(NSString *failureMsg) {
-        // stop refresh
-        if ([self.refresh isRefreshing])
-            [self.refresh endRefreshing];
-    }];
+        }];
+    }
+    else {
+        if (self.selectedGenerics != nil) {
+            [[ServerManager sharedManager] getEquipmentsForGeneric:self.selectedGenerics.generic_id.intValue sessionId:[UserContext sharedUserContext].sessionId userId:[UserContext sharedUserContext].userId success:^() {
+                
+                // main thread
+                dispatch_async(dispatch_get_main_queue(), ^() {
+                    
+                    NSLog(@"reload data for request data");
+                    [self reloadData];
+                    
+                    // stop refresh
+                    if ([self.refresh isRefreshing])
+                        [self.refresh endRefreshing];
+                });
+            } failure:^(NSString *failureMsg) {
+                // stop refresh
+                if ([self.refresh isRefreshing])
+                    [self.refresh endRefreshing];
+            }];
+        }
+        else
+        {
+            if ([self.refresh isRefreshing])
+                [self.refresh endRefreshing];
+        }
+    }
 }
 
 #pragma mark Keyboard Methods
 
 - (void)keyboardShowing:(NSNotification *)note
 {
-    //NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
-    /*
-    CGRect frame = self.tableView.frame;
-    frame.size.height -= 60;
-    
-    [UIView animateWithDuration:duration.floatValue animations:^{
-        //self.logo.alpha = 0.0;
-        self.tableView.frame = frame;
-        [self.view layoutIfNeeded];
-    }];
-     */
     
 }
 
 - (void)keyboardHiding:(NSNotification *)note
 {
-    //NSNumber *duration = note.userInfo[UIKeyboardAnimationDurationUserInfoKey];
-   /*
-    [UIView animateWithDuration:duration.floatValue animations:^{
-        self.logo.alpha = 1.0;
-        [self.view layoutIfNeeded];
-    }];
-    */
 }
 
-- (void)onDataChanged:(id)sender
+- (void)onGenericsChanged:(id)sender
 {
+    if (self.segment.selectedSegmentIndex == 1)
+        return;
+    
     dispatch_async(dispatch_get_main_queue(), ^() {
         NSLog(@"reload ata on data changed ");
         [self reloadData];
+        
+        [self.indicator stopAnimating];
+    });
+}
+
+- (void)onEquipmentsChanged:(NSNotification *)note
+{
+    if (self.segment.selectedSegmentIndex == 0)
+        return;
+    
+    NSNumber *generic_id = (NSNumber *)note.object;
+    if (generic_id == nil || self.selectedGenerics == nil)
+        return;
+    if (generic_id.intValue != self.selectedGenerics.generic_id.intValue)
+        return;
+    
+    dispatch_async(dispatch_get_main_queue(), ^() {
+        NSLog(@"reload ata on data changed ");
+        [self reloadData];
+        
+        [self.indicator stopAnimating];
     });
 }
 
@@ -775,7 +815,7 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
     // reload data
     [self loadData];
     
-    self.selectedGenerics = nil;
+    //self.selectedGenerics = nil;
     if (editingCell)
         [self.tableView setEditing:NO atIndexPath:editingIndexPath cell:editingCell];
     
@@ -797,6 +837,9 @@ static CommonLocationTableViewCell *_prototypeLocationTableViewCell = nil;
     // stop refresh
     if ([self.refresh isRefreshing])
         [self.refresh endRefreshing];
+    
+    // stop indicator
+    [self.indicator stopAnimating];
 }
 
 #pragma mark - swipetableview swipe delegate

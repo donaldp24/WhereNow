@@ -12,7 +12,7 @@
 #import "StickerManager.h"
 #include <sys/time.h>
 
-#define kPagingTimeout  20.0f
+#define kPagingTimeout  25.0f
 
 static PagingManager *_sharedPagingManager = nil;
 

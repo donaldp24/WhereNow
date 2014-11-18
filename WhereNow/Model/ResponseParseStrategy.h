@@ -14,7 +14,11 @@
 + (ResponseParseStrategy *)sharedParseStrategy;
 
 - (BOOL)parseGenericResponse:(NSDictionary *)dicResult;
-- (BOOL)parseEquipmentResponse:(NSDictionary *)dicResult;
 - (BOOL)parseNearmeResponse:(NSDictionary *)dicResult complete:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))complete failure:(void(^)())failure;
+- (BOOL)parseCurrentLocationEquipmentsResponse:(NSDictionary *)dicResult complete:(void (^)(NSMutableArray *arrayCurrentLocationEquipments))complete failure:(void (^)())failure;
+- (BOOL)parseMovementDetailResponse:(NSDictionary *)dicResult;
+- (BOOL)parseGenericDetailResponse:(NSDictionary *)dicResult;
+- (BOOL)parseEquipmentDetailResponse:(NSDictionary *)dicResult;
+- (BOOL)parseLocationDetailResponse:(NSDictionary *)dicResult;
 
 @end

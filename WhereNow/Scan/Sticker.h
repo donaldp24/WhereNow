@@ -28,7 +28,7 @@ typedef NS_ENUM(int, StickerState) {
 @property (nonatomic) StickerState state;
 @property (nonatomic, retain) LeSnfDevice *device;
 @property (nonatomic) int sid;
-@property (nonatomic, retain) id<StickerDelegate> delegate;
+@property (nonatomic, weak) id<StickerDelegate> delegate;
 
 - (void)connect;
 - (void)disconnect;

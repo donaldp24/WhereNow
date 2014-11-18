@@ -104,10 +104,11 @@ static ModelManager *_sharedModelManager = nil;
     return descriptor1;
 }
 
-- (NSSortDescriptor *)sortForEquipments
+- (NSArray *)sortForEquipments
 {
-    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"equipment_id" ascending:YES];
-    return descriptor1;
+    NSSortDescriptor *descriptor1 = [[NSSortDescriptor alloc] initWithKey:@"current_location_parent_name" ascending:YES];
+    NSSortDescriptor *descriptor2 = [[NSSortDescriptor alloc] initWithKey:@"current_location" ascending:YES];
+    return [[NSArray alloc] initWithObjects:descriptor1, descriptor2, nil];
 }
 
 - (NSSortDescriptor *)sortForLocations
@@ -181,8 +182,7 @@ static ModelManager *_sharedModelManager = nil;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     // favorites flag
     NSPredicate *predFavorite = [NSPredicate predicateWithFormat:@"isfavorites == %@", @(YES)];
@@ -248,8 +248,7 @@ static ModelManager *_sharedModelManager = nil;
     
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     [fetchRequest setEntity:entity];
     if (withBeacon)
@@ -320,8 +319,7 @@ static ModelManager *_sharedModelManager = nil;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     // generic_id == generic.generic_id
     NSPredicate* predGeneric = nil;
@@ -423,8 +421,7 @@ static ModelManager *_sharedModelManager = nil;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     // manufacturer_name, model_name_no contains
     NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
@@ -497,8 +494,7 @@ static ModelManager *_sharedModelManager = nil;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     // manufacturer_name, model_name_no contains
     NSPredicate* predEquipment = [NSPredicate predicateWithFormat:
@@ -841,8 +837,7 @@ static ModelManager *_sharedModelManager = nil;
     NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] init];
     
     // sort
-    NSSortDescriptor *descriptor1 = [self sortForEquipments];
-    NSArray *sortDescriptors = [NSArray arrayWithObjects:descriptor1, nil];
+    NSArray *sortDescriptors = [self sortForEquipments];
     
     // favorites flag
     NSPredicate *predFavorite = [NSPredicate predicateWithFormat:@"islocating == %@", @(YES)];
@@ -867,5 +862,10 @@ static ModelManager *_sharedModelManager = nil;
 }
 
 
++ (NSString *)getEquipmentName:(Equipment *)equipment
+{
+    NSString *strName = [NSString stringWithFormat:@"%@ (%@)", equipment.model_name_no, equipment.manufacturer_name];
+    return strName;
+}
 
 @end

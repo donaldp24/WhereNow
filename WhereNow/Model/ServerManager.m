@@ -205,63 +205,6 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
-
-#pragma mark - get generics
-- (void)getGenericsV2:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
-{
-    NSDictionary *params = @{@"uid": userId};
-    DEF_SERVERMANAGER
-    
-    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
-    
-    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
-        
-        if (error != nil)
-        {
-            failure([error localizedDescription]);
-            return;
-        }
-        
-        if (response == nil)
-        {
-            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
-            {
-                failure(@"Invalid Parameters!");
-            }
-            else
-            {
-                failure(@"Invalid Response!");
-            }
-            return;
-        }
-        else
-        {
-            if ([response isKindOfClass:[NSDictionary class]])
-            {
-                NSString *msg = [response objectForKey:@"ERROR"];
-                if (msg != nil)
-                {
-                    failure(msg);
-                    return;
-                }
-                else
-                {
-                    failure(@"unknown error!");
-                    return;
-                }
-            }
-            
-            // parse response, insert & update managed objects, save context
-            [self.parser parseGenericResponse:response];
-            
-            // delegate to oberver success
-            success();
-        }
-        
-    }];
-    
-}
-
 - (void)getCurrLocationV2:(NSString *)sessionId userId:(NSString *)userId arrayBeacons:(NSMutableArray *)arrayBeacons success:(void (^)(NSMutableArray *arrayGenerics, NSMutableArray *arrayVicinityEquipments, NSMutableArray *arrayLocationEquipments))sc failure:(void (^)(NSString *))failure
 {
     
@@ -331,6 +274,218 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
                 failure(@"failed to parse response");
             }];
         }
+    }];
+}
+
+- (void)getCurrLocationWithLocationId:(NSString *)locationId sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSMutableArray *))sc failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    if (locationId == nil) {
+        NSMutableArray *emptyArray = [[NSMutableArray alloc] init];
+        sc(emptyArray);
+        return;
+    }
+    NSDictionary *params = @{@"uid": userId,
+                             @"lid": locationId,
+                             @"requesttype": @"equipmentdetail"};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error) {
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            [self.parser parseCurrentLocationEquipmentsResponse:response complete:^(NSMutableArray *arrayLocationEquipments) {
+                
+                sc(arrayLocationEquipments);
+                
+            } failure:^() {
+                //
+                failure(@"failed to parse response");
+            }];
+        }
+    }];
+}
+
+- (void)getMovementsForEquipment:(Equipment *)equipment sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"uid":userId,
+                             @"gid":[NSString stringWithFormat:@"%@", equipment.generic_id],
+                             @"eid":[NSString stringWithFormat:@"%@", equipment.equipment_id],
+                             @"requesttype":@"movementdetail"};
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error) {
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            // parse response, insert & update managed objects, save context
+            [self.parser parseMovementDetailResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+    }];
+}
+
+- (void)getLocationsForGeneric:(int)generic_id sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = @{@"uid": userId,
+                             @"gid": [NSString stringWithFormat:@"%d", generic_id],
+                             @"requesttype": @"locationdetail"};
+    DEF_SERVERMANAGER
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid Response!");
+            }
+            return;
+        }
+        else
+        {
+            // parse response, insert & update managed objects, save context
+            [self.parser parseLocationDetailResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+        
+    }];
+}
+
+- (void)getGenerics:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = @{@"uid": userId,
+                             @"requesttype": @"genericdetail"};
+    DEF_SERVERMANAGER
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid Response!");
+            }
+            return;
+        }
+        else
+        {
+            // parse response, insert & update managed objects, save context
+            [self.parser parseGenericResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+        
+    }];
+
+}
+
+- (void)getEquipmentsForGeneric:(int)generic_id sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure
+{
+    NSDictionary *params = @{@"uid": userId,
+                             @"gid": [NSString stringWithFormat:@"%d", generic_id],
+                             @"requesttype": @"equipmentdetail"};
+    DEF_SERVERMANAGER
+    
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionId, @"getglist"];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid Response!");
+            }
+            return;
+        }
+        else
+        {
+            // parse response, insert & update managed objects, save context
+            [self.parser parseEquipmentDetailResponse:response];
+            
+            // delegate to oberver success
+            success();
+        }
+        
     }];
 }
 

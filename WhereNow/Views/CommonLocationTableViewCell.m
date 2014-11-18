@@ -14,9 +14,11 @@
     //
 }
 
+@property (nonatomic, weak) IBOutlet UILabel *lblLevel;
 @property (nonatomic, weak) IBOutlet UILabel *lblName;
 @property (nonatomic, weak) IBOutlet UILabel *lblCount;
 @property (nonatomic, weak) IBOutlet UILabel *lblNote;
+
 
 @end
 
@@ -38,6 +40,7 @@
 {
     self.genericLocation = genericLocation;
     
+    self.lblLevel.text = genericLocation.parent_location_name;
     self.lblName.text = genericLocation.location_name;
     self.lblCount.text = [NSString stringWithFormat:@"%d in area", [genericLocation.location_wise_equipment_count intValue]];
     self.lblNote.text = genericLocation.status_message;

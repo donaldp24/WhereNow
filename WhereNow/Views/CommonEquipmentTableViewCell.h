@@ -40,7 +40,7 @@ typedef enum {
 @property (assign, nonatomic) BOOL editor;
 @property (nonatomic) CommonEquipmentCellType cellType;
 
-@property (nonatomic, retain) id<CommonEquipmentTableViewCellDelegate> delegate;
+@property (nonatomic, weak) id<CommonEquipmentTableViewCellDelegate> delegate;
 
 - (void)bind:(Equipment *)equipment generic:(Generic *)generic type:(CommonEquipmentCellType)cellType;
 -(void)setEditor:(BOOL)editor;
