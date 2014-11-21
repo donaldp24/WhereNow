@@ -313,7 +313,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         }
         else
         {
-            [self.parser parseCurrentLocationEquipmentsResponse:response complete:^(NSMutableArray *arrayLocationEquipments) {
+            BOOL ret = [self.parser parseCurrentLocationEquipmentsResponse:response complete:^(NSMutableArray *arrayLocationEquipments) {
                 
                 sc(arrayLocationEquipments);
                 
@@ -321,6 +321,10 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
                 //
                 failure(@"failed to parse response");
             }];
+            
+            if (!ret) {
+                NSLog(@"parse current location response failed : \n params : %@ \n response : %@", params, response);
+            }
         }
     }];
 }

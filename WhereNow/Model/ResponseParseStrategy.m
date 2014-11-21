@@ -978,13 +978,21 @@ static ResponseParseStrategy *_sharedParseStrategy = nil;
     
     NSArray *arrayResult = (NSArray *)dicResult;
     for (NSDictionary *dicGeneric in arrayResult) {
+        if (![dicGeneric isKindOfClass:[NSDictionary class]])
+            return false;
+        
+        NSObject *obj = [dicGeneric objectForKey:@"generic_id"];
+        if (obj == nil || [obj isEqual:[NSNull null]]) {
+            NSLog(@"got incorrect response from server - generic id is null");
+            return NO;
+        }
+        
         int generic_id = [[dicGeneric objectForKey:@"generic_id"] intValue];
         
         Generic *generic = [self genericWithGenericId:generic_id generics:arrayExistGenerics];
         if (generic == nil)
             continue;
-        
-        
+
         NSArray *arrayLocations = [dicGeneric objectForKey:@"equipment_array"];
         if (arrayLocations != nil)
         {
