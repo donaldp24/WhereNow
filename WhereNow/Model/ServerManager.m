@@ -59,7 +59,11 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         return;
     }
     
-    NSURL  *url = [NSURL URLWithString:API_URL];
+    NSURL  *url = nil;
+    if (methodName.length != 0)
+        url = [NSURL URLWithString:API_URL];
+    else
+        url = [NSURL URLWithString:@"http://dev.scmedical.com.au/ble_entry.php"];
     NSLog(@"requesting : %@%@\n%@", url, methodName, params);
 	AFHTTPClient  *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     
@@ -74,50 +78,55 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         {
             NSString *responseStr = [[NSString alloc] initWithData:responseObject encoding:NSUTF8StringEncoding];
             // remove <pre> tag if exists
-            if ([[responseStr substringToIndex:5] isEqualToString:@"<pre>"])
-                responseStr = [responseStr substringFromIndex:5];
-            // remove prefix till to meet {
-            NSRange range = [responseStr rangeOfString:@"{" options:0 range:NSMakeRange(0, responseStr.length)];
-            NSRange range1 = [responseStr rangeOfString:@"[" options:0 range:NSMakeRange(0, responseStr.length)];
             
-            NSRange range2;
-            range2.length = 0;
-            range2.location = NSNotFound;
-            
-            if (range.location != NSNotFound && range1.location != NSNotFound)
+            if (responseStr.length > 0)
             {
-                if (range1.location < range.location)
-                    range2 = range1;
-                else
-                    range2 = range;
-            }
-            else if (range.location != NSNotFound)
-            {
-                range2 = range;
-            }
-            else if (range1.location != NSNotFound)
-            {
-                range2 = range1;
-            }
+                if ([[responseStr substringToIndex:5] isEqualToString:@"<pre>"])
+                    responseStr = [responseStr substringFromIndex:5];
+                // remove prefix till to meet {
+                NSRange range = [responseStr rangeOfString:@"{" options:0 range:NSMakeRange(0, responseStr.length)];
+                NSRange range1 = [responseStr rangeOfString:@"[" options:0 range:NSMakeRange(0, responseStr.length)];
                 
-            if (range2.location != NSNotFound && range2.location > 0)
-            {
-                responseStr = [responseStr substringFromIndex:range2.location];
-            }
-            
-            NSDictionary *responseDic = [responseStr JSONValue];
-            if (responseStr == nil)
-            {
-                NSLog(@"Request successful, response string is nil");
-            }
-            else
-            {
-                if (responseStr.length >= 3000)
-                    NSLog(@"Request Successful, response '%@'", [responseStr substringToIndex:3000]);
+                NSRange range2;
+                range2.length = 0;
+                range2.location = NSNotFound;
+                
+                if (range.location != NSNotFound && range1.location != NSNotFound)
+                {
+                    if (range1.location < range.location)
+                        range2 = range1;
+                    else
+                        range2 = range;
+                }
+                else if (range.location != NSNotFound)
+                {
+                    range2 = range;
+                }
+                else if (range1.location != NSNotFound)
+                {
+                    range2 = range1;
+                }
+                    
+                if (range2.location != NSNotFound && range2.location > 0)
+                {
+                    responseStr = [responseStr substringFromIndex:range2.location];
+                }
+                
+                NSDictionary *responseDic = [responseStr JSONValue];
+                if (responseStr == nil)
+                {
+                    NSLog(@"Request successful, response string is nil");
+                }
                 else
-                    NSLog(@"Request Successful, response '%@'", responseStr);
+                {
+                    if (responseStr.length >= 3000)
+                        NSLog(@"Request Successful, response '%@'", [responseStr substringToIndex:3000]);
+                    else
+                        NSLog(@"Request Successful, response '%@'", responseStr);
+                }
+                
+                handler(responseStr, responseDic, nil);
             }
-            handler(responseStr, responseDic, nil);
         }
         
     };
@@ -721,6 +730,46 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         {
             NSArray *arrayDevices = (NSArray *)response;
             success(arrayDevices);
+        }
+    }];
+}
+
+-(void) sendReceivedDevices:(NSString *)Minor receiver:(NSString *)receiver success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure
+{
+    DEF_SERVERMANAGER
+    
+    NSDictionary *params = @{@"Minor":Minor, @"receiver":receiver};
+    
+    NSString *methodName = kMethodForReceivedDevice;
+    
+    [manager getMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error)
+    {
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            NSString *strActive = [response objectForKey:@"active"];
+            if ([strActive isEqualToString:@"t"])
+                success(NO);
+            else
+                success(YES);
         }
     }];
 }

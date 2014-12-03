@@ -1,4 +1,4 @@
-//
+ //
 //  ScanManager.m
 //  WhereNow
 //
@@ -13,23 +13,23 @@
 #define kScanForEveryCertainSecs     1
 #define kScanPeriodOnce             13
 #define kScanTimout                 13
+#define kScanReceive                15
 
-@interface ScannedBeacon : NSObject
-
-@property (nonatomic, retain) CLBeacon *beacon;
-@property (nonatomic) long lastScannedTime;
-
-@end
+static ScanManager *_sharedScanManager = nil;
 
 @implementation ScannedBeacon
 
 
 @end
 
+
 @interface ScanManager() {
     NSTimer *timer;
+    NSTimer *timerReceive;
     long scanStartedTime;
     long scanEndedTime;
+    long scanReceivedStartedTime;
+    long scanReceivedEndedTime;
     int scanningMethod;
     long lastDelegateTime;
 }
@@ -37,9 +37,12 @@
 @property (retain, nonatomic) CLBeaconRegion *beaconRegion;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) BOOL isStarted;
+@property (nonatomic) BOOL isReceiveStarted;
 
 @property (nonatomic, retain) NSMutableArray *prevScannedBeacons;
 @property (nonatomic, retain) NSMutableArray *currScannedBeacons;
+@property (nonatomic, retain) NSMutableArray *prevReceivedBeacons;
+@property (nonatomic, retain) NSMutableArray *currReceivedBeacons;
 
 // sticknfind
 @property (nonatomic, retain) LeDeviceManager *snfDeviceManager;
@@ -47,6 +50,16 @@
 @end
 
 @implementation ScanManager
+
++ (ScanManager *)sharedScanManager
+{
+    if (_sharedScanManager == nil)
+    {
+        _sharedScanManager = [[ScanManager alloc] initWithDelegate:self];
+        _sharedScanManager = [[ScanManager alloc] initWithDelegateReceive:self];
+    }
+    return _sharedScanManager;
+}
 
 - (id)init
 {
@@ -72,10 +85,24 @@
     return self;
 }
 
+- (id)initWithDelegateReceive:(id<ScanManagerDelegate>)delegateReceive
+{
+    self = [super init];
+    if (self) {
+        //
+    }
+    
+    self.delegateReceive = delegateReceive;
+    
+    return self;
+}
+
 - (void)initMembers
 {
     self.isStarted = NO;
+    self.isReceiveStarted = NO;
     timer = nil;
+    timerReceive = nil;
     
     scanningMethod = kScanForEveryCertainSecs;
     self.scanMode = ScanModeNormal;
@@ -110,6 +137,19 @@
     timer = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerProc:) userInfo:nil repeats:YES];
 }
 
+ - (void)startReceiveMode
+{
+    if (self.isReceiveStarted)
+        return;
+    
+    self.isReceiveStarted = YES;
+    scanReceivedStartedTime = scanReceivedEndedTime = [self getCurrentMilliTime];
+    
+    self.prevReceivedBeacons = [[NSMutableArray alloc] init];
+    self.currReceivedBeacons = [[NSMutableArray alloc] init];
+    
+    timerReceive = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerReceiveProc:) userInfo:nil repeats:YES];
+}
 
 - (void)stop
 {
@@ -120,6 +160,19 @@
     [self.locationManager stopMonitoringForRegion:self.beaconRegion];
     
     self.isStarted = NO;
+}
+
+- (void)stopReceiveMode
+{
+    if (timerReceive)
+        [timerReceive invalidate];
+        
+    self.isReceiveStarted = NO;
+}
+
+- (void)clearReceiveArray
+{
+    self.currReceivedBeacons = [[NSMutableArray alloc] init];
 }
 
 - (void)changeMode:(ScanMode)scanMode
@@ -153,6 +206,11 @@
 
 - (void)timerProc:(id)tm
 {
+}
+
+- (void)timerReceiveProc:(id)timer
+{
+    [self.delegateReceive didReceiveBeaconFound: self.currReceivedBeacons];
 }
 
 - (void)compareBeaconsAndDelegate
@@ -286,8 +344,7 @@
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
-    NSLog(@"didRangeBeacons : %@", beacons);
-    
+    //NSLog(@"didRangeBeacons : %@", beacons);
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive)
     {
         //
@@ -329,6 +386,53 @@
                 newBeacon.beacon = beacon;
                 newBeacon.lastScannedTime = [self getCurrentMilliTime];
                 [self.currScannedBeacons addObject:newBeacon];
+            }
+        }
+    }
+    
+    if (self.isReceiveStarted)
+    {
+        for (CLBeacon *beacon in beacons) {
+            int beaconMajor = [beacon.major intValue];
+            int beaconMinor = [beacon.minor intValue];
+            int rssi = (int)beacon.rssi;
+            
+            if (![self isVicinity:beacon])
+            {
+                // not
+            }
+            else
+            {
+                // add it to vicinity array
+                // check exist
+                BOOL isExist = NO;
+                for (ScannedBeacon *scannedBeacon in self.prevReceivedBeacons) {
+                    if ([scannedBeacon.beacon.major intValue] == beaconMajor && [scannedBeacon.beacon.minor intValue] == beaconMinor)
+                    {
+                        isExist = YES;
+                        scannedBeacon.lastScannedTime = [self getCurrentMilliTime];
+                        break;                        
+                    }
+                }
+                if (!isExist)
+                {
+                    ScannedBeacon *newBeacon = [[ScannedBeacon alloc] init];
+                    newBeacon.beacon = beacon;
+                    newBeacon.lastScannedTime = [self getCurrentMilliTime];
+                    [self.prevReceivedBeacons addObject:newBeacon];
+                }
+            }
+        }
+        
+        [self.currReceivedBeacons removeAllObjects];
+        for (ScannedBeacon *item in self.prevReceivedBeacons)
+        {
+            long currTime = [self getCurrentMilliTime];
+            if (currTime - item.lastScannedTime > kScanReceive * 1000)
+            {
+                [self.currReceivedBeacons addObject:item];
+                
+                NSLog(@"---------------%d-----------%d", item.beacon.major, item.beacon.minor);
             }
         }
     }
@@ -445,7 +549,6 @@
             }
         }
     }
-
 }
 
 #pragma mark - estimate vicinity

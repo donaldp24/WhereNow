@@ -28,6 +28,7 @@
 #define kMethodForForgotUsernameV2   @"forgotusername"
 #define kMethodForDeviceList         @"getregistereddevice"
 #define kMethodForCheckDeviceRemoved    @"isdeviceremoved"
+#define kMethodForReceivedDevice    @"";
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -62,6 +63,8 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 - (void)cancelEquipmentWatch:(NSArray *)arrayEquipmentIds token:(NSString *)token sessionId:(NSString *)sessionId userId:(NSString *)userId success:(void (^)())success failure:(void (^)(NSString *))failure;
 
 - (void)getRegisteredDeviceList:(NSString *)sessionId userId:(NSString *)userId success:(void (^)(NSArray *arrayDevices))success failure:(void (^)(NSString *))failure;
+
+- (void)sendReceivedDevices:(NSString *)Minor receiver:(NSString *)receiver success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure;
 
 - (void)checkDeviceRemoved:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure;
 

@@ -18,23 +18,37 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
     ScanModeNearme
 };
 
+@interface ScannedBeacon : NSObject
+
+@property (nonatomic, retain) CLBeacon *beacon;
+@property (nonatomic) long lastScannedTime;
+
+@end
+
+
 @protocol ScanManagerDelegate <NSObject>
 
-@required
+@optional
 // called when not same beacons found
 - (void)didVicinityBeaconsFound:(NSMutableArray *)arrayBeacons hasNewBeacon:(BOOL)hasNewBeacon;
 
 // called in beacon ranging callback
 - (void)didBeaconsFound:(NSMutableArray *)arrayBeacons;
 
+// called in Receive mode
+- (void)didReceiveBeaconFound:(NSMutableArray *) arrBeacons;
+
 @end
 
 @interface ScanManager : NSObject <CLLocationManagerDelegate>
+
++ (ScanManager *)sharedScanManager;
 
 /**
  * 
  */
 @property (nonatomic, weak) id<ScanManagerDelegate> delegate;
+@property (nonatomic, weak) id<ScanManagerDelegate> delegateReceive;
 @property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
@@ -43,17 +57,19 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
  * start ranging & monitoring beacons
  */
 - (void)start;
+- (void)startReceiveMode;
 
 /**
  * stop ranging & mornitoring
  */
 - (void)stop;
+- (void)stopReceiveMode;
+
+- (void)clearReceiveArray;
 
 - (void)changeMode:(ScanMode)scanMode;
 
 - (BOOL)isStarted;
-
-
 
 + (BOOL)locationServiceEnabled;
 

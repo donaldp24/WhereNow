@@ -47,7 +47,8 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
     self.arrayVicinityEquipments = [[NSMutableArray alloc] init];
     self.arrayLocationEquipments = [[NSMutableArray alloc] init];
     
-    self.scanManager = [[ScanManager alloc] initWithDelegate:self];
+//    self.scanManager = [[ScanManager alloc] initWithDelegate:self];
+    self.scanManager = [ScanManager sharedScanManager];
     self.stickBeaconManager = [StickerManager sharedManager];
     self.stickBeaconMode = NO;
     self.consumeScanning = NO;

@@ -14,11 +14,26 @@
 #import "DeviceCell.h"
 #import "AppContext.h"
 #import "AppDelegate.h"
+#import "EditReceiverIDViewController.h"
+#import "ModelManager.h"
+#import "ScanManager.h"
 
-@interface AccountViewController () <DeviceCellDelegate>
+#define kPeriodOfBeaconMode        15
+
+@interface AccountViewController () <DeviceCellDelegate, EditReceiverIDDelegate, UIAlertViewDelegate>
+{
+    bool bIsReceiveMode;
+}
 
 @property (nonatomic, retain) NSMutableArray *arrayDevices;
 @property (weak, nonatomic) IBOutlet UIActivityIndicatorView *indicator;
+@property (weak, nonatomic) UILabel *labelReceiverId;
+@property (weak, nonatomic) UIButton *buttonStart;
+
+@property (nonatomic, strong) NSMutableArray *arrayBeacons;
+@property (nonatomic, retain) NSTimer *timerReceiveSearch;
+
+@property (nonatomic, retain) ScanManager *scanManager;
 
 @end
 
@@ -79,6 +94,11 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(onCurrentLocationChanged:) name:kCurrentLocationChanged object:nil];
     
+    bIsReceiveMode = false;
+    self.arrayBeacons = [[NSMutableArray alloc] init];
+    
+    self.scanManager = [ScanManager sharedScanManager];
+    self.scanManager.delegateReceive = self;
 }
 
 - (void)didReceiveMemoryWarning
@@ -99,12 +119,39 @@
     [self loadData];
 }
 
+- (void)viewDidDisappear:(BOOL)animated
+{
+    [super viewDidDisappear:animated];
+    
+    if (bIsReceiveMode)
+    {
+        [self.buttonStart setTitle:@"Start" forState:UIControlStateNormal];
+        bIsReceiveMode = NO;
+        
+        [self.scanManager stopReceiveMode];
+    }
+}
+
+- (void) didReceiveBeaconFound:(NSMutableArray *)arrBeacons
+{
+    for (ScannedBeacon *item in arrBeacons)
+    {
+        [[ServerManager sharedManager] sendReceivedDevices:[NSString stringWithFormat:@"%d", [item.beacon.minor intValue]] receiver: self.labelReceiverId.text
+        success:^(BOOL bRet) {
+        }
+        failure:^(NSString * msg) {
+        }];
+    }
+    
+    [self.scanManager clearReceiveArray];
+}
+
 #pragma mark - Table view data source
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
     // Return the number of sections.
-    return 4;
+    return 5;
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
@@ -116,21 +163,117 @@
         return 1;
     else if (section == 2)
         return 1;
+    else if (section == 3)
+        return 1;
     else
         return self.arrayDevices.count;
 }
 
+/*
 - (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section
 {
     if (section == 0)
         return @"INFORMATION";
     else if (section == 1)
         return @"LOGIN";
-    else if (section == 2)
-        return @"CURRENT LOCATION";
     else if (section == 3)
+        return @"CURRENT LOCATION";
+    else if (section == 4)
         return @"REGISTERED DEVICE";
     return @"";
+}
+*/
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
+{
+    return 44.0;
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
+{
+    UIView *cell = nil;
+    
+    cell = [tableView dequeueReusableCellWithIdentifier:@"CustomSectionHeader"];
+    UILabel* label = (UILabel*) [cell viewWithTag:100];
+    UIButton* button = (UIButton*) [cell viewWithTag:101];
+    
+    switch (section)
+    {
+        case 0:
+            label.text = @"INFORMATION";
+            [button setHidden:TRUE];
+            break;
+        case 1:
+            label.text = @"LOGIN";
+            [button setHidden:TRUE];
+            break;
+        case 2:
+            label.text = @"ADVANCED-RECEIVER";
+            self.buttonStart = (UIButton*) [cell viewWithTag:101];
+            [self.buttonStart setHidden:FALSE];
+            [self.buttonStart setTitle:@"Start" forState:UIControlStateNormal];
+            [self.buttonStart removeTarget:self action:@selector(onStartClicked:) forControlEvents:UIControlEventTouchUpInside];
+            [self.buttonStart addTarget:self action:@selector(onStartClicked:) forControlEvents:UIControlEventTouchUpInside];
+            break;
+        case 3:
+            label.text = @"CURRENT LOCATION";
+            [button setHidden:FALSE];
+            [button setTitle:@"Assign Tag" forState:UIControlStateNormal];
+            [button removeTarget:self action:@selector(onAssignTag:) forControlEvents:UIControlEventTouchUpInside];
+            [button addTarget:self action:@selector(onAssignTag:) forControlEvents:UIControlEventTouchUpInside];
+            break;
+        case 4:
+            label.text = @"REGISTERED DEVICE";
+            [button setHidden:TRUE];
+            break;
+        default:
+            cell = nil;
+    }
+    
+    return cell;
+}
+
+- (void)onStartClicked:(id)sender
+{
+    if (bIsReceiveMode)
+    {
+        [self.buttonStart setTitle:@"Start" forState:UIControlStateNormal];
+        bIsReceiveMode = NO;
+        
+        [self.scanManager stopReceiveMode];
+    }
+    else
+    {
+        [self.buttonStart setTitle:@"Stop" forState:UIControlStateNormal];
+        bIsReceiveMode = YES;
+        
+        [self.scanManager startReceiveMode];
+    }
+}
+
+- (void) onTimer:(id)sender
+{
+}
+
+- (void) onAssignTag:(id)sender
+{
+    UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attension"
+                                                    message:[NSString stringWithFormat:@"A tag(%@) has already been assigned to this device. \n Do you want to assign another tag?", [UserContext sharedUserContext].currentLocationId]
+                                                   delegate:self
+                                          cancelButtonTitle:@"Cancel"
+                                          otherButtonTitles:@"OK", nil];
+    [alert show];
+}
+
+- (void) alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 0)
+    {
+    }
+    else
+    {
+        ;
+    }
 }
 
 
@@ -157,13 +300,19 @@
         [btnLogout removeTarget:self action:@selector(onLogout:) forControlEvents:UIControlEventTouchUpInside];
         [btnLogout addTarget:self action:@selector(onLogout:) forControlEvents:UIControlEventTouchUpInside];
     }
-    else if (indexPath.section == 2)
+    else if (indexPath.section == 2 )
+    {
+        cell = [tableView dequeueReusableCellWithIdentifier:@"receivercell"];
+        self.labelReceiverId = (UILabel *)[cell viewWithTag:100];
+        [self.labelReceiverId setText:[AppContext sharedAppContext].receiverId];
+    }
+    else if (indexPath.section == 3)
     {
         cell = [tableView dequeueReusableCellWithIdentifier:@"locationcell"];
         UILabel *labelLocation = (UILabel *)[cell viewWithTag:100];
         labelLocation.text = [UserContext sharedUserContext].currentLocation;
     }
-    else if (indexPath.section == 3)
+    else if (indexPath.section == 4)
     {
         DeviceCell *deviceCell = [tableView dequeueReusableCellWithIdentifier:@"devicecell"];
         NSDictionary *info = [self.arrayDevices objectAtIndex:indexPath.row];
@@ -175,6 +324,19 @@
     // Configure the cell...
     
     return cell;
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    if(indexPath.section == 2)
+    {
+        if (indexPath.row == 0)
+        {
+            [self performSegueWithIdentifier:@"toReceiverIdEdit" sender:self];
+        }
+    }
+    
+    return;
 }
 
 
@@ -216,7 +378,7 @@
 }
 */
 
-/*
+
 #pragma mark - Navigation
 
 // In a storyboard-based application, you will often want to do a little preparation before navigation
@@ -224,8 +386,20 @@
 {
     // Get the new view controller using [segue destinationViewController].
     // Pass the selected object to the new view controller.
+    if ([segue.identifier isEqualToString:@"toReceiverIdEdit"]) {
+        EditReceiverIDViewController *controller = [segue destinationViewController];
+        controller.delegate = self;
+        controller.receiverID = self.labelReceiverId.text;
+    }
 }
-*/
+
+#pragma mark - EditReceiverIDDelegate
+- (void) didGetReceiverID:(NSString *) receiverID
+{
+    [[AppContext sharedAppContext] setReceiverId:receiverID];
+    [self.labelReceiverId setText:receiverID];
+}
+
 
 #pragma mark - Actions
 - (IBAction)onLogout:(id)sender

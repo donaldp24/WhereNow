@@ -12,9 +12,12 @@
 
 @property (nonatomic, retain) NSString *cleanDeviceToken;
 @property (nonatomic, retain) NSString *locationId;
+@property (nonatomic, retain) NSString *receiverId;
 
 + (AppContext *)sharedAppContext;
 
 + (NSURL *)applicationDocumentsDirectory;
+
+- (void)setReceiverId:(NSString *)currentReceiverId;
 
 @end

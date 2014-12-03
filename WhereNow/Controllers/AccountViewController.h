@@ -7,7 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "EditReceiverIDViewController.h"
+#import "ScanManager.h"
 
-@interface AccountViewController : UITableViewController
+@interface AccountViewController : UITableViewController <ScanManagerDelegate>
+
+
 
 @end

@@ -33,7 +33,7 @@ static UserContext *_sharedUserContext = nil;
         _tokenId = @"";
         _currentLocation = @"";
         _currentLocationId = @"";
-        
+
         [self load];
     }
     return self;
