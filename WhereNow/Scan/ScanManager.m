@@ -13,12 +13,16 @@
 #define kScanForEveryCertainSecs     1
 #define kScanPeriodOnce             13
 #define kScanTimout                 13
-#define kScanReceive                15
+#define kScanReceive                22
 
 static ScanManager *_sharedScanManager = nil;
 
 @implementation ScannedBeacon
 
+
+@end
+
+@implementation ReceivedBeacon
 
 @end
 
@@ -387,53 +391,60 @@ static ScanManager *_sharedScanManager = nil;
                 newBeacon.lastScannedTime = [self getCurrentMilliTime];
                 [self.currScannedBeacons addObject:newBeacon];
             }
-        }
-    }
-    
-    if (self.isReceiveStarted)
-    {
-        for (CLBeacon *beacon in beacons) {
-            int beaconMajor = [beacon.major intValue];
-            int beaconMinor = [beacon.minor intValue];
-            int rssi = (int)beacon.rssi;
             
-            if (![self isVicinity:beacon])
+            if (self.isReceiveStarted)
             {
-                // not
-            }
-            else
-            {
-                // add it to vicinity array
-                // check exist
-                BOOL isExist = NO;
-                for (ScannedBeacon *scannedBeacon in self.prevReceivedBeacons) {
-                    if ([scannedBeacon.beacon.major intValue] == beaconMajor && [scannedBeacon.beacon.minor intValue] == beaconMinor)
+                isExist = NO;
+                for (ReceivedBeacon *receivedBeacon in self.prevReceivedBeacons) {
+                    if ([receivedBeacon.beacon.major intValue] == beaconMajor && [receivedBeacon.beacon.minor intValue] == beaconMinor)
                     {
                         isExist = YES;
-                        scannedBeacon.lastScannedTime = [self getCurrentMilliTime];
-                        break;                        
+                        receivedBeacon.lastScannedTime = [self getCurrentMilliTime];
+                        break;
                     }
                 }
                 if (!isExist)
                 {
-                    ScannedBeacon *newBeacon = [[ScannedBeacon alloc] init];
+                    ReceivedBeacon *newBeacon = [[ReceivedBeacon alloc] init];
                     newBeacon.beacon = beacon;
+                    newBeacon.isVisible = VISIBLE_COMEIN;
                     newBeacon.lastScannedTime = [self getCurrentMilliTime];
                     [self.prevReceivedBeacons addObject:newBeacon];
                 }
             }
         }
-        
+    }
+    
+    NSLog(@"get curr time");
+    if (self.isReceiveStarted)
+    {
         [self.currReceivedBeacons removeAllObjects];
-        for (ScannedBeacon *item in self.prevReceivedBeacons)
+        NSMutableArray *removeReceiveBeacon = [[NSMutableArray alloc] init];
+        for (ReceivedBeacon *item in self.prevReceivedBeacons)
         {
             long currTime = [self getCurrentMilliTime];
-            if (currTime - item.lastScannedTime > kScanReceive * 1000)
+            
+            switch (item.isVisible)
             {
-                [self.currReceivedBeacons addObject:item];
-                
-                NSLog(@"---------------%d-----------%d", item.beacon.major, item.beacon.minor);
+                case VISIBLE_COMEIN:
+                    [self.currReceivedBeacons addObject:item];
+                    item.isVisible = VISIBLE_KEEP;
+                    break;
+                case VISIBLE_KEEP:
+                    if (currTime - item.lastScannedTime > kScanReceive * 1000)
+                    {
+                        item.isVisible = VISIBLE_GOOUT;
+                        [self.currReceivedBeacons addObject:item];
+                        [removeReceiveBeacon addObject:item];
+                    }
+                    break;
             }
+        }
+        
+        for (ReceivedBeacon *item in removeReceiveBeacon)
+        {
+            if (item.isVisible == VISIBLE_GOOUT)
+                [self.prevReceivedBeacons removeObject:item];
         }
     }
     
@@ -442,8 +453,7 @@ static ScanManager *_sharedScanManager = nil;
         
         // check time
         //if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive) {
-  
-        NSLog(@"get curr time");
+        
             long currTime = [self getCurrentMilliTime];
             if (currTime - lastDelegateTime > kScanPeriodOnce * 1000)
             {

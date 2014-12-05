@@ -134,16 +134,16 @@
 
 - (void) didReceiveBeaconFound:(NSMutableArray *)arrBeacons
 {
-    for (ScannedBeacon *item in arrBeacons)
+    for (ReceivedBeacon *item in arrBeacons)
     {
-        [[ServerManager sharedManager] sendReceivedDevices:[NSString stringWithFormat:@"%d", [item.beacon.minor intValue]] receiver: self.labelReceiverId.text
+        NSLog(@"%d-----------%d------------%d", [item.beacon.minor intValue], [self.labelReceiverId.text intValue], item.isVisible);
+        
+        [[ServerManager sharedManager] sendReceivedDevices:[NSString stringWithFormat:@"%d", [item.beacon.minor intValue]] receiver: self.labelReceiverId.text isvisible:item.isVisible
         success:^(BOOL bRet) {
         }
         failure:^(NSString * msg) {
         }];
     }
-    
-    [self.scanManager clearReceiveArray];
 }
 
 #pragma mark - Table view data source
@@ -272,7 +272,7 @@
     }
     else
     {
-        ;
+        //[self performSegueWithIdentifier:@"toAssignTag" sender:self];
     }
 }
 

@@ -734,11 +734,15 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
--(void) sendReceivedDevices:(NSString *)Minor receiver:(NSString *)receiver success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure
+-(void) sendReceivedDevices:(NSString *)Minor receiver:(NSString *)receiver isvisible:(int)isvisible success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure
 {
     DEF_SERVERMANAGER
     
-    NSDictionary *params = @{@"Minor":Minor, @"receiver":receiver};
+    NSDictionary *params;
+    if (isvisible != 2)
+        params = @{@"Minor":Minor, @"receiver":receiver};
+    else
+        params = @{@"Minor":Minor, @"receiver":receiver, @"visible":@"false"};
     
     NSString *methodName = kMethodForReceivedDevice;
     

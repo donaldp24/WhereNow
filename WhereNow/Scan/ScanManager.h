@@ -18,10 +18,24 @@ typedef NS_ENUM(NSUInteger, ScanMode) {
     ScanModeNearme
 };
 
+typedef NS_ENUM(NSUInteger, VisibleMode) {
+    VISIBLE_COMEIN = 0,
+    VISIBLE_KEEP = 1,
+    VISIBLE_GOOUT = 2
+};
+
 @interface ScannedBeacon : NSObject
 
 @property (nonatomic, retain) CLBeacon *beacon;
 @property (nonatomic) long lastScannedTime;
+
+@end
+
+@interface ReceivedBeacon : NSObject
+
+@property (nonatomic, retain) CLBeacon *beacon;
+@property (nonatomic) long lastScannedTime;
+@property (nonatomic) int isVisible; // 0 : come in     1 : keep    2 : go out
 
 @end
 

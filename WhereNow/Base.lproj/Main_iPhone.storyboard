@@ -1401,6 +1401,7 @@
                     <connections>
                         <outlet property="indicator" destination="8Ob-WS-NWe" id="29m-js-wVh"/>
                         <segue destination="8tf-YP-PGe" kind="push" identifier="toReceiverIdEdit" id="eA9-A2-cc5"/>
+                        <segue destination="HvY-j9-88R" kind="push" identifier="toAssignTag" id="u5S-ch-tBX"/>
                     </connections>
                 </tableViewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="lXh-eK-4DG" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1445,7 +1446,26 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="zDM-TB-D1A" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1179" y="2387"/>
+            <point key="canvasLocation" x="1167" y="2263"/>
+        </scene>
+        <!--Assign Tag-->
+        <scene sceneID="6Ic-Ra-Tes">
+            <objects>
+                <viewController id="HvY-j9-88R" customClass="AccountViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="iah-Fp-mJ2"/>
+                        <viewControllerLayoutGuide type="bottom" id="4oC-B6-BgQ"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="b72-p4-0Cl">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    </view>
+                    <navigationItem key="navigationItem" title="Assign Tag" id="lom-7r-GBj"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="hp2-vy-gNa" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1170" y="2916"/>
         </scene>
     </scenes>
     <resources>

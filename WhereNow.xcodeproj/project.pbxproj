@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8413BE6C1A2E226200CB62C8 /* EditReceiverIDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */; };
+		845621C51A2FC6BD006FA007 /* AssignTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 845621C41A2FC6BD006FA007 /* AssignTagViewController.m */; };
 		D00E3EB2198CD89B00AFE9EC /* RecentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EB1198CD89B00AFE9EC /* RecentViewController.m */; };
 		D00E3EC1198CE63500AFE9EC /* OverviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC0198CE63500AFE9EC /* OverviewViewController.m */; };
 		D00E3EC4198CF5A200AFE9EC /* EquipmentTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC3198CF5A200AFE9EC /* EquipmentTabBarController.m */; };
@@ -145,6 +146,8 @@
 /* Begin PBXFileReference section */
 		8413BE6A1A2E226200CB62C8 /* EditReceiverIDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditReceiverIDViewController.h; sourceTree = "<group>"; };
 		8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditReceiverIDViewController.m; sourceTree = "<group>"; };
+		845621C31A2FC6BD006FA007 /* AssignTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssignTagViewController.h; sourceTree = "<group>"; };
+		845621C41A2FC6BD006FA007 /* AssignTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssignTagViewController.m; sourceTree = "<group>"; };
 		D00E3EB0198CD89B00AFE9EC /* RecentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentViewController.h; sourceTree = "<group>"; };
 		D00E3EB1198CD89B00AFE9EC /* RecentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentViewController.m; sourceTree = "<group>"; };
 		D00E3EBF198CE63500AFE9EC /* OverviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverviewViewController.h; sourceTree = "<group>"; };
@@ -777,6 +780,8 @@
 			isa = PBXGroup;
 			children = (
 				D03D826619BBFFF900D8CA91 /* EquipmentDetails */,
+				845621C31A2FC6BD006FA007 /* AssignTagViewController.h */,
+				845621C41A2FC6BD006FA007 /* AssignTagViewController.m */,
 				D0C9CF3C1989E0F500221268 /* LoginViewController.h */,
 				D0C9CF3D1989E0F500221268 /* LoginViewController.m */,
 				D0C9CF3E1989E0F500221268 /* MainTabBarController.h */,
@@ -1000,6 +1005,7 @@
 				D04A38A0198F84740063554C /* SBJsonUTF8Stream.m in Sources */,
 				D0130ACB19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.m in Sources */,
 				D0C9CF461989E0F500221268 /* MainTabBarController.m in Sources */,
+				845621C51A2FC6BD006FA007 /* AssignTagViewController.m in Sources */,
 				D033E131198912FC0034EBC8 /* MASLayoutConstraint.m in Sources */,
 				D083B1351989EFC8006E006B /* SwipeTableView.m in Sources */,
 				D0A1D2B5198F88F700167093 /* UIManager.m in Sources */,
