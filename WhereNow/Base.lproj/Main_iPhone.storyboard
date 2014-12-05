@@ -1451,21 +1451,82 @@
         <!--Assign Tag-->
         <scene sceneID="6Ic-Ra-Tes">
             <objects>
-                <viewController id="HvY-j9-88R" customClass="AccountViewController" sceneMemberID="viewController">
+                <viewController id="HvY-j9-88R" customClass="AssignTagViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="iah-Fp-mJ2"/>
                         <viewControllerLayoutGuide type="bottom" id="4oC-B6-BgQ"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="b72-p4-0Cl">
+                    <view key="view" contentMode="scaleToFill" id="b72-p4-0Cl" userLabel="topSuperview">
                         <rect key="frame" x="0.0" y="0.0" width="320" height="568"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="To assign a tag to this device place the tag on to the surface of the screen" textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="GLs-vR-LgX">
+                                <rect key="frame" x="25" y="83" width="263" height="75"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEDICATED TAG" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dSh-m1-ytk">
+                                <rect key="frame" x="16" y="179" width="124" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="22" sectionFooterHeight="22" translatesAutoresizingMaskIntoConstraints="NO" id="rcu-KG-3jC">
+                                <rect key="frame" x="0.0" y="205" width="320" height="363"/>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <prototypes>
+                                    <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tagcell" id="4H3-sD-elH">
+                                        <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="4H3-sD-elH" id="bLa-Xg-cas">
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <imageView userInteractionEnabled="NO" tag="100" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="icon_checkmark_nonchecked.png" translatesAutoresizingMaskIntoConstraints="NO" id="yAD-a0-D0p">
+                                                    <rect key="frame" x="10" y="7" width="30" height="30"/>
+                                                </imageView>
+                                                <label opaque="NO" userInteractionEnabled="NO" tag="101" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" text="Tag 1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="HFQ-g9-N0g">
+                                                    <rect key="frame" x="48" y="7" width="224" height="30"/>
+                                                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                                    <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
+                                                    <nil key="highlightedColor"/>
+                                                </label>
+                                                <imageView userInteractionEnabled="NO" tag="102" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" misplaced="YES" image="signal_0.png" translatesAutoresizingMaskIntoConstraints="NO" id="y3y-rE-TOu">
+                                                    <rect key="frame" x="280" y="7" width="30" height="30"/>
+                                                </imageView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="yAD-a0-D0p" firstAttribute="top" secondItem="bLa-Xg-cas" secondAttribute="top" constant="7" id="3Lq-Kh-SCe"/>
+                                                <constraint firstItem="HFQ-g9-N0g" firstAttribute="leading" secondItem="yAD-a0-D0p" secondAttribute="trailing" constant="8" id="3v2-3U-uCG"/>
+                                                <constraint firstAttribute="bottom" secondItem="y3y-rE-TOu" secondAttribute="bottom" constant="7" id="6DO-5c-DeA"/>
+                                                <constraint firstAttribute="bottom" secondItem="yAD-a0-D0p" secondAttribute="bottom" constant="7" id="L3V-wE-wIH"/>
+                                                <constraint firstItem="yAD-a0-D0p" firstAttribute="leading" secondItem="bLa-Xg-cas" secondAttribute="leading" constant="10" id="ULg-Ww-qbW"/>
+                                                <constraint firstItem="y3y-rE-TOu" firstAttribute="top" secondItem="bLa-Xg-cas" secondAttribute="top" constant="7" id="Uo0-nU-9tQ"/>
+                                                <constraint firstItem="y3y-rE-TOu" firstAttribute="leading" secondItem="HFQ-g9-N0g" secondAttribute="trailing" constant="8" id="Vb8-V5-Vk0"/>
+                                                <constraint firstItem="HFQ-g9-N0g" firstAttribute="leading" secondItem="yAD-a0-D0p" secondAttribute="trailing" constant="8" id="W3Y-VK-5Ki"/>
+                                                <constraint firstAttribute="trailing" secondItem="y3y-rE-TOu" secondAttribute="trailing" constant="10" id="XGa-wr-22d"/>
+                                                <constraint firstItem="HFQ-g9-N0g" firstAttribute="top" secondItem="bLa-Xg-cas" secondAttribute="top" constant="7" id="iT1-TG-uWl"/>
+                                                <constraint firstItem="y3y-rE-TOu" firstAttribute="leading" secondItem="HFQ-g9-N0g" secondAttribute="trailing" constant="8" id="mpe-QO-ehg"/>
+                                                <constraint firstAttribute="bottom" secondItem="HFQ-g9-N0g" secondAttribute="bottom" constant="7" id="s56-TP-5Zb"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                    </tableViewCell>
+                                </prototypes>
+                            </tableView>
+                        </subviews>
+                        <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <constraints>
+                            <constraint firstAttribute="bottom" secondItem="rcu-KG-3jC" secondAttribute="bottom" id="gdU-Le-JGN"/>
+                            <constraint firstItem="rcu-KG-3jC" firstAttribute="leading" secondItem="b72-p4-0Cl" secondAttribute="leading" id="hdE-zA-ucM"/>
+                            <constraint firstAttribute="trailing" secondItem="rcu-KG-3jC" secondAttribute="trailing" id="ktK-CQ-Fu3"/>
+                            <constraint firstItem="rcu-KG-3jC" firstAttribute="top" secondItem="b72-p4-0Cl" secondAttribute="top" constant="205" id="uHS-NX-kij"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Assign Tag" id="lom-7r-GBj"/>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="hp2-vy-gNa" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="1170" y="2916"/>
+            <point key="canvasLocation" x="1192" y="2925"/>
         </scene>
     </scenes>
     <resources>
@@ -1474,6 +1535,7 @@
         <image name="background" width="320" height="480"/>
         <image name="favoriteicon" width="30" height="30"/>
         <image name="historyicon" width="30" height="30"/>
+        <image name="icon_checkmark_nonchecked.png" width="25" height="26"/>
         <image name="logouticon" width="30" height="30"/>
         <image name="movepercent10" width="32" height="32"/>
         <image name="movepercent4" width="32" height="32"/>
@@ -1486,6 +1548,7 @@
         <image name="nearmeicon_halflocated" width="30" height="30"/>
         <image name="overviewicon" width="30" height="30"/>
         <image name="searchicon" width="30" height="30"/>
+        <image name="signal_0.png" width="128" height="128"/>
         <image name="trashicon" width="30" height="30"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

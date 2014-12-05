@@ -22,8 +22,8 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
-    btnBack = [UIManager defaultBackButton:self action:@selector(onBack)];
-    self.navigationItem.leftItemsSupplementBackButton = btnBack;
+    btnBack = [UIManager defaultBackButton:self action:@selector(onBack:)];
+    self.navigationItem.leftBarButtonItem = btnBack;    
 }
 
 - (void)didReceiveMemoryWarning {
