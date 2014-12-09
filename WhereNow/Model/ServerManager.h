@@ -29,6 +29,7 @@
 #define kMethodForDeviceList         @"getregistereddevice"
 #define kMethodForCheckDeviceRemoved    @"isdeviceremoved"
 #define kMethodForReceivedDevice    @"";
+#define kMethodForSetPhoneBeacon @"setphonebeacon"
 
 #define DEF_SERVERMANAGER   ServerManager *manager = [ServerManager sharedManager];
 
@@ -68,6 +69,7 @@ typedef void (^ServerManagerRequestHandlerBlock)(NSString *, NSDictionary *, NSE
 
 - (void)checkDeviceRemoved:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId success:(void (^)(BOOL removed))success failure:(void (^)(NSString *))failure;
 
+- (void) setPhoneBeacon:(NSString *)sessionid tid:(NSString *)tid uuid:(NSString *) uuid major:(NSString *)major minor:(NSString *)minor success:(void (^)(BOOL success)) success failure:(void (^)(NSString *)) failure;
 
 /**
  *

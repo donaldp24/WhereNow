@@ -17,6 +17,8 @@
 @property(nonatomic) NSString *tagname;
 @property(nonatomic) int signal;
 @property(nonatomic) int minor;
+@property(nonatomic) int major;
+@property(nonatomic) NSString *uuid;
 
 @end
 

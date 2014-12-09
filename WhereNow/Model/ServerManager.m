@@ -60,11 +60,9 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }
     
     NSURL  *url = nil;
-    if (methodName.length != 0)
-        url = [NSURL URLWithString:API_URL];
-    else
-        url = [NSURL URLWithString:@"http://dev.scmedical.com.au/ble_entry.php"];
+    url = [NSURL URLWithString:API_URL];
     NSLog(@"requesting : %@%@\n%@", url, methodName, params);
+    
 	AFHTTPClient  *httpClient = [[AFHTTPClient alloc] initWithBaseURL:url];
     
     void (^successHandler)(AFHTTPRequestOperation *operation, id responseObject)  = ^(AFHTTPRequestOperation *operation, id responseObject)
@@ -787,6 +785,47 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
                 success(YES);
         }
     }];
+}
+
+- (void) setPhoneBeacon:(NSString *)sessionid tid:(NSString *)tid uuid:(NSString *) uuid major:(NSString *)major minor:(NSString *)minor success:(void (^)(BOOL success)) success failure:(void (^)(NSString *)) failure;
+{
+    DEF_SERVERMANAGER;
+    
+    NSDictionary *params = @{@"tid":tid, @"uuid":uuid, @"major":major, @"minor":minor};
+    NSString *methodName = [NSString stringWithFormat:@"%@%@/%@.json", kAPIBaseUrlV2, sessionid, kMethodForSetPhoneBeacon];
+    
+    [manager postMethod:methodName params:params handler:^(NSString *responseStr, NSDictionary *response, NSError *error){
+        
+        if (error != nil)
+        {
+            failure([error localizedDescription]);
+            return;
+        }
+        
+        if (response == nil)
+        {
+            if ([responseStr isEqualToString:@"Invalid Parameters\n"])
+            {
+                failure(@"Invalid Parameters!");
+            }
+            else if ([responseStr isEqualToString:@"Invalid Beacon\n"])
+            {
+                failure(@"Invalid Beacon!");
+            }
+            else
+            {
+                failure(@"Invalid response");
+            }
+            return;
+        }
+        else
+        {
+            NSString *strActive = [response objectForKey:@"STATUS"];
+            success(YES);
+        }
+    }];
+    
+    return;
 }
 
 - (void)checkDeviceRemoved:(NSString *)sessionId userId:(NSString *)userId tokenId:(NSString *)tokenId success:(void (^)(BOOL))success failure:(void (^)(NSString *))failure
