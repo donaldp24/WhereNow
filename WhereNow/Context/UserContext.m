@@ -172,6 +172,7 @@ static UserContext *_sharedUserContext = nil;
 - (void)setCurrTagMinor:(NSNumber *)currTagMinor
 {
     _currTagMinor = currTagMinor;
+    [self save];
 }
 
 @end
