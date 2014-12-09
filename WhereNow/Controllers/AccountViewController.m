@@ -265,7 +265,7 @@
     else
     {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Attension"
-                                                        message:[NSString stringWithFormat:@"A tag(%@) has already been assigned to this device. \n Do you want to assign another tag?", [UserContext sharedUserContext].currentLocationId]
+                                                        message:[NSString stringWithFormat:@"A tag(%d) has already been assigned to this device. \n Do you want to assign another tag?", [[UserContext sharedUserContext].currTagMinor intValue]]
                                                        delegate:self
                                               cancelButtonTitle:@"Cancel"
                                               otherButtonTitles:@"OK", nil];

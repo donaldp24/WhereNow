@@ -9,14 +9,15 @@
 /* Begin PBXBuildFile section */
 		8413BE6C1A2E226200CB62C8 /* EditReceiverIDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */; };
 		845621C51A2FC6BD006FA007 /* AssignTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 845621C41A2FC6BD006FA007 /* AssignTagViewController.m */; };
-		84A4004E1A31FE6D00079FBC /* icon_checkmark_checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4004C1A31FE6D00079FBC /* icon_checkmark_checked@2x.png */; };
-		84A4004F1A31FE6D00079FBC /* icon_checkmark_nonchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4004D1A31FE6D00079FBC /* icon_checkmark_nonchecked@2x.png */; };
+		84955DAC1A36636800AAB038 /* icon_checkmark_checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */; };
+		84955DAD1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAB1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png */; };
 		84A400621A3201AB00079FBC /* signal_0.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4005C1A3201AB00079FBC /* signal_0.png */; };
 		84A400631A3201AB00079FBC /* signal_1.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4005D1A3201AB00079FBC /* signal_1.png */; };
 		84A400641A3201AB00079FBC /* signal_2.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4005E1A3201AB00079FBC /* signal_2.png */; };
 		84A400651A3201AB00079FBC /* signal_3.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A4005F1A3201AB00079FBC /* signal_3.png */; };
 		84A400661A3201AB00079FBC /* signal_4.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A400601A3201AB00079FBC /* signal_4.png */; };
 		84A400671A3201AB00079FBC /* signal_5.png in Resources */ = {isa = PBXBuildFile; fileRef = 84A400611A3201AB00079FBC /* signal_5.png */; };
+		84A4006A1A3265FB00079FBC /* AssignTagTableViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 84A400691A3265FB00079FBC /* AssignTagTableViewCell.m */; };
 		D00E3EB2198CD89B00AFE9EC /* RecentViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EB1198CD89B00AFE9EC /* RecentViewController.m */; };
 		D00E3EC1198CE63500AFE9EC /* OverviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC0198CE63500AFE9EC /* OverviewViewController.m */; };
 		D00E3EC4198CF5A200AFE9EC /* EquipmentTabBarController.m in Sources */ = {isa = PBXBuildFile; fileRef = D00E3EC3198CF5A200AFE9EC /* EquipmentTabBarController.m */; };
@@ -156,14 +157,16 @@
 		8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditReceiverIDViewController.m; sourceTree = "<group>"; };
 		845621C31A2FC6BD006FA007 /* AssignTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssignTagViewController.h; sourceTree = "<group>"; };
 		845621C41A2FC6BD006FA007 /* AssignTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssignTagViewController.m; sourceTree = "<group>"; };
-		84A4004C1A31FE6D00079FBC /* icon_checkmark_checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_checked@2x.png"; path = "WhereNow/Images/icon_checkmark_checked@2x.png"; sourceTree = "<group>"; };
-		84A4004D1A31FE6D00079FBC /* icon_checkmark_nonchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_nonchecked@2x.png"; path = "WhereNow/Images/icon_checkmark_nonchecked@2x.png"; sourceTree = "<group>"; };
+		84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_checked@2x.png"; path = "WhereNow/Images/icon_checkmark_checked@2x.png"; sourceTree = "<group>"; };
+		84955DAB1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_nonchecked@2x.png"; path = "WhereNow/Images/icon_checkmark_nonchecked@2x.png"; sourceTree = "<group>"; };
 		84A4005C1A3201AB00079FBC /* signal_0.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_0.png; path = WhereNow/Images/signal_0.png; sourceTree = "<group>"; };
 		84A4005D1A3201AB00079FBC /* signal_1.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_1.png; path = WhereNow/Images/signal_1.png; sourceTree = "<group>"; };
 		84A4005E1A3201AB00079FBC /* signal_2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_2.png; path = WhereNow/Images/signal_2.png; sourceTree = "<group>"; };
 		84A4005F1A3201AB00079FBC /* signal_3.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_3.png; path = WhereNow/Images/signal_3.png; sourceTree = "<group>"; };
 		84A400601A3201AB00079FBC /* signal_4.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_4.png; path = WhereNow/Images/signal_4.png; sourceTree = "<group>"; };
 		84A400611A3201AB00079FBC /* signal_5.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = signal_5.png; path = WhereNow/Images/signal_5.png; sourceTree = "<group>"; };
+		84A400681A3265FB00079FBC /* AssignTagTableViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssignTagTableViewCell.h; sourceTree = "<group>"; };
+		84A400691A3265FB00079FBC /* AssignTagTableViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssignTagTableViewCell.m; sourceTree = "<group>"; };
 		D00E3EB0198CD89B00AFE9EC /* RecentViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RecentViewController.h; sourceTree = "<group>"; };
 		D00E3EB1198CD89B00AFE9EC /* RecentViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RecentViewController.m; sourceTree = "<group>"; };
 		D00E3EBF198CE63500AFE9EC /* OverviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OverviewViewController.h; sourceTree = "<group>"; };
@@ -432,14 +435,14 @@
 		84A4004B1A31FE5A00079FBC /* Images */ = {
 			isa = PBXGroup;
 			children = (
+				84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */,
+				84955DAB1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png */,
 				84A4005C1A3201AB00079FBC /* signal_0.png */,
 				84A4005D1A3201AB00079FBC /* signal_1.png */,
 				84A4005E1A3201AB00079FBC /* signal_2.png */,
 				84A4005F1A3201AB00079FBC /* signal_3.png */,
 				84A400601A3201AB00079FBC /* signal_4.png */,
 				84A400611A3201AB00079FBC /* signal_5.png */,
-				84A4004C1A31FE6D00079FBC /* icon_checkmark_checked@2x.png */,
-				84A4004D1A31FE6D00079FBC /* icon_checkmark_nonchecked@2x.png */,
 			);
 			name = Images;
 			sourceTree = "<group>";
@@ -804,6 +807,8 @@
 				D039E89A19DC0D0D00474C1F /* FoundEquipmentTableViewCell.m */,
 				D06E539619EE8D30003D6471 /* DeviceCell.h */,
 				D06E539719EE8D30003D6471 /* DeviceCell.m */,
+				84A400681A3265FB00079FBC /* AssignTagTableViewCell.h */,
+				84A400691A3265FB00079FBC /* AssignTagTableViewCell.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -971,9 +976,10 @@
 				84A400621A3201AB00079FBC /* signal_0.png in Resources */,
 				D034F3831988CAF4004DE04E /* Images.xcassets in Resources */,
 				D03AC29319BFE8500024BF10 /* iTunesArtwork in Resources */,
+				84955DAD1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png in Resources */,
 				84A400641A3201AB00079FBC /* signal_2.png in Resources */,
+				84955DAC1A36636800AAB038 /* icon_checkmark_checked@2x.png in Resources */,
 				D0273AB81A11AD1E0063451C /* bell.wav in Resources */,
-				84A4004F1A31FE6D00079FBC /* icon_checkmark_nonchecked@2x.png in Resources */,
 				84A400671A3201AB00079FBC /* signal_5.png in Resources */,
 				D034F37B1988CAF4004DE04E /* Main_iPhone.storyboard in Resources */,
 				D0551D6E19BEAEDB0066DF53 /* CommonLocationTableViewCell.xib in Resources */,
@@ -981,7 +987,6 @@
 				D034F3721988CAF4004DE04E /* InfoPlist.strings in Resources */,
 				84A400631A3201AB00079FBC /* signal_1.png in Resources */,
 				D0130ACC19BD5AFD00A5EFFC /* CommonEquipmentTableViewCell.xib in Resources */,
-				84A4004E1A31FE6D00079FBC /* icon_checkmark_checked@2x.png in Resources */,
 				84A400651A3201AB00079FBC /* signal_3.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -1056,6 +1061,7 @@
 				D09D7F8D198BCD2700F8904B /* AppContext.m in Sources */,
 				D033E135198912FC0034EBC8 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
 				D04A3898198F84740063554C /* SBJsonStreamParser.m in Sources */,
+				84A4006A1A3265FB00079FBC /* AssignTagTableViewCell.m in Sources */,
 				D0BD1051198B5C3E0076800E /* UserContext.m in Sources */,
 				D033E12E198912FC0034EBC8 /* MASCompositeConstraint.m in Sources */,
 				D0C9CF471989E0F500221268 /* NearMeViewController.m in Sources */,

@@ -30,10 +30,13 @@ static ScanManager *_sharedScanManager = nil;
 @interface ScanManager() {
     NSTimer *timer;
     NSTimer *timerReceive;
+    NSTimer *timerAssign;
     long scanStartedTime;
     long scanEndedTime;
     long scanReceivedStartedTime;
     long scanReceivedEndedTime;
+    long scanAssignStartedTime;
+    long scanAssignEndedTime;
     int scanningMethod;
     long lastDelegateTime;
 }
@@ -42,11 +45,14 @@ static ScanManager *_sharedScanManager = nil;
 @property (retain, nonatomic) CLLocationManager *locationManager;
 @property (nonatomic) BOOL isStarted;
 @property (nonatomic) BOOL isReceiveStarted;
+@property (nonatomic) BOOL isAssignStarted;
 
 @property (nonatomic, retain) NSMutableArray *prevScannedBeacons;
 @property (nonatomic, retain) NSMutableArray *currScannedBeacons;
 @property (nonatomic, retain) NSMutableArray *prevReceivedBeacons;
 @property (nonatomic, retain) NSMutableArray *currReceivedBeacons;
+
+@property (nonatomic, retain) NSMutableArray *currAssignBeacons;
 
 // sticknfind
 @property (nonatomic, retain) LeDeviceManager *snfDeviceManager;
@@ -61,6 +67,7 @@ static ScanManager *_sharedScanManager = nil;
     {
         _sharedScanManager = [[ScanManager alloc] initWithDelegate:self];
         _sharedScanManager = [[ScanManager alloc] initWithDelegateReceive:self];
+        _sharedScanManager = [[ScanManager alloc] initWithDelegateAssign:self];
     }
     return _sharedScanManager;
 }
@@ -101,12 +108,26 @@ static ScanManager *_sharedScanManager = nil;
     return self;
 }
 
+- (id)initWithDelegateAssign:(id<ScanManagerDelegate>)delegateAssign
+{
+    self = [super init];
+    if (self) {
+        //
+    }
+    
+    self.delegateAssign = delegateAssign;
+    
+    return self;
+}
+
 - (void)initMembers
 {
     self.isStarted = NO;
     self.isReceiveStarted = NO;
+    self.isAssignStarted = NO;
     timer = nil;
     timerReceive = nil;
+    timerAssign = nil;
     
     scanningMethod = kScanForEveryCertainSecs;
     self.scanMode = ScanModeNormal;
@@ -155,6 +176,19 @@ static ScanManager *_sharedScanManager = nil;
     timerReceive = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerReceiveProc:) userInfo:nil repeats:YES];
 }
 
+- (void)startAssignMode
+{
+    if (self.isAssignStarted)
+        return;
+    
+    self.isAssignStarted = YES;
+    scanAssignStartedTime = scanAssignEndedTime = [self getCurrentMilliTime];
+    
+    self.currAssignBeacons = [[NSMutableArray alloc] init];
+    
+    timerAssign = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerAssignProc:) userInfo:nil repeats:YES];
+}
+
 - (void)stop
 {
     if (timer)
@@ -173,6 +207,15 @@ static ScanManager *_sharedScanManager = nil;
         
     self.isReceiveStarted = NO;
 }
+
+- (void)stopAssignMode
+{
+    if (timerAssign)
+        [timerAssign invalidate];
+    
+    self.isAssignStarted = NO;
+}
+
 
 - (void)clearReceiveArray
 {
@@ -212,10 +255,16 @@ static ScanManager *_sharedScanManager = nil;
 {
 }
 
+- (void)timerAssignProc:(id)timer
+{
+    [self.delegateAssign didAssignBeaconFound:self.currAssignBeacons];
+}
+
 - (void)timerReceiveProc:(id)timer
 {
     [self.delegateReceive didReceiveBeaconFound: self.currReceivedBeacons];
 }
+
 
 - (void)compareBeaconsAndDelegate
 {
@@ -410,6 +459,24 @@ static ScanManager *_sharedScanManager = nil;
                     newBeacon.isVisible = VISIBLE_COMEIN;
                     newBeacon.lastScannedTime = [self getCurrentMilliTime];
                     [self.prevReceivedBeacons addObject:newBeacon];
+                }
+            }
+            
+            if (self.isAssignStarted)
+            {
+                isExist = NO;
+                for (CLBeacon *dataBeacon in self.currAssignBeacons) {
+                    if ([dataBeacon.major intValue] == beaconMajor && [dataBeacon.minor intValue] == beaconMinor)
+                    {
+                        isExist = YES;
+                        break;
+                    }
+                }
+                if (!isExist)
+                {
+                    CLBeacon *newBeacon = [[CLBeacon alloc] init];
+                    newBeacon = beacon;
+                    [self.currAssignBeacons addObject:newBeacon];
                 }
             }
         }

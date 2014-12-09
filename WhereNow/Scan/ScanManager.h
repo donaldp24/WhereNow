@@ -39,7 +39,6 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 
 @end
 
-
 @protocol ScanManagerDelegate <NSObject>
 
 @optional
@@ -52,6 +51,8 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 // called in Receive mode
 - (void)didReceiveBeaconFound:(NSMutableArray *) arrBeacons;
 
+- (void)didAssignBeaconFound:(NSMutableArray *) arrBeacons;
+
 @end
 
 @interface ScanManager : NSObject <CLLocationManagerDelegate>
@@ -63,21 +64,26 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
  */
 @property (nonatomic, weak) id<ScanManagerDelegate> delegate;
 @property (nonatomic, weak) id<ScanManagerDelegate> delegateReceive;
+@property (nonatomic, weak) id<ScanManagerDelegate> delegateAssign;
 @property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
+- (id)initWithDelegateReceive:(id<ScanManagerDelegate>)delegate;
+- (id)initWithDelegateAssign:(id<ScanManagerDelegate>)delegate;
 
 /**
  * start ranging & monitoring beacons
  */
 - (void)start;
 - (void)startReceiveMode;
+- (void)startAssignMode;
 
 /**
  * stop ranging & mornitoring
  */
 - (void)stop;
 - (void)stopReceiveMode;
+- (void)stopAssignMode;
 
 - (void)clearReceiveArray;
 

@@ -7,7 +7,8 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ScanManager.h"
 
-@interface AssignTagViewController : UIViewController <UITableViewDelegate, UITableViewDataSource>
+@interface AssignTagViewController : UIViewController <ScanManagerDelegate, UITableViewDataSource, UITableViewDelegate>
 
 @end

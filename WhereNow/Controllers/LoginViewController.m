@@ -188,13 +188,21 @@ enum  {
              // update token
              if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
              {
-                 [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId) {
+                 [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId, NSString *locname, NSString *locid) {
                      NSLog(@"Register device token success! token id = %@", tokenId);
                      [UserContext sharedUserContext].tokenId = tokenId;
+                     [UserContext sharedUserContext].currentLocation = locname;
+                     [UserContext sharedUserContext].currentLocationId = locid;
                  } failure:^(NSString * msg) {
                      NSLog(@"Register device token failed : %@", msg);
                  }];
              }
+             
+             // update Current Location Name, ID
+             if ([UserContext sharedUserContext].tokenId != nil)
+             {
+             }
+             
          } failure:^(NSString *msg) {
              HIDE_PROGRESS_WITH_FAILURE(([NSString stringWithFormat:@"Failure : %@", msg]));
          }];
@@ -554,9 +562,11 @@ enum  {
             // update token
             if ([AppContext sharedAppContext].cleanDeviceToken != nil && [[AppContext sharedAppContext].cleanDeviceToken length] > 0)
             {
-                [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId) {
+                [[ServerManager sharedManager] updateDeviceToken:[AppContext sharedAppContext].cleanDeviceToken sessionId:sessionId userId:userId deviceName:deviceName success:^(NSString *tokenId, NSString *locname, NSString *locid) {
                     NSLog(@"Register device token success! token id = %@", tokenId);
                     [UserContext sharedUserContext].tokenId = tokenId;
+                    [UserContext sharedUserContext].currentLocation = locname;
+                    [UserContext sharedUserContext].currentLocationId = locid;
                 } failure:^(NSString * msg) {
                     NSLog(@"Register device token failed : %@", msg);
                 }];

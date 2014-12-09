@@ -502,7 +502,7 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
     }];
 }
 
-- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId deviceName:(NSString *)deviceName success:(void (^)(NSString *tokenId))success failure:(void (^)(NSString *))failure
+- (void)updateDeviceToken:(NSString *)deviceToken sessionId:(NSString *)sessionId userId:(NSString *)userId deviceName:(NSString *)deviceName success:(void (^)(NSString *tokenId, NSString *locname, NSString *locid))success failure:(void (^)(NSString *))failure
 {
     
     DEF_SERVERMANAGER
@@ -535,7 +535,18 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         {
             //NSString *userId = [response objectForKey:@"UID"];
             NSString *tokenId = [response objectForKey:@"tid"];
-            success(tokenId);
+            NSString *curLocationName = [response objectForKey:@"location_name"];
+            if (curLocationName == nil || [curLocationName isEqual:[NSNull null]])
+                curLocationName = @"";
+            else if ([curLocationName isEqualToString:@""])
+                curLocationName = @"";
+            NSString *curLocID = [response objectForKey:@"lid"];
+            if (curLocID == nil || [curLocID isEqual:[NSNull null]])
+                curLocID = @"0";
+            else if ([curLocID isEqualToString:@""])
+                curLocID = @"0";
+            
+            success(tokenId, curLocationName, curLocID);
         }
     }];
 }

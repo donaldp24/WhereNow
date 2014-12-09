@@ -7,28 +7,77 @@
 //
 
 #import "AssignTagViewController.h"
+#import "AssignTagTableViewCell.h"
+#import "SVProgressHUD+WhereNow.h"
 #import "UIManager.h"
+#import "UserContext.h"
 
-@interface AssignTagViewController ()
+@interface AssignTagViewController () <AssignTagDelegate>
 {
     UIBarButtonItem* btnBack;
+    int selMinor;
 }
+
+@property (nonatomic, retain) ScanManager *scanManager;
+@property (weak, nonatomic) IBOutlet UITableView *tableTags;
+@property (nonatomic, retain) NSMutableArray *arrBeacons;
 
 @end
 
 @implementation AssignTagViewController
 
 - (void)viewDidLoad {
+    
+    self.arrBeacons = [NSMutableArray array];
+    
     [super viewDidLoad];
     // Do any additional setup after loading the view.
     
     btnBack = [UIManager defaultBackButton:self action:@selector(onBack:)];
-    self.navigationItem.leftBarButtonItem = btnBack;    
+    self.navigationItem.leftBarButtonItem = btnBack;
+    
+    self.scanManager = [ScanManager sharedScanManager];
+    self.scanManager.delegateAssign = self;
+    
+    //SHOW_PROGRESS(@"Please Wait");
+    [self.scanManager startAssignMode];
 }
 
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (void)didAssignBeaconFound:(NSMutableArray *) arrBeacons;
+{
+    //[SVProgressHUD dismiss];
+    if (arrBeacons == nil)
+        return;
+    
+    [self.arrBeacons removeAllObjects];
+    
+    for (int i = 0; i < arrBeacons.count; i++)
+    {
+        CLBeacon *beacon = (CLBeacon *)[arrBeacons objectAtIndex:i];
+        int nMinor = [beacon.minor intValue];
+        
+        AssignTagInfo *newInfo = [[AssignTagInfo alloc] init];
+        newInfo.minor = nMinor;
+        newInfo.tagname = [NSString stringWithFormat:@"%@%d", @"Tag ", nMinor];
+        newInfo.checkmark = 0;
+        //newInfo.signal = (int)(((-1) * beacon.rssi) / 20);
+        newInfo.signal = (int)((-1) * (int)beacon.rssi) / 20;
+        if (nMinor == (int)[UserContext sharedUserContext].currTagMinor)
+        {
+            newInfo.checkmark = 1;
+        }
+        else
+            newInfo.checkmark = 0;
+        
+        [self.arrBeacons addObject:newInfo];
+    }
+    
+    [self.tableTags reloadData];
 }
 
 /*
@@ -41,9 +90,44 @@
 }
 */
 
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *CellIdentifier = @"tagcell";
+    
+    AssignTagTableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:CellIdentifier];
+    cell.delegate = self;
+    cell.tagCell = [self.arrBeacons objectAtIndex:indexPath.row];
+    
+    return cell;
+}
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    return [self.arrBeacons count];
+}
+
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    for (AssignTagInfo *info in self.arrBeacons) {
+        info.checkmark = 0;
+    }
+    
+    AssignTagTableViewCell *cell = (AssignTagTableViewCell *)[tableView cellForRowAtIndexPath:indexPath];
+    cell.tagCell.checkmark = 1;
+    [UserContext sharedUserContext].currTagMinor = [NSNumber numberWithInt:cell.tagCell.minor];
+    
+    [tableView reloadData];
+}
+
 - (IBAction)onBack :(id)sender
 {
     [self.navigationController popToRootViewControllerAnimated:TRUE];
+    [self.scanManager stopAssignMode];
     
     return;
 }
