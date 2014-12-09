@@ -1478,6 +1478,16 @@
                                     <constraint firstAttribute="width" constant="320" id="XYw-5V-OnH"/>
                                     <constraint firstAttribute="height" relation="greaterThanOrEqual" constant="368" id="ymD-gu-b4W"/>
                                 </constraints>
+                                <view key="tableFooterView" contentMode="scaleToFill" id="zM3-Dm-Epi">
+                                    <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>
+                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    <subviews>
+                                        <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" animating="YES" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="7el-JO-ed7">
+                                            <rect key="frame" x="150" y="16" width="20" height="20"/>
+                                        </activityIndicatorView>
+                                    </subviews>
+                                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </view>
                                 <prototypes>
                                     <tableViewCell contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="tagcell" id="4H3-sD-elH" customClass="AssignTagTableViewCell">
                                         <rect key="frame" x="0.0" y="0.0" width="320" height="44"/>

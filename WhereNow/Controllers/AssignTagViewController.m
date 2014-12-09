@@ -55,19 +55,20 @@
         return;
     
     [self.arrBeacons removeAllObjects];
-    
     for (int i = 0; i < arrBeacons.count; i++)
     {
-        CLBeacon *beacon = (CLBeacon *)[arrBeacons objectAtIndex:i];
-        int nMinor = [beacon.minor intValue];
+        ScannedBeacon *item = (ScannedBeacon *)[arrBeacons objectAtIndex:i];
+        int nMinor = [item.beacon.minor intValue];
         
         AssignTagInfo *newInfo = [[AssignTagInfo alloc] init];
         newInfo.minor = nMinor;
         newInfo.tagname = [NSString stringWithFormat:@"%@%d", @"Tag ", nMinor];
         newInfo.checkmark = 0;
         //newInfo.signal = (int)(((-1) * beacon.rssi) / 20);
-        newInfo.signal = (int)((-1) * (int)beacon.rssi) / 20;
-        if (nMinor == (int)[UserContext sharedUserContext].currTagMinor)
+        newInfo.signal = (int)((-1) * (int)item.beacon.rssi) / 20;
+        
+        int oldMinor = [[UserContext sharedUserContext].currTagMinor intValue];
+        if (nMinor == oldMinor)
         {
             newInfo.checkmark = 1;
         }

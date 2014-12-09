@@ -32,6 +32,38 @@
     // Configure the view for the selected state
 }
 
+
+- (int)getSignalValue:(int) _rssi
+{
+    int bars = 5;
+    
+    if (_rssi < -87)
+    {
+        bars = 0;
+    }
+    else if (_rssi < -82)
+    {
+        bars = 1;
+    }
+    else if (_rssi < -77)
+    {
+        bars = 2;
+    }
+    else if (_rssi < -72)
+    {
+        bars = 3;
+    }
+    else if (_rssi < -67)
+    {
+        bars = 4;
+    }
+    else if (_rssi < -62 )
+        bars = 5;
+    
+    return bars;
+}
+
+
 -(void)setTagCell:(AssignTagInfo *) tagCell
 {
     _tagCell = tagCell;
@@ -53,9 +85,7 @@
         
         self.labelDeviceName.text = tagCell.tagname;
 
-        int nSignal = tagCell.signal;
-        nSignal = 3;
-        NSString* imgName = [NSString stringWithFormat:@"signal_%d", nSignal];
+        NSString* imgName = [NSString stringWithFormat:@"signal_%d", [self getSignalValue:tagCell.signal]];
         self.imgSignal.image = [UIImage imageNamed:imgName];
     }
     

@@ -52,6 +52,7 @@ static ScanManager *_sharedScanManager = nil;
 @property (nonatomic, retain) NSMutableArray *prevReceivedBeacons;
 @property (nonatomic, retain) NSMutableArray *currReceivedBeacons;
 
+@property (nonatomic, retain) NSMutableArray *prevAssignBeacons;
 @property (nonatomic, retain) NSMutableArray *currAssignBeacons;
 
 // sticknfind
@@ -184,9 +185,10 @@ static ScanManager *_sharedScanManager = nil;
     self.isAssignStarted = YES;
     scanAssignStartedTime = scanAssignEndedTime = [self getCurrentMilliTime];
     
+    self.prevAssignBeacons = [[NSMutableArray alloc] init];
     self.currAssignBeacons = [[NSMutableArray alloc] init];
     
-    timerAssign = [NSTimer scheduledTimerWithTimeInterval:1.0 target:self selector:@selector(timerAssignProc:) userInfo:nil repeats:YES];
+    timerAssign = [NSTimer scheduledTimerWithTimeInterval:3.0 target:self selector:@selector(timerAssignProc:) userInfo:nil repeats:YES];
 }
 
 - (void)stop
@@ -394,7 +396,6 @@ static ScanManager *_sharedScanManager = nil;
     NSLog(@"didStartMonitoringForRegion -- ");
 }
 
-
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
     
     //NSLog(@"didRangeBeacons : %@", beacons);
@@ -465,18 +466,20 @@ static ScanManager *_sharedScanManager = nil;
             if (self.isAssignStarted)
             {
                 isExist = NO;
-                for (CLBeacon *dataBeacon in self.currAssignBeacons) {
-                    if ([dataBeacon.major intValue] == beaconMajor && [dataBeacon.minor intValue] == beaconMinor)
+                for (ScannedBeacon *receivedBeacon in self.prevAssignBeacons) {
+                    if ([receivedBeacon.beacon.major intValue] == beaconMajor && [receivedBeacon.beacon.minor intValue] == beaconMinor)
                     {
                         isExist = YES;
+                        receivedBeacon.lastScannedTime = [self getCurrentMilliTime];
                         break;
                     }
                 }
                 if (!isExist)
                 {
-                    CLBeacon *newBeacon = [[CLBeacon alloc] init];
-                    newBeacon = beacon;
-                    [self.currAssignBeacons addObject:newBeacon];
+                    ScannedBeacon *newBeacon = [[ScannedBeacon alloc] init];
+                    newBeacon.beacon = beacon;
+                    newBeacon.lastScannedTime = [self getCurrentMilliTime];
+                    [self.prevAssignBeacons addObject:newBeacon];
                 }
             }
         }
@@ -512,6 +515,30 @@ static ScanManager *_sharedScanManager = nil;
         {
             if (item.isVisible == VISIBLE_GOOUT)
                 [self.prevReceivedBeacons removeObject:item];
+        }
+    }
+    
+    if (self.isAssignStarted)
+    {
+        [self.currAssignBeacons removeAllObjects];
+        NSMutableArray *removeAssignBeacon = [[NSMutableArray alloc] init];
+        for (ScannedBeacon *item in self.prevAssignBeacons)
+        {
+            long currTime = [self getCurrentMilliTime];
+            
+            if (currTime - item.lastScannedTime > kScanReceive * 1000)
+            {
+                [removeAssignBeacon addObject:item];
+            }
+            else
+            {
+                [self.currAssignBeacons addObject:item];
+            }
+        }
+        
+        for (ScannedBeacon *item in removeAssignBeacon)
+        {
+            [self.prevAssignBeacons removeObject:item];
         }
     }
     
