@@ -35,30 +35,32 @@
 
 - (int)getSignalValue:(int) _rssi
 {
-    int bars = 5;
+    int bars = 0;
     
-    if (_rssi < -87)
+    if (_rssi > -87)
     {
         bars = 0;
     }
-    else if (_rssi < -82)
+    if (_rssi > -82)
     {
         bars = 1;
     }
-    else if (_rssi < -77)
+    if (_rssi > -77)
     {
         bars = 2;
     }
-    else if (_rssi < -72)
+    if (_rssi > -72)
     {
         bars = 3;
     }
-    else if (_rssi < -67)
+    if (_rssi > -67)
     {
         bars = 4;
     }
-    else if (_rssi < -62 )
+    if (_rssi > -62)
+    {
         bars = 5;
+    }
     
     return bars;
 }

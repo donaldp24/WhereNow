@@ -68,7 +68,7 @@
         newInfo.tagname = [NSString stringWithFormat:@"%@%d", @"Tag ", nMinor];
         newInfo.checkmark = 0;
         //newInfo.signal = (int)(((-1) * beacon.rssi) / 20);
-        newInfo.signal = (int)((-1) * (int)item.beacon.rssi) / 20;
+        newInfo.signal = (int)(item.beacon.rssi);
         
         int oldMinor = [[UserContext sharedUserContext].currTagMinor intValue];
         if (nMinor == oldMinor)
