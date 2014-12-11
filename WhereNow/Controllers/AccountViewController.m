@@ -186,7 +186,8 @@
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
-    return 44.0;
+    CGFloat floatHeight = 44.0f;
+    return floatHeight;
 }
 
 -(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section
@@ -284,54 +285,82 @@
     }
 }
 
-
+static UITableViewCell *userCell;
+static UITableViewCell *logoutCell;
+static UITableViewCell *receiveCell;
+static UITableViewCell *locationCell;
+static DeviceCell *deviceCell;
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
 {
-    UITableViewCell *cell = nil;
     if (indexPath.section == 0)
     {
         if (indexPath.row == 0)
         {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"usernamecell"];
-            UILabel *labelUserName = (UILabel *)[cell viewWithTag:101];
+            userCell = [tableView dequeueReusableCellWithIdentifier:@"usernamecell"];
+            UILabel *labelUserName = (UILabel *)[userCell viewWithTag:101];
             labelUserName.text = [UserContext sharedUserContext].fullName;
         }
         else
         {
-            cell = [tableView dequeueReusableCellWithIdentifier:@"passwordcell"];
+            userCell = [tableView dequeueReusableCellWithIdentifier:@"passwordcell"];
         }
+        
+        return userCell;
     }
     else if (indexPath.section == 1)
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"logoutcell"];
-        UIButton *btnLogout = (UIButton *)[cell viewWithTag:100];
+        logoutCell = [tableView dequeueReusableCellWithIdentifier:@"logoutcell"];
+        UIButton *btnLogout = (UIButton *)[logoutCell viewWithTag:100];
         [btnLogout removeTarget:self action:@selector(onLogout:) forControlEvents:UIControlEventTouchUpInside];
         [btnLogout addTarget:self action:@selector(onLogout:) forControlEvents:UIControlEventTouchUpInside];
+        
+        return logoutCell;
     }
     else if (indexPath.section == 2 )
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"receivercell"];
-        self.labelReceiverId = (UILabel *)[cell viewWithTag:100];
+        receiveCell = [tableView dequeueReusableCellWithIdentifier:@"receivercell"];
+        self.labelReceiverId = (UILabel *)[receiveCell viewWithTag:100];
         [self.labelReceiverId setText:[AppContext sharedAppContext].receiverId];
+        
+        return receiveCell;
     }
     else if (indexPath.section == 3)
     {
-        cell = [tableView dequeueReusableCellWithIdentifier:@"locationcell"];
-        UILabel *labelLocation = (UILabel *)[cell viewWithTag:100];
+        locationCell = [tableView dequeueReusableCellWithIdentifier:@"locationcell"];
+        UILabel *labelLocation = (UILabel *)[locationCell viewWithTag:100];
         labelLocation.text = [UserContext sharedUserContext].currentLocation;
+        
+        return locationCell;
     }
     else if (indexPath.section == 4)
     {
-        DeviceCell *deviceCell = [tableView dequeueReusableCellWithIdentifier:@"devicecell"];
+        deviceCell = [tableView dequeueReusableCellWithIdentifier:@"devicecell"];
         NSDictionary *info = [self.arrayDevices objectAtIndex:indexPath.row];
         deviceCell.delegate = self;
         deviceCell.deviceInfo = info;
-        cell = deviceCell;
+        
+        return deviceCell;
     }
+        
+    return nil;
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    CGFloat floatHeight = 44.0f;
     
-    // Configure the cell...
+    if (indexPath.section == 0)
+        floatHeight = userCell.bounds.size.height;
+    else if (indexPath.section == 1)
+        floatHeight = logoutCell.bounds.size.height;
+    else if (indexPath.section == 2)
+        floatHeight = receiveCell.bounds.size.height;
+    else if (indexPath.section == 3)
+        floatHeight = locationCell.bounds.size.height;
+    else if (indexPath.section == 4)
+        floatHeight = deviceCell.bounds.size.height;
     
-    return cell;
+    return floatHeight;
 }
 
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
