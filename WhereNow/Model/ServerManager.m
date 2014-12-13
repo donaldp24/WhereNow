@@ -820,7 +820,6 @@ NSString * const WhereNowErrorDomain = @"com.wherenow";
         }
         else
         {
-            NSString *strActive = [response objectForKey:@"STATUS"];
             success(YES);
         }
     }];
