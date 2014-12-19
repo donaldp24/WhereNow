@@ -18,16 +18,16 @@
                         <rect key="frame" x="0.0" y="0.0" width="1024" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2he-Gt-6zr">
-                                <rect key="frame" x="535" y="0.0" width="489" height="768"/>
-                                <connections>
-                                    <segue destination="7BA-4K-39h" kind="embed" id="san-Sq-GqB"/>
-                                </connections>
-                            </containerView>
                             <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="WaJ-1C-HHk">
                                 <rect key="frame" x="0.0" y="0.0" width="533" height="768"/>
                                 <connections>
                                     <segue destination="ufq-Mb-efR" kind="embed" id="gQy-ZO-MN2"/>
+                                </connections>
+                            </containerView>
+                            <containerView opaque="NO" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2he-Gt-6zr">
+                                <rect key="frame" x="533" y="0.0" width="491" height="768"/>
+                                <connections>
+                                    <segue destination="7BA-4K-39h" kind="embed" id="san-Sq-GqB"/>
                                 </connections>
                             </containerView>
                         </subviews>
@@ -38,25 +38,88 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-3534" y="-1509"/>
+            <point key="canvasLocation" x="-3440" y="-1639"/>
         </scene>
-        <!--View Controller-->
+        <!--Right View Controller-->
         <scene sceneID="N32-DH-QMf">
             <objects>
-                <viewController id="7BA-4K-39h" sceneMemberID="viewController">
+                <viewController id="7BA-4K-39h" customClass="RightViewController" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="IoO-Zs-DUV"/>
                         <viewControllerLayoutGuide type="bottom" id="3o6-zA-lFO"/>
                     </layoutGuides>
                     <view key="view" contentMode="scaleToFill" id="EUo-Z4-e44">
-                        <rect key="frame" x="0.0" y="0.0" width="489" height="768"/>
+                        <rect key="frame" x="0.0" y="0.0" width="491" height="768"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="accounticon" translatesAutoresizingMaskIntoConstraints="NO" id="A0H-IR-ivi">
+                                <rect key="frame" x="75" y="20" width="120" height="160"/>
+                            </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEVICES IN RYMAN WARD" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LLz-Tu-aCD">
+                                <rect key="frame" x="150" y="235" width="300" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEVICES ROAMING WITHIN RYMAN WARD" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="q41-eX-Y8G">
+                                <rect key="frame" x="150" y="375" width="300" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="16" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="7c0-E3-m4r">
+                                <rect key="frame" x="25" y="375" width="100" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="DEVICES OUT OF RYMAN WARD" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="D1m-G1-Hpc">
+                                <rect key="frame" x="150" y="655" width="300" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="5" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="QoB-ZS-jae">
+                                <rect key="frame" x="25" y="655" width="100" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="REQUESTED TO BE RETURNED" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="JE9-Uw-PjP">
+                                <rect key="frame" x="150" y="515" width="300" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="0" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="kuN-kB-Kyl">
+                                <rect key="frame" x="25" y="515" width="100" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                                <color key="textColor" red="1" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="33" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="pTm-ps-yH0">
+                                <rect key="frame" x="25" y="235" width="100" height="80"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="60"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                     </view>
+                    <connections>
+                        <outlet property="labelDevicesInCount" destination="pTm-ps-yH0" id="dRA-hw-7rp"/>
+                        <outlet property="labelDevicesInName" destination="LLz-Tu-aCD" id="5fu-ro-9vD"/>
+                        <outlet property="labelDevicesOutCount" destination="QoB-ZS-jae" id="7VF-AR-AcB"/>
+                        <outlet property="labelDevicesOutName" destination="D1m-G1-Hpc" id="17Q-qz-Zdh"/>
+                        <outlet property="labelDevicesRequestedCount" destination="kuN-kB-Kyl" id="a4o-P5-dB3"/>
+                        <outlet property="labelDevicesRequestedName" destination="JE9-Uw-PjP" id="Ofr-hi-l9o"/>
+                        <outlet property="labelDevicesWithinCount" destination="7c0-E3-m4r" id="aOj-nJ-BZx"/>
+                        <outlet property="labelDevicesWithinName" destination="q41-eX-Y8G" id="fJd-SC-f4n"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="o2q-kc-ByQ" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-2708.5" y="-1639"/>
+            <point key="canvasLocation" x="-2446.5" y="-1639"/>
         </scene>
         <!--Main Tab Bar Controller-->
         <scene sceneID="RKG-Lv-DkE">

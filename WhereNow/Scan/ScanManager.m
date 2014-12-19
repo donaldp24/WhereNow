@@ -121,6 +121,18 @@ static ScanManager *_sharedScanManager = nil;
     return self;
 }
 
+- (id)initWithDelegateRight:(id<RightViewDelegate>)delegateRight
+{
+    self = [super init];
+    if (self) {
+        //
+    }
+    
+    self.delegateRight = delegateRight;
+    
+    return self;
+}
+
 - (void)initMembers
 {
     self.isStarted = NO;
@@ -397,6 +409,8 @@ static ScanManager *_sharedScanManager = nil;
 }
 
 - (void)locationManager:(CLLocationManager *)manager didRangeBeacons:(NSArray *)beacons inRegion:(CLBeaconRegion *)region {
+    
+    [self.delegateRight didGetDevicesInfo:@"ShenYang" indevices:@"30" withindevices:@"60" requesteddevices:@"30" outdevices:@"90"];
     
     //NSLog(@"didRangeBeacons : %@", beacons);
     if ([UIApplication sharedApplication].applicationState == UIApplicationStateActive)

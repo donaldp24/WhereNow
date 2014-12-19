@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		8413BE6C1A2E226200CB62C8 /* EditReceiverIDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */; };
+		8424A3DC1A4360DC006CA280 /* RightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8424A3DB1A4360DC006CA280 /* RightViewController.m */; };
 		845621C51A2FC6BD006FA007 /* AssignTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 845621C41A2FC6BD006FA007 /* AssignTagViewController.m */; };
 		84955DAC1A36636800AAB038 /* icon_checkmark_checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */; };
 		84955DAD1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAB1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png */; };
@@ -155,6 +156,8 @@
 /* Begin PBXFileReference section */
 		8413BE6A1A2E226200CB62C8 /* EditReceiverIDViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EditReceiverIDViewController.h; sourceTree = "<group>"; };
 		8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditReceiverIDViewController.m; sourceTree = "<group>"; };
+		8424A3DA1A4360DC006CA280 /* RightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightViewController.h; sourceTree = "<group>"; };
+		8424A3DB1A4360DC006CA280 /* RightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightViewController.m; sourceTree = "<group>"; };
 		845621C31A2FC6BD006FA007 /* AssignTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssignTagViewController.h; sourceTree = "<group>"; };
 		845621C41A2FC6BD006FA007 /* AssignTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssignTagViewController.m; sourceTree = "<group>"; };
 		84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_checked@2x.png"; path = "WhereNow/Images/icon_checkmark_checked@2x.png"; sourceTree = "<group>"; };
@@ -628,6 +631,8 @@
 				D00E3EC6198CFAF600AFE9EC /* HistoryViewController.m */,
 				D00E3EC8198CFB0A00AFE9EC /* AlertsViewController.h */,
 				D00E3EC9198CFB0A00AFE9EC /* AlertsViewController.m */,
+				8424A3DA1A4360DC006CA280 /* RightViewController.h */,
+				8424A3DB1A4360DC006CA280 /* RightViewController.m */,
 			);
 			name = EquipmentDetails;
 			sourceTree = "<group>";
@@ -1099,6 +1104,7 @@
 				D0C4E0E9198A3A13003C09A1 /* AccountViewController.m in Sources */,
 				D05397D119D5158C00D7DA32 /* Generic.m in Sources */,
 				D03D826919BC005600D8CA91 /* DetailBaseTableViewController.m in Sources */,
+				8424A3DC1A4360DC006CA280 /* RightViewController.m in Sources */,
 				D0EA38EC19C6CE0E006112C2 /* SDWebImageManager.m in Sources */,
 				D029A0A91993195400F4FA28 /* ResponseParseStrategy.m in Sources */,
 				D0BCCA8A1990C1EA0047D2D2 /* AFHTTPRequestOperation.m in Sources */,

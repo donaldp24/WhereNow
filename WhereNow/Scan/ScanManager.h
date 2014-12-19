@@ -8,6 +8,7 @@
 
 #import <Foundation/Foundation.h>
 #import <CoreLocation/CoreLocation.h>
+#import "RightViewController.h"
 
 //#define GLOBAL_UUID         @"B9407F30-F5F8-466E-AFF9-25556B57FE6D"
 #define GLOBAL_UUID         @"B125AA4F-2D82-401D-92E5-F962E8037F5C"
@@ -55,6 +56,13 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 
 @end
 
+@protocol RightViewDelegate <NSObject>
+
+@optional
+- (void) didGetDevicesInfo: (NSString *)regionName indevices:(NSString *) indevices withindevices:(NSString *) withindevices requesteddevices:(NSString *) requesteddevices outdevices:(NSString *)outdevices;
+
+@end
+
 @interface ScanManager : NSObject <CLLocationManagerDelegate>
 
 + (ScanManager *)sharedScanManager;
@@ -65,11 +73,13 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 @property (nonatomic, weak) id<ScanManagerDelegate> delegate;
 @property (nonatomic, weak) id<ScanManagerDelegate> delegateReceive;
 @property (nonatomic, weak) id<ScanManagerDelegate> delegateAssign;
+@property (nonatomic, weak) id<RightViewDelegate> delegateRight;
 @property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
 - (id)initWithDelegateReceive:(id<ScanManagerDelegate>)delegate;
 - (id)initWithDelegateAssign:(id<ScanManagerDelegate>)delegate;
+- (id)initWithDelegateRight:(id<RightViewDelegate>)delegateRight;
 
 /**
  * start ranging & monitoring beacons
