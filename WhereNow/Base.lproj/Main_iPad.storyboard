@@ -1648,6 +1648,10 @@
                                 </imageView>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="alerticon" translatesAutoresizingMaskIntoConstraints="NO" id="7Ki-cz-rvF">
                                     <rect key="frame" x="480" y="97" width="32" height="32"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="32" id="0lH-PB-UIR"/>
+                                        <constraint firstAttribute="width" constant="32" id="96e-Yj-28J"/>
+                                    </constraints>
                                 </imageView>
                                 <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="CRP-G2-1MJ">
                                     <rect key="frame" x="92" y="6" width="433" height="71"/>
@@ -1676,7 +1680,6 @@
                                 <constraint firstAttribute="trailing" secondItem="c5I-Eb-fZE" secondAttribute="trailing" constant="363" id="Ku9-BF-dH6"/>
                                 <constraint firstItem="CRP-G2-1MJ" firstAttribute="top" secondItem="4LW-jH-R06" secondAttribute="top" constant="6" id="NW8-9g-WxS"/>
                                 <constraint firstItem="hkZ-zw-jEk" firstAttribute="leading" secondItem="4LW-jH-R06" secondAttribute="leading" constant="13" id="O1V-Cr-3Pr"/>
-                                <constraint firstItem="7Ki-cz-rvF" firstAttribute="leading" secondItem="4LW-jH-R06" secondAttribute="leading" constant="480" id="PXG-4Z-8Mb"/>
                                 <constraint firstAttribute="bottom" secondItem="gAE-oX-NWy" secondAttribute="bottom" constant="62" id="QWa-DL-u1w"/>
                                 <constraint firstItem="CRP-G2-1MJ" firstAttribute="leading" secondItem="4LW-jH-R06" secondAttribute="leading" constant="92" id="WQm-if-bSr"/>
                                 <constraint firstAttribute="trailing" secondItem="CRP-G2-1MJ" secondAttribute="trailing" constant="8" id="XnM-Tj-8F9"/>

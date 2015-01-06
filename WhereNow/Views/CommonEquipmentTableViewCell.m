@@ -54,6 +54,9 @@
     [super setSelected:selected animated:animated];
 
     // Configure the view for the selected state
+    [self.btnDelete setBackgroundColor:[UIColor colorWithRed:(201/255.f) green:(58/255.f) blue:(38/255.f) alpha:1.0f]];
+    [self.btnFavorites setBackgroundColor:[UIColor colorWithRed:(66/255.f) green:(186/255.f) blue:(79/255.f) alpha:1.0f]];
+    [self.btnLocate setBackgroundColor:[UIColor colorWithRed:(239/255.f) green:(239/255.f) blue:(244/255.f) alpha:1.0f]];
 }
 
 - (void)bind:(Equipment *)equipment generic:(Generic *)generic type:(CommonEquipmentCellType)cellType
