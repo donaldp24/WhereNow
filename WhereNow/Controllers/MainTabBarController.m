@@ -130,6 +130,10 @@ static MainTabBarController *_sharedMainTabBarController = nil;
                 [self setBadgeOnNearMe:nil];
             else
                 [self setBadgeOnNearMe:[NSString stringWithFormat:@"%d", count]];
+            
+            /***************/
+            [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+            /***************/
         }
     });
 }

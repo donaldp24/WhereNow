@@ -56,13 +56,6 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 
 @end
 
-@protocol RightViewDelegate <NSObject>
-
-@optional
-- (void) didGetDevicesInfo: (NSString *)regionName indevices:(NSString *) indevices withindevices:(NSString *) withindevices requesteddevices:(NSString *) requesteddevices outdevices:(NSString *)outdevices;
-
-@end
-
 @interface ScanManager : NSObject <CLLocationManagerDelegate>
 
 + (ScanManager *)sharedScanManager;
@@ -73,13 +66,11 @@ typedef NS_ENUM(NSUInteger, VisibleMode) {
 @property (nonatomic, weak) id<ScanManagerDelegate> delegate;
 @property (nonatomic, weak) id<ScanManagerDelegate> delegateReceive;
 @property (nonatomic, weak) id<ScanManagerDelegate> delegateAssign;
-@property (nonatomic, weak) id<RightViewDelegate> delegateRight;
 @property (nonatomic) ScanMode scanMode;
 
 - (id)initWithDelegate:(id<ScanManagerDelegate>)delegate;
 - (id)initWithDelegateReceive:(id<ScanManagerDelegate>)delegate;
 - (id)initWithDelegateAssign:(id<ScanManagerDelegate>)delegate;
-- (id)initWithDelegateRight:(id<RightViewDelegate>)delegateRight;
 
 /**
  * start ranging & monitoring beacons

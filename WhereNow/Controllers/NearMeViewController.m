@@ -452,6 +452,10 @@ static CommonEquipmentTableViewCell *_prototypeEquipmentTableViewCell = nil;
         editingSection = 0;
         
         [self.tableView reloadData];
+        
+        /***************/
+        [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+        /***************/
     });
 }
 

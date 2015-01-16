@@ -8,8 +8,6 @@
 
 #import <UIKit/UIKit.h>
 
-@interface RightViewController : UIViewController
-
-+ (RightViewController *)sharedRight;
+@interface RightViewController : UIViewController<UITableViewDelegate, UITableViewDataSource>
 
 @end

@@ -323,6 +323,10 @@ static BackgroundTaskManager *_sharedBackgroundTaskManager = nil;
 {
     self.arrayVicinityEquipments = [[NSMutableArray alloc] initWithArray:[self getVicinityEquipments]];
     [[NSNotificationCenter defaultCenter] postNotificationName:kBackgroundScannedBeaconChanged object:nil];
+    
+    /***************/
+    [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+    /***************/
 }
 
 @end

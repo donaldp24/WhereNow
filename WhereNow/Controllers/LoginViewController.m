@@ -140,6 +140,11 @@ enum  {
                      [UserContext sharedUserContext].tokenId = tokenId;
                      [UserContext sharedUserContext].currentLocation = locname;
                      [UserContext sharedUserContext].currentLocationId = locid;
+                     
+                     /****************/
+                     [[ModelManager sharedManager] retrieveEquipmentsWithHasBeacon:YES];
+                     /****************/
+                     
                  } failure:^(NSString * msg) {
                      NSLog(@"Register device token failed : %@", msg);
                  }];

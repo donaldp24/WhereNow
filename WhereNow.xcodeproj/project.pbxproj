@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		8413BE6C1A2E226200CB62C8 /* EditReceiverIDViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */; };
 		8424A3DC1A4360DC006CA280 /* RightViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 8424A3DB1A4360DC006CA280 /* RightViewController.m */; };
+		84471C251A65541400592B40 /* RightDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 84471C241A65541400592B40 /* RightDetailViewController.m */; };
 		845621C51A2FC6BD006FA007 /* AssignTagViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 845621C41A2FC6BD006FA007 /* AssignTagViewController.m */; };
 		84955DAC1A36636800AAB038 /* icon_checkmark_checked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */; };
 		84955DAD1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 84955DAB1A36636800AAB038 /* icon_checkmark_nonchecked@2x.png */; };
@@ -158,6 +159,8 @@
 		8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = EditReceiverIDViewController.m; sourceTree = "<group>"; };
 		8424A3DA1A4360DC006CA280 /* RightViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightViewController.h; sourceTree = "<group>"; };
 		8424A3DB1A4360DC006CA280 /* RightViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightViewController.m; sourceTree = "<group>"; };
+		84471C231A65541400592B40 /* RightDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightDetailViewController.h; sourceTree = "<group>"; };
+		84471C241A65541400592B40 /* RightDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightDetailViewController.m; sourceTree = "<group>"; };
 		845621C31A2FC6BD006FA007 /* AssignTagViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AssignTagViewController.h; sourceTree = "<group>"; };
 		845621C41A2FC6BD006FA007 /* AssignTagViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AssignTagViewController.m; sourceTree = "<group>"; };
 		84955DAA1A36636800AAB038 /* icon_checkmark_checked@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; name = "icon_checkmark_checked@2x.png"; path = "WhereNow/Images/icon_checkmark_checked@2x.png"; sourceTree = "<group>"; };
@@ -631,8 +634,6 @@
 				D00E3EC6198CFAF600AFE9EC /* HistoryViewController.m */,
 				D00E3EC8198CFB0A00AFE9EC /* AlertsViewController.h */,
 				D00E3EC9198CFB0A00AFE9EC /* AlertsViewController.m */,
-				8424A3DA1A4360DC006CA280 /* RightViewController.h */,
-				8424A3DB1A4360DC006CA280 /* RightViewController.m */,
 			);
 			name = EquipmentDetails;
 			sourceTree = "<group>";
@@ -846,6 +847,10 @@
 				D01FF09419D9423B0096247E /* FoundEquipmentTableViewController.m */,
 				8413BE6A1A2E226200CB62C8 /* EditReceiverIDViewController.h */,
 				8413BE6B1A2E226200CB62C8 /* EditReceiverIDViewController.m */,
+				8424A3DA1A4360DC006CA280 /* RightViewController.h */,
+				8424A3DB1A4360DC006CA280 /* RightViewController.m */,
+				84471C231A65541400592B40 /* RightDetailViewController.h */,
+				84471C241A65541400592B40 /* RightDetailViewController.m */,
 			);
 			path = Controllers;
 			sourceTree = "<group>";
@@ -1099,6 +1104,7 @@
 				D041E60419CE58B40089C363 /* Alert.m in Sources */,
 				D0EA38EA19C6CE0E006112C2 /* SDWebImageDownloader.m in Sources */,
 				D04CF20919E34C8100F31405 /* PushAnimatedTransitioning.m in Sources */,
+				84471C251A65541400592B40 /* RightDetailViewController.m in Sources */,
 				D0BCCA8C1990C1EA0047D2D2 /* AFJSONRequestOperation.m in Sources */,
 				D0EA38F119C6CE0E006112C2 /* UIImage+WebP.m in Sources */,
 				D0C4E0E9198A3A13003C09A1 /* AccountViewController.m in Sources */,
